@@ -9,21 +9,29 @@ import java.util.UUID;
 @Entity
 public class Client {
 
+    public Client(){}
+
+    public Client(String name, String email, String phone){
+        setClientName(name);
+        setEmail(email);
+        setPhone(phone);
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID clientId;
 
     @Column(nullable = false)
     private String clientName;
+
     @Column(nullable = false, unique = true)
     private String phone;
+
     @Column(nullable = false, unique = true)
     private String email;
 
-
     @OneToMany(mappedBy = "client")
     private List<OrderItem> orders;
-
 
     public String getClientName() {
         return clientName;
@@ -35,10 +43,6 @@ public class Client {
 
     public String getPhone() {
         return phone;
-    }
-
-    public UUID getClientId() {
-        return clientId;
     }
 
     public void setClientName(String clientName) {
