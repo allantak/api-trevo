@@ -1,26 +1,32 @@
-package br.com.jacto.trevo.models.entities;
+package br.com.jacto.trevo.model.client;
 
+import br.com.jacto.trevo.model.order.OrderItem;
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 public class Client {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID client_id;
+    private UUID clientId;
 
     @Column(nullable = false)
-    private String client_name;
+    private String clientName;
     @Column(nullable = false, unique = true)
     private String phone;
     @Column(nullable = false, unique = true)
     private String email;
 
 
+    @OneToMany(mappedBy = "client")
+    private List<OrderItem> orders;
 
-    public String getClient_name() {
-        return client_name;
+
+    public String getClientName() {
+        return clientName;
     }
 
     public String getEmail() {
@@ -31,12 +37,12 @@ public class Client {
         return phone;
     }
 
-    public UUID getClient_id() {
-        return client_id;
+    public UUID getClientId() {
+        return clientId;
     }
 
-    public void setClient_name(String client_name) {
-        this.client_name = client_name;
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 
     public void setEmail(String email) {

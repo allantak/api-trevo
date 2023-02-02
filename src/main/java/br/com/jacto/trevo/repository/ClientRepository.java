@@ -1,6 +1,6 @@
-package br.com.jacto.trevo.repositorys;
+package br.com.jacto.trevo.repository;
 
-import br.com.jacto.trevo.models.entities.Client;
+import br.com.jacto.trevo.model.client.Client;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
