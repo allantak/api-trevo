@@ -9,14 +9,6 @@ import java.util.UUID;
 @Entity
 public class Client {
 
-    public Client(){}
-
-    public Client(String name, String email, String phone){
-        setClientName(name);
-        setEmail(email);
-        setPhone(phone);
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID clientId;
@@ -57,7 +49,14 @@ public class Client {
         this.phone = phone;
     }
 
-    public UUID getId() {
-        return clientId;
+    public UUID getId() { return clientId; }
+
+    public Client(){}
+
+    public Client(String name, String email, String phone){
+        setClientName(name);
+        setEmail(email);
+        setPhone(phone);
     }
+
 }
