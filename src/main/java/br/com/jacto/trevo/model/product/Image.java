@@ -11,7 +11,7 @@ public class Image {
     private UUID imageId;
 
     @Lob
-    @Column(name="img")
+    @Column(name = "img")
     private byte[] img;
 
     @ManyToOne

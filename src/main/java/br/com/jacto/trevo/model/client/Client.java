@@ -37,6 +37,10 @@ public class Client {
         return phone;
     }
 
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
+    }
+
     public void setClientName(String clientName) {
         this.clientName = clientName;
     }
@@ -49,11 +53,14 @@ public class Client {
         this.phone = phone;
     }
 
-    public UUID getId() { return clientId; }
+    public UUID getId() {
+        return clientId;
+    }
 
-    public Client(){}
+    public Client() {
+    }
 
-    public Client(String name, String email, String phone){
+    public Client(String name, String email, String phone) {
         setClientName(name);
         setEmail(email);
         setPhone(phone);

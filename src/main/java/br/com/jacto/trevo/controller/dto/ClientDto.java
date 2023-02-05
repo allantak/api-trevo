@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class ClientDto {
 
-    public ClientDto(Client client){
+    public ClientDto(Client client) {
         this.clientId = client.getId();
         this.email = client.getEmail();
     }

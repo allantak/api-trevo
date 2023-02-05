@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity()
-public class Product{
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
