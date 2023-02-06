@@ -2,9 +2,9 @@ package br.com.jacto.trevo.controller;
 
 import br.com.jacto.trevo.controller.dto.ClientDto;
 import br.com.jacto.trevo.controller.form.ClientForm;
+import br.com.jacto.trevo.controller.form.ClientUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
 import br.com.jacto.trevo.service.client.ClientService;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +29,12 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Client> getClientId(@PathVariable UUID id) {
-        return clientService.getId(id);
+    public ResponseEntity<Optional<Client>> getClientId(@PathVariable UUID id) {
+        Optional<Client> client = clientService.getId(id);
+        if(client.isEmpty()){
+            return ResponseEntity.notFound().build();
+        } ;
+        return ResponseEntity.ok(client);
     }
 
     @PostMapping
@@ -39,4 +43,24 @@ public class ClientController {
         URI uri = uriBuilder.path("/clients/{id}").buildAndExpand(save.getId()).toUri();
         return ResponseEntity.created(uri).body(new ClientDto(save));
     }
+
+    @PutMapping
+    public ResponseEntity<Optional<Client>> updateClient(@RequestBody @Valid ClientUpdateForm client){
+        Optional<Client> updateClient = clientService.update(client);
+        if( updateClient.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.status(200).body(updateClient);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Client> deleteClient(@PathVariable UUID id){
+        Optional<Client> findClient = clientService.getId(id);
+        if( findClient.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        clientService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

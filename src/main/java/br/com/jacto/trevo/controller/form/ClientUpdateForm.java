@@ -1,12 +1,12 @@
 package br.com.jacto.trevo.controller.form;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
 public class ClientUpdateForm {
 
-    @NotBlank
+    @NotNull
     private UUID clientId;
 
     private String clientName;

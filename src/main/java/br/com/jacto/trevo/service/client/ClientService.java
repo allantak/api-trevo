@@ -28,7 +28,6 @@ public class ClientService {
     }
 
     public Optional<Client> getId(UUID id) {
-        System.out.println("asdasdasdasd aqqui " + id);
         return clientRepository.findById(id);
     }
 
@@ -36,24 +35,25 @@ public class ClientService {
         clientRepository.deleteById(id);
     }
 
-    public Client update(ClientUpdateForm client) {
+    public Optional<Client> update(ClientUpdateForm client) {
 
-        Client updateClient = new Client();
-        updateClient.setClientId(client.getClientId());
+        Optional<Client> findClient = getId(client.getClientId());
 
-        if (client.getEmail() != null) {
-            updateClient.setEmail(client.getEmail());
+        if (findClient.isEmpty()) return findClient;
+
+        if (client.getEmail() != null && !client.getEmail().trim().isEmpty()) {
+            findClient.get().setEmail(client.getEmail());
         }
 
-        if (client.getClientName() != null) {
-            updateClient.setClientName(client.getClientName());
+        if (client.getClientName() != null && !client.getClientName().trim().isEmpty()) {
+            findClient.get().setClientName(client.getClientName());
         }
 
-        if (client.getPhone() != null) {
-            updateClient.setPhone(client.getPhone());
+        if (client.getPhone() != null && !client.getPhone().trim().isEmpty()) {
+            findClient.get().setPhone(client.getPhone());
         }
 
-        return clientRepository.save(updateClient);
+        return Optional.of(clientRepository.save(findClient.get()));
 
     }
 
