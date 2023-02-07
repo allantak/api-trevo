@@ -1,4 +1,4 @@
-package br.com.jacto.trevo.controller.dto;
+package br.com.jacto.trevo.controller.client.dto;
 
 import br.com.jacto.trevo.model.client.Client;
 

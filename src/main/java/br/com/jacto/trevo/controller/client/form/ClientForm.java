@@ -1,23 +1,17 @@
-package br.com.jacto.trevo.controller.form;
+package br.com.jacto.trevo.controller.client.form;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
-import java.util.UUID;
+public class ClientForm {
 
-public class ClientUpdateForm {
-
-    @NotNull
-    private UUID clientId;
-
+    @NotBlank
     private String clientName;
 
+    @NotBlank
     private String email;
 
+    @NotBlank
     private String phone;
-
-    public UUID getClientId() {
-        return clientId;
-    }
 
     public String getClientName() {
         return clientName;
@@ -30,5 +24,4 @@ public class ClientUpdateForm {
     public String getPhone() {
         return phone;
     }
-
 }

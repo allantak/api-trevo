@@ -1,7 +1,8 @@
 package br.com.jacto.trevo.service.client;
 
-import br.com.jacto.trevo.controller.form.ClientForm;
-import br.com.jacto.trevo.controller.form.ClientUpdateForm;
+import br.com.jacto.trevo.controller.client.dto.ClientDto;
+import br.com.jacto.trevo.controller.client.form.ClientForm;
+import br.com.jacto.trevo.controller.client.form.ClientUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
 import br.com.jacto.trevo.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,8 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public List<Client> getAll() {
-        List<Client> resultClients = (List<Client>) clientRepository.findAll();
-        return resultClients.stream().toList();
+    public List<ClientDto> getAll() {
+        return clientRepository.findAll().stream().map(ClientDto::new).toList();
     }
 
     public Client create(ClientForm client) {
