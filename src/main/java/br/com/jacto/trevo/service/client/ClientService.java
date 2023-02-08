@@ -1,6 +1,8 @@
 package br.com.jacto.trevo.service.client;
 
+import br.com.jacto.trevo.controller.client.dto.ClientDetailDto;
 import br.com.jacto.trevo.controller.client.dto.ClientDto;
+import br.com.jacto.trevo.controller.client.dto.ClientOrderDto;
 import br.com.jacto.trevo.controller.client.form.ClientForm;
 import br.com.jacto.trevo.controller.client.form.ClientUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
@@ -27,8 +29,8 @@ public class ClientService {
         return clientRepository.save(register);
     }
 
-    public Optional<Client> getId(UUID id) {
-        return clientRepository.findById(id);
+    public Optional<ClientDetailDto> getId(UUID id) {
+        return clientRepository.findById(id).map(ClientDetailDto::new);
     }
 
     public void delete(UUID id) {
@@ -37,7 +39,7 @@ public class ClientService {
 
     public Optional<Client> update(ClientUpdateForm client) {
 
-        Optional<Client> findClient = getId(client.getClientId());
+        Optional<Client> findClient = clientRepository.findById(client.getClientId());
 
         if (findClient.isEmpty()) return findClient;
 
@@ -55,6 +57,10 @@ public class ClientService {
 
         return Optional.of(clientRepository.save(findClient.get()));
 
+    }
+
+    public Optional<ClientOrderDto> clientOrder(UUID clientId){
+        return clientRepository.findById(clientId).map(ClientOrderDto::new);
     }
 
 }

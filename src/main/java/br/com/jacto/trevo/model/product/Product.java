@@ -2,6 +2,7 @@ package br.com.jacto.trevo.model.product;
 
 import br.com.jacto.trevo.controller.product.form.ProductForm;
 import br.com.jacto.trevo.model.order.OrderItem;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -41,13 +42,15 @@ public class Product {
 
     @Column(nullable = false)
     private Boolean status;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<Culture> cultures;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<Image> imgs;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<OrderItem> orders;
 
@@ -95,5 +98,15 @@ public class Product {
         this.status = status;
     }
 
+    public List<Culture> getCultures() {
+        return cultures;
+    }
 
+    public List<Image> getImgs() {
+        return imgs;
+    }
+
+    public List<OrderItem> getOrders() {
+        return orders;
+    }
 }

@@ -2,10 +2,11 @@ package br.com.jacto.trevo.controller.product;
 
 
 import br.com.jacto.trevo.controller.product.dto.ProductDto;
+import br.com.jacto.trevo.controller.product.dto.ProductOrderDto;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
 import br.com.jacto.trevo.controller.product.form.ProductUpdateForm;
 import br.com.jacto.trevo.model.product.Product;
-import br.com.jacto.trevo.service.client.ProductService;
+import br.com.jacto.trevo.service.product.ProductService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,15 @@ public class ProductController {
     @GetMapping
     public List<ProductDto> getProduct() {
         return productService.getAll();
+    }
+
+    @GetMapping("/orders/{id}")
+    public ResponseEntity<Optional<ProductOrderDto>> getProductOrder(@PathVariable UUID id) {
+        Optional<ProductOrderDto> productOrder = productService.productOrder(id);
+        if (productOrder.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(productOrder);
     }
 
     @GetMapping("/{id}")

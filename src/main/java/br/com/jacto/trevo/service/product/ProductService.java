@@ -1,6 +1,7 @@
-package br.com.jacto.trevo.service.client;
+package br.com.jacto.trevo.service.product;
 
 import br.com.jacto.trevo.controller.product.dto.ProductDto;
+import br.com.jacto.trevo.controller.product.dto.ProductOrderDto;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
 import br.com.jacto.trevo.controller.product.form.ProductUpdateForm;
 import br.com.jacto.trevo.model.product.Product;
@@ -19,8 +20,6 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
-    @Autowired
-    private ClientRepository clientRepository;
 
     public List<ProductDto> getAll() {
         return productRepository.findAll().stream().map(ProductDto::new).toList();
@@ -70,5 +69,9 @@ public class ProductService {
 
         return Optional.of(productRepository.save(findProduct.get()));
 
+    }
+
+    public Optional<ProductOrderDto> productOrder(UUID id){
+        return productRepository.findById(id).map(ProductOrderDto::new);
     }
 }

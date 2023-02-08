@@ -24,4 +24,15 @@ public class OrderItem {
     @JoinColumn(name = "clientId", referencedColumnName = "clientId")
     private Client client;
 
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public Client getClient() {
+        return client;
+    }
 }

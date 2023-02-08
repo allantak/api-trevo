@@ -1,26 +1,26 @@
 package br.com.jacto.trevo.controller.product.dto;
 
+import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
 
+import java.util.List;
 import java.util.UUID;
 
-public class ProductDto {
+public class ProductOrderDto {
 
-    public ProductDto(Product product) {
-        this.productId = product.getProductId();
+    public ProductOrderDto(Product product) {
         this.productName = product.getProductName();
-        this.status = product.isStatus();
         this.description = product.getDescription();
+        this.status = product.isStatus();
+        this.orders = product.getOrders().stream().map(ProductOrderClientDto::new).toList();
+
     }
 
-    private final UUID productId;
-
     private final String productName;
-
     private final Boolean status;
-
     private final String description;
 
+    private final List<ProductOrderClientDto> orders;
 
     public String getProductName() {
         return productName;
@@ -34,7 +34,8 @@ public class ProductDto {
         return description;
     }
 
-    public UUID getProductId() {
-        return productId;
+    public List<ProductOrderClientDto> getOrders() {
+        return orders;
     }
+
 }

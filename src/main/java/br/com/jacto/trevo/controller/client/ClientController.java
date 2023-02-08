@@ -1,6 +1,8 @@
 package br.com.jacto.trevo.controller.client;
 
+import br.com.jacto.trevo.controller.client.dto.ClientDetailDto;
 import br.com.jacto.trevo.controller.client.dto.ClientDto;
+import br.com.jacto.trevo.controller.client.dto.ClientOrderDto;
 import br.com.jacto.trevo.controller.client.form.ClientForm;
 import br.com.jacto.trevo.controller.client.form.ClientUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
@@ -29,12 +31,22 @@ public class ClientController {
         return clientService.getAll();
     }
 
+    @GetMapping("/orders/{id}")
+    public ResponseEntity<Optional<ClientOrderDto>> getClientOrder(@PathVariable UUID id) {
+        Optional<ClientOrderDto> clientOrder = clientService.clientOrder(id);
+        if (clientOrder.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(clientOrder);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Client>> getClientId(@PathVariable UUID id) {
-        Optional<Client> client = clientService.getId(id);
+    public ResponseEntity<Optional<ClientDetailDto>> getClientId(@PathVariable UUID id) {
+        Optional<ClientDetailDto> client = clientService.getId(id);
         if (client.isEmpty()) {
             return ResponseEntity.notFound().build();
-        };
+        }
+        ;
 
         return ResponseEntity.ok(client);
     }
@@ -49,18 +61,18 @@ public class ClientController {
 
     @PutMapping
     @Transactional
-    public ResponseEntity<Optional<Client>> updateClient(@RequestBody @Valid ClientUpdateForm client) {
+    public ResponseEntity<Optional<ClientDetailDto>> updateClient(@RequestBody @Valid ClientUpdateForm client) {
         Optional<Client> updateClient = clientService.update(client);
         if (updateClient.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(updateClient);
+        return ResponseEntity.ok(updateClient.map(ClientDetailDto::new));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Client> deleteClient(@PathVariable UUID id) {
-        Optional<Client> findClient = clientService.getId(id);
+        Optional<ClientDetailDto> findClient = clientService.getId(id);
         if (findClient.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
