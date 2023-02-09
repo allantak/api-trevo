@@ -7,6 +7,7 @@ import java.util.UUID;
 public class ProductOrderClientDto {
 
     public ProductOrderClientDto(OrderItem order) {
+        this.orderItemId = order.getOrderItemId();
         this.clientId = order.getClient().getId();
         this.email = order.getClient().getEmail();
         this.clientName = order.getClient().getClientName();
@@ -14,10 +15,15 @@ public class ProductOrderClientDto {
 
     }
 
+    private final UUID orderItemId;
     private final UUID clientId;
     private final String email;
     private final String clientName;
     private final Integer quantity;
+
+    public UUID getOrderItemId() {
+        return orderItemId;
+    }
 
     public UUID getClientId() {
         return clientId;
