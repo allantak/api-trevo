@@ -1,10 +1,8 @@
 package br.com.jacto.trevo.model.product;
 
-import br.com.jacto.trevo.controller.product.form.ProductForm;
 import br.com.jacto.trevo.model.order.OrderItem;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -42,6 +40,7 @@ public class Product {
 
     @Column(nullable = false)
     private Boolean status;
+
     @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<Culture> cultures;

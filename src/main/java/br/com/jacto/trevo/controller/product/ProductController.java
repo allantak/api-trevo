@@ -3,9 +3,13 @@ package br.com.jacto.trevo.controller.product;
 
 import br.com.jacto.trevo.controller.product.dto.ProductDto;
 import br.com.jacto.trevo.controller.product.dto.ProductOrderDto;
+import br.com.jacto.trevo.controller.product.form.ProductCultureDeleteForm;
+import br.com.jacto.trevo.controller.product.form.ProductCultureForm;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
 import br.com.jacto.trevo.controller.product.form.ProductUpdateForm;
+import br.com.jacto.trevo.model.product.Culture;
 import br.com.jacto.trevo.model.product.Product;
+import br.com.jacto.trevo.service.product.CultureService;
 import br.com.jacto.trevo.service.product.ProductService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -25,6 +29,9 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private CultureService cultureService;
 
     @GetMapping
     public List<ProductDto> getProduct() {
@@ -52,10 +59,10 @@ public class ProductController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductForm product, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductForm product, UriComponentsBuilder uriBuilder) {
         Product save = productService.create(product);
-        URI uri = uriBuilder.path("/clients/{id}").buildAndExpand(save.getProductId()).toUri();
-        return ResponseEntity.created(uri).body(new ProductDto(save));
+        URI uri = uriBuilder.path("/products/{id}").buildAndExpand(save.getProductId()).toUri();
+        return ResponseEntity.created(uri).body(save);
     }
 
     @PutMapping
@@ -66,6 +73,27 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updateProduct);
+    }
+
+    @PutMapping("/cultures")
+    @Transactional
+    public ResponseEntity<Optional<Culture>> updateCulture(@RequestBody @Valid ProductCultureForm culture){
+        Optional<Culture> updateCulture = cultureService.update(culture);
+        if(updateCulture.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(updateCulture);
+    }
+
+    @DeleteMapping("/cultures")
+    @Transactional
+    public ResponseEntity<Culture> deleteCulture(@RequestBody @Valid ProductCultureDeleteForm culture) {
+        Optional<Culture> findCulture = cultureService.delete(culture);
+        if (findCulture.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
