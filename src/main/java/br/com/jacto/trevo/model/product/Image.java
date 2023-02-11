@@ -6,11 +6,19 @@ import java.util.UUID;
 
 @Entity
 public class Image {
+
+    public Image(){}
+
+    public Image(byte[] imageBytes, Product product) {
+        this.img = imageBytes;
+        this.product = product;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID imageId;
 
-    @Lob
+
     @Column(name = "img")
     private byte[] img;
 
@@ -18,4 +26,20 @@ public class Image {
     @JoinColumn(name = "productId", referencedColumnName = "productId")
     private Product product;
 
+
+    public byte[] getImg() {
+        return img;
+    }
+
+    public UUID getImageId() {
+        return imageId;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setImg(byte[] img) {
+        this.img = img;
+    }
 }
