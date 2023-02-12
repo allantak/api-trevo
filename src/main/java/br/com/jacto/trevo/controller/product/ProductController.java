@@ -1,6 +1,8 @@
 package br.com.jacto.trevo.controller.product;
 
 
+import br.com.jacto.trevo.controller.product.dto.ProductCreateDto;
+import br.com.jacto.trevo.controller.product.dto.ProductDetailDto;
 import br.com.jacto.trevo.controller.product.dto.ProductDto;
 import br.com.jacto.trevo.controller.product.dto.ProductOrderDto;
 import br.com.jacto.trevo.controller.product.form.ProductCultureDeleteForm;
@@ -48,31 +50,31 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Product>> getProductId(@PathVariable UUID id) {
+    public ResponseEntity<Optional<ProductDetailDto>> getProductId(@PathVariable UUID id) {
         Optional<Product> product = productService.getId(id);
         if (product.isEmpty()) {
 
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(product.map(ProductDetailDto::new));
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductForm product, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<ProductCreateDto> createProduct(@RequestBody @Valid ProductForm product, UriComponentsBuilder uriBuilder) {
         Product save = productService.create(product);
         URI uri = uriBuilder.path("/products/{id}").buildAndExpand(save.getProductId()).toUri();
-        return ResponseEntity.created(uri).body(save);
+        return ResponseEntity.created(uri).body(new ProductCreateDto(save));
     }
 
     @PutMapping
     @Transactional
-    public ResponseEntity<Optional<Product>> updateProduct(@RequestBody @Valid ProductUpdateForm product) {
+    public ResponseEntity<Optional<ProductDto>> updateProduct(@RequestBody @Valid ProductUpdateForm product) {
         Optional<Product> updateProduct = productService.update(product);
         if (updateProduct.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(updateProduct);
+        return ResponseEntity.ok(updateProduct.map(ProductDto::new));
     }
 
     @PutMapping("/cultures")

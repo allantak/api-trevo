@@ -11,7 +11,6 @@ public class ProductDto {
         this.productId = product.getProductId();
         this.productName = product.getProductName();
         this.status = product.isStatus();
-        this.description = product.getDescription();
         this.cultures = product.getCultures().stream().map(ProductCultureDto::new).toList();
     }
 
@@ -20,8 +19,6 @@ public class ProductDto {
     private final String productName;
 
     private final Boolean status;
-
-    private final String description;
 
     private final List<ProductCultureDto> cultures;
 
@@ -33,9 +30,6 @@ public class ProductDto {
         return status;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
     public UUID getProductId() {
         return productId;
