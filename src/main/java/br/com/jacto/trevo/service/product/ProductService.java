@@ -9,6 +9,8 @@ import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.CultureRepository;
 import br.com.jacto.trevo.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,8 +28,8 @@ public class ProductService {
     @Autowired
     private CultureRepository cultureRepository;
 
-    public List<ProductDto> getAll() {
-        return productRepository.findAll().stream().map(ProductDto::new).toList();
+    public Page<ProductDto> getAll(Pageable pagination) {
+        return productRepository.findAll(pagination).map(ProductDto::new);
     }
 
     public Product create(ProductForm product) {

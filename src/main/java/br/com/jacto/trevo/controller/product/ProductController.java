@@ -16,6 +16,8 @@ import br.com.jacto.trevo.service.product.ProductService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -36,8 +38,8 @@ public class ProductController {
     private CultureService cultureService;
 
     @GetMapping
-    public List<ProductDto> getProduct() {
-        return productService.getAll();
+    public Page<ProductDto> getProduct(Pageable pagination) {
+        return productService.getAll(pagination);
     }
 
     @GetMapping("/orders/{id}")
