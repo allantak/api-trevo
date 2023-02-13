@@ -55,6 +55,7 @@ public class ClientController {
     @Transactional
     public ResponseEntity<ClientDto> createClient(@RequestBody @Valid ClientForm client, UriComponentsBuilder uriBuilder) {
         Client save = clientService.create(client);
+
         URI uri = uriBuilder.path("/clients/{id}").buildAndExpand(save.getId()).toUri();
         return ResponseEntity.created(uri).body(new ClientDto(save));
     }

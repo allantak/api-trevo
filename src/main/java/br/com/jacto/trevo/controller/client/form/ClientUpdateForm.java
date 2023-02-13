@@ -1,5 +1,6 @@
 package br.com.jacto.trevo.controller.client.form;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
@@ -11,6 +12,7 @@ public class ClientUpdateForm {
 
     private String clientName;
 
+    @Email(message = "Formato do email é inválido")
     private String email;
 
     private String phone;
