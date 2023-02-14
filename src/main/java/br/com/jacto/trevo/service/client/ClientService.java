@@ -33,8 +33,13 @@ public class ClientService {
         return clientRepository.findById(id).map(ClientDetailDto::new);
     }
 
-    public void delete(UUID id) {
+    public Optional<Client> delete(UUID id) {
+        Optional<Client> findClient = clientRepository.findById(id);
+        if(findClient.isEmpty()){
+            return Optional.empty();
+        }
         clientRepository.deleteById(id);
+        return findClient;
     }
 
     public Optional<Client> update(ClientUpdateForm client) {

@@ -73,11 +73,10 @@ public class ClientController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Client> deleteClient(@PathVariable UUID id) {
-        Optional<ClientDetailDto> findClient = clientService.getId(id);
+        Optional<Client> findClient = clientService.delete(id);
         if (findClient.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        clientService.delete(id);
         return ResponseEntity.noContent().build();
     }
 

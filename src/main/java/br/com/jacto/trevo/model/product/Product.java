@@ -35,23 +35,27 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false ,columnDefinition = "DEFAULT CURRENT_DATE")
+    @Column(nullable = false)
     private LocalDate createAt;
 
     @Column(nullable = false)
     private Boolean status;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Culture> cultures;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> imgs;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orders;
+
+    public void setOrders(List<OrderItem> orders) {
+        this.orders = orders;
+    }
 
     public UUID getProductId() {
         return productId;

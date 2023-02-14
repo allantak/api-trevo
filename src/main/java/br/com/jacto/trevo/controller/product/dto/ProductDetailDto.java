@@ -2,6 +2,7 @@ package br.com.jacto.trevo.controller.product.dto;
 
 import br.com.jacto.trevo.model.product.Product;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ public class ProductDetailDto {
         this.productId = product.getProductId();
         this.productName = product.getProductName();
         this.description = product.getDescription();
+        this.createAt = product.getCreateAt();
         this.status = product.isStatus();
         this.cultures = product.getCultures().stream().map(ProductCultureDto::new).toList();
         this.orders = product.getOrders().stream().map(ProductOrderClientDto::new).toList();
@@ -23,6 +25,8 @@ public class ProductDetailDto {
     private final String description;
 
     private final Boolean status;
+
+    private final LocalDate createAt;
 
     private final List<ProductOrderClientDto> orders;
 
@@ -42,6 +46,10 @@ public class ProductDetailDto {
 
     public Boolean getStatus() {
         return status;
+    }
+
+    public LocalDate getCreateAt() {
+        return createAt;
     }
 
     public List<ProductOrderClientDto> getOrders() {

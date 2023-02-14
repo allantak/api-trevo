@@ -35,11 +35,15 @@ public class OrderItemService {
     }
 
     public Optional<OrderItem> create(OrderItemForm orderItem) {
-        Client findClient = clientRepository.findById(orderItem.getClientId()).orElseThrow();
-        Optional<Product> findProduct = Optional.of(productRepository.findByProductName(orderItem.getProductName()).orElseThrow());
+        Optional<Client> findClient = clientRepository.findById(orderItem.getClientId());
+        Optional<Product> findProduct = productRepository.findByProductName(orderItem.getProductName());
 
-        OrderItem order = new OrderItem(orderItem.getQuantity(), findClient, findProduct.get());
-        order.setClient(findClient);
+        if(findClient.isEmpty() || findProduct.isEmpty()){
+            return Optional.empty();
+        }
+
+        OrderItem order = new OrderItem(orderItem.getQuantity(), findClient.get(), findProduct.get());
+        order.setClient(findClient.get());
         order.setProduct(findProduct.get());
         return Optional.of(orderItemRepository.save(order));
     }

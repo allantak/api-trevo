@@ -33,4 +33,19 @@ public class ClientUpdateForm {
         return phone;
     }
 
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 }

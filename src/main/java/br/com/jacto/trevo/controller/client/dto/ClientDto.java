@@ -19,7 +19,7 @@ public class ClientDto {
         return clientId;
     }
 
-    public String getClientName() {
+    public String getEmail() {
         return email;
     }
 

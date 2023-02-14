@@ -31,8 +31,12 @@ public class Client {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orders;
+
+    public void setOrders(List<OrderItem> orders) {
+        this.orders = orders;
+    }
 
     public String getClientName() {
         return clientName;
