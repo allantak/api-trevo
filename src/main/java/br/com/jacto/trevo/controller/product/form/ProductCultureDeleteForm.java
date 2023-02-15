@@ -19,4 +19,12 @@ public class ProductCultureDeleteForm {
     public UUID getProductId() {
         return productId;
     }
+
+    public void setCultureId(UUID cultureId) {
+        this.cultureId = cultureId;
+    }
+
+    public void setProductId(UUID productId) {
+        this.productId = productId;
+    }
 }

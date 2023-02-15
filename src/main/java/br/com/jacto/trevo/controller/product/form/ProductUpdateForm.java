@@ -45,4 +45,27 @@ public class ProductUpdateForm {
         return createAt;
     }
 
+    public void setProductId(UUID productId) {
+        this.productId = productId;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public void setAreaSize(Double areaSize) {
+        this.areaSize = areaSize;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCreateAt(LocalDate createAt) {
+        this.createAt = createAt;
+    }
 }

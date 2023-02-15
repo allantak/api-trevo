@@ -9,9 +9,11 @@ public class OrderItemUpdateForm {
 
     @NotNull
     private UUID orderItemId;
+
     @NotNull
     private UUID clientId;
 
+    @NotBlank
     private String productName;
 
     private Integer quantity;
@@ -30,5 +32,21 @@ public class OrderItemUpdateForm {
 
     public UUID getOrderItemId() {
         return orderItemId;
+    }
+
+    public void setOrderItemId(UUID orderItemId) {
+        this.orderItemId = orderItemId;
+    }
+
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 }

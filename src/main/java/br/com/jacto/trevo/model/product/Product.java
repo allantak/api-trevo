@@ -112,4 +112,8 @@ public class Product {
     public List<OrderItem> getOrders() {
         return orders;
     }
+
+    public void setCultures(List<Culture> cultures) {
+        this.cultures = cultures;
+    }
 }

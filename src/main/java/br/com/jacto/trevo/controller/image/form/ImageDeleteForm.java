@@ -19,4 +19,12 @@ public class ImageDeleteForm {
     public UUID getProductId() {
         return productId;
     }
+
+    public void setImageId(UUID imageId) {
+        this.imageId = imageId;
+    }
+
+    public void setProductId(UUID productId) {
+        this.productId = productId;
+    }
 }

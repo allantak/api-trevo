@@ -31,4 +31,16 @@ public class ProductCultureForm {
     public UUID getProductId() {
         return productId;
     }
+
+    public void setProductId(UUID productId) {
+        this.productId = productId;
+    }
+
+    public void setCultureId(UUID cultureId) {
+        this.cultureId = cultureId;
+    }
+
+    public void setCultureName(String cultureName) {
+        this.cultureName = cultureName;
+    }
 }

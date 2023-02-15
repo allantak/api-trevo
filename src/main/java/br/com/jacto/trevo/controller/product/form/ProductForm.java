@@ -52,4 +52,24 @@ public class ProductForm {
     public void setCreateAt(LocalDate createAt) {
         this.createAt = createAt;
     }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCultures(List<String> cultures) {
+        this.cultures = cultures;
+    }
+
+    public void setAreaSize(Double areaSize) {
+        this.areaSize = areaSize;
+    }
 }

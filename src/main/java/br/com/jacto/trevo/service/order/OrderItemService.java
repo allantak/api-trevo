@@ -55,14 +55,15 @@ public class OrderItemService {
     public Optional<OrderItem> update(OrderItemUpdateForm orderItem) {
 
         Optional<OrderItem> findOrder = orderItemRepository.findById(orderItem.getOrderItemId());
-        clientRepository.findById(orderItem.getClientId()).orElseThrow();
+        Optional<Client> findClient = clientRepository.findById(orderItem.getClientId());
 
-        if (findOrder.isEmpty()) {
-            return findOrder;
+        if (findOrder.isEmpty() || findClient.isEmpty()) {
+            return Optional.empty();
         }
 
         if (orderItem.getProductName() != null && !orderItem.getProductName().trim().isEmpty()) {
-            Optional<Product> findProduct = Optional.of(productRepository.findByProductName(orderItem.getProductName()).orElseThrow());
+            Optional<Product> findProduct = productRepository.findByProductName(orderItem.getProductName());
+            if(findProduct.isEmpty()) return Optional.empty();
             findOrder.get().setProduct(findProduct.get());
         }
 

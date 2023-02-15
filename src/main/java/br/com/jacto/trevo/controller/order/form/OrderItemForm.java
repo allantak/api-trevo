@@ -27,4 +27,16 @@ public class OrderItemForm {
     public Integer getQuantity() {
         return quantity;
     }
+
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 }
