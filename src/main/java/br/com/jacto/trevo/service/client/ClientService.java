@@ -46,7 +46,7 @@ public class ClientService {
 
         Optional<Client> findClient = clientRepository.findById(client.getClientId());
 
-        if (findClient.isEmpty()) return findClient;
+        if (findClient.isEmpty()) return Optional.empty();
 
         if (client.getEmail() != null && !client.getEmail().trim().isEmpty()) {
             findClient.get().setEmail(client.getEmail());
