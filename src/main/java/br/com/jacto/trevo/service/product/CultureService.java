@@ -45,7 +45,7 @@ public class CultureService {
         Optional<Culture> findCulture = cultureRepository.findById(culture.getCultureId());
 
         if (findCulture.isEmpty()) {
-            return findCulture;
+            return Optional.empty();
         }
 
         if ( !findCulture.get().getProduct().getProductId().equals(culture.getProductId()) ) {

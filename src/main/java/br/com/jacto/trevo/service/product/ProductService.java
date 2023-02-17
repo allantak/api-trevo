@@ -1,5 +1,7 @@
 package br.com.jacto.trevo.service.product;
 
+import br.com.jacto.trevo.controller.product.dto.ProductCreateDto;
+import br.com.jacto.trevo.controller.product.dto.ProductDetailDto;
 import br.com.jacto.trevo.controller.product.dto.ProductDto;
 import br.com.jacto.trevo.controller.product.dto.ProductOrderDto;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
@@ -32,7 +34,7 @@ public class ProductService {
         return productRepository.findAll(pagination).map(ProductDto::new);
     }
 
-    public Product create(ProductForm product) {
+    public ProductCreateDto create(ProductForm product) {
         if (product.getCreateAt() == null) {
             product.setCreateAt(LocalDate.now());
         }
@@ -44,22 +46,27 @@ public class ProductService {
             cultureRepository.save(listCulture);
         }
 
-        return createProduct;
+        return new ProductCreateDto(createProduct);
     }
 
-    public Optional<Product> getId(UUID id) {
-        return productRepository.findById(id);
+    public Optional<ProductDetailDto> getId(UUID id) {
+        return productRepository.findById(id).map(ProductDetailDto::new);
     }
 
-    public void delete(UUID id) {
+    public Optional<Product> delete(UUID id) {
+        Optional<Product> findProduct = productRepository.findById(id);
+        if(findProduct.isEmpty()){
+            return Optional.empty();
+        }
         productRepository.deleteById(id);
+        return findProduct;
     }
 
     public Optional<Product> update(ProductUpdateForm product) {
 
-        Optional<Product> findProduct = getId(product.getProductId());
+        Optional<Product> findProduct = productRepository.findById(product.getProductId());
 
-        if (findProduct.isEmpty()) return findProduct;
+        if (findProduct.isEmpty()) return Optional.empty();
 
         if (product.getProductName() != null && !product.getProductName().trim().isEmpty()) {
             findProduct.get().setProductName(product.getProductName());

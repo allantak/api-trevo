@@ -53,40 +53,38 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<ProductDetailDto>> getProductId(@PathVariable UUID id) {
-        Optional<Product> product = productService.getId(id);
+        Optional<ProductDetailDto> product = productService.getId(id);
         if (product.isEmpty()) {
-
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(product.map(ProductDetailDto::new));
+        return ResponseEntity.ok(product);
     }
 
     @PostMapping
     @Transactional
     public ResponseEntity<ProductCreateDto> createProduct(@RequestBody @Valid ProductForm product, UriComponentsBuilder uriBuilder) {
-        Product save = productService.create(product);
+        ProductCreateDto save = productService.create(product);
         URI uri = uriBuilder.path("/products/{id}").buildAndExpand(save.getProductId()).toUri();
-        return ResponseEntity.created(uri).body(new ProductCreateDto(save));
+        return ResponseEntity.created(uri).body(save);
     }
 
     @PutMapping
     @Transactional
-    public ResponseEntity<Optional<ProductDto>> updateProduct(@RequestBody @Valid ProductUpdateForm product) {
+    public ResponseEntity<Optional<Product>> updateProduct(@RequestBody @Valid ProductUpdateForm product) {
         Optional<Product> updateProduct = productService.update(product);
         if (updateProduct.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(updateProduct.map(ProductDto::new));
+        return ResponseEntity.ok(updateProduct);
     }
 
     @PutMapping("/cultures")
     @Transactional
-    public ResponseEntity<Optional<Culture>> updateCulture(@RequestBody @Valid ProductCultureForm culture){
+    public ResponseEntity<Optional<Culture>> updateCulture(@RequestBody @Valid ProductCultureForm culture) {
         Optional<Culture> updateCulture = cultureService.update(culture);
-        if(updateCulture.isEmpty()){
+        if (updateCulture.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-
         return ResponseEntity.ok(updateCulture);
     }
 
@@ -103,11 +101,10 @@ public class ProductController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Product> deleteProduct(@PathVariable UUID id) {
-        Optional<Product> findProduct = productService.getId(id);
-        if (findProduct.isEmpty()) {
+        Optional<Product> deleteProduct = productService.delete(id);
+        if (deleteProduct.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        productService.delete(id);
         return ResponseEntity.noContent().build();
     }
 

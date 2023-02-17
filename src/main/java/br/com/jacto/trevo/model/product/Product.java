@@ -116,4 +116,11 @@ public class Product {
     public void setCultures(List<Culture> cultures) {
         this.cultures = cultures;
     }
+    public void setProductId(UUID productId) {
+        this.productId = productId;
+    }
+
+    public void setImgs(List<Image> imgs) {
+        this.imgs = imgs;
+    }
 }

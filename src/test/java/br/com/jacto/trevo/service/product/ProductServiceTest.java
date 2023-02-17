@@ -2,6 +2,7 @@ package br.com.jacto.trevo.service.product;
 
 import static org.junit.Assert.*;
 
+import br.com.jacto.trevo.controller.product.dto.ProductCreateDto;
 import br.com.jacto.trevo.controller.product.dto.ProductDto;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
 import br.com.jacto.trevo.controller.product.form.ProductUpdateForm;
@@ -75,13 +76,10 @@ public class ProductServiceTest {
         form.setAreaSize(product.getAreaSize());
         form.setCreateAt(product.getCreateAt());
 
-        Product product = productService.create(form);
+        ProductCreateDto product = productService.create(form);
         assertNotNull(product);
-        assertEquals(product.getCreateAt(), form.getCreateAt());
+        assertNotNull(product.getProductId());
         assertEquals(product.getProductName(), form.getProductName());
-        assertEquals(product.isStatus(), form.getStatus());
-        assertEquals(product.getAreaSize(), form.getAreaSize());
-        assertEquals(product.getDescription(), form.getDescription());
     }
 
     @Test

@@ -40,7 +40,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
 @RunWith(SpringRunner.class)
 @WebMvcTest(ClientController.class)
 @AutoConfigureMockMvc
@@ -492,6 +491,7 @@ public class ClientControllerTest {
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 
     }
+
 
 
 }
