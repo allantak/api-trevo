@@ -1,5 +1,7 @@
 package br.com.jacto.trevo.service.order;
 
+import br.com.jacto.trevo.controller.order.dto.OrderItemCreateDto;
+import br.com.jacto.trevo.controller.order.dto.OrderItemDto;
 import br.com.jacto.trevo.controller.order.form.OrderItemForm;
 import br.com.jacto.trevo.controller.order.form.OrderItemUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
@@ -18,8 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDate;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @Transactional
@@ -64,12 +65,13 @@ public class OrderItemServiceTest {
         form.setQuantity(order.getQuantity());
 
 
-        Optional<OrderItem> update = orderItemService.update(form);
+        Optional<OrderItemDto> update = orderItemService.update(form);
 
         assertNotNull(update);
-        assertEquals(form.getClientId(), update.get().getClient().getId());
+        assertEquals(form.getProductName(), update.get().getProductName());
         assertEquals(form.getOrderItemId(), update.get().getOrderItemId());
-        assertEquals(form.getProductName(), update.get().getProduct().getProductName());
+        assertEquals(form.getQuantity(), update.get().getQuantity());
+        assertEquals(client.getEmail(), update.get().getEmail());
     }
 
 
@@ -82,7 +84,7 @@ public class OrderItemServiceTest {
         form.setProductName(product.getProductName());
 
 
-        Optional<OrderItem> update = orderItemService.update(form);
+        Optional<OrderItemDto> update = orderItemService.update(form);
 
         assertEquals(Optional.empty(), update);
 
@@ -98,7 +100,7 @@ public class OrderItemServiceTest {
         form.setQuantity(order.getQuantity());
 
 
-        Optional<OrderItem> update = orderItemService.update(form);
+        Optional<OrderItemDto> update = orderItemService.update(form);
 
         assertEquals(Optional.empty(), update);
 
@@ -112,12 +114,13 @@ public class OrderItemServiceTest {
         form.setClientId(client.getId());
 
 
-        Optional<OrderItem> update = orderItemService.update(form);
+        Optional<OrderItemDto> update = orderItemService.update(form);
 
         assertNotNull(update);
-        assertEquals(client.getId(), update.get().getClient().getId());
-        assertEquals(order.getOrderItemId(), update.get().getOrderItemId());
-        assertEquals(product.getProductName(), update.get().getProduct().getProductName());
+        assertEquals(product.getProductName(), update.get().getProductName());
+        assertEquals(form.getOrderItemId(), update.get().getOrderItemId());
+        assertEquals(order.getQuantity(), update.get().getQuantity());
+        assertEquals(client.getEmail(), update.get().getEmail());
 
     }
 
@@ -130,9 +133,9 @@ public class OrderItemServiceTest {
         form.setClientId(client.getId());
         form.setProductName("");
 
-        Optional<OrderItem> update = orderItemService.update(form);
+        Optional<OrderItemDto> update = orderItemService.update(form);
 
-        assertEquals(product.getProductName(), update.get().getProduct().getProductName());
+        assertEquals(product.getProductName(), update.get().getProductName());
     }
 
     @Test
@@ -145,7 +148,7 @@ public class OrderItemServiceTest {
         form.setProductName("Trator Nao Existente");
 
 
-        Optional<OrderItem> update = orderItemService.update(form);
+        Optional<OrderItemDto> update = orderItemService.update(form);
 
         assertEquals(Optional.empty(), update);
     }
@@ -161,12 +164,10 @@ public class OrderItemServiceTest {
         form.setQuantity(2);
 
 
-        Optional<OrderItem> update = orderItemService.create(form);
+        Optional<OrderItemCreateDto> update = orderItemService.create(form);
 
         assertNotNull(update);
-        assertEquals(form.getClientId(), update.get().getClient().getId());
-        assertEquals(form.getProductName(), update.get().getProduct().getProductName());
-        assertEquals(form.getQuantity(), update.get().getQuantity());
+        assertNotNull(update.get().getOrderItemId());
     }
 
     @Test
@@ -179,7 +180,7 @@ public class OrderItemServiceTest {
         form.setQuantity(2);
 
 
-        Optional<OrderItem> update = orderItemService.create(form);
+        Optional<OrderItemCreateDto> update = orderItemService.create(form);
 
         assertEquals(Optional.empty(), update);
     }
@@ -193,7 +194,7 @@ public class OrderItemServiceTest {
         form.setQuantity(2);
 
 
-        Optional<OrderItem> update = orderItemService.create(form);
+        Optional<OrderItemCreateDto> update = orderItemService.create(form);
 
         assertEquals(Optional.empty(), update);
     }

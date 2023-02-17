@@ -46,19 +46,19 @@ public class OrderItemController {
     @PostMapping
     @Transactional
     public ResponseEntity<OrderItemCreateDto> createOrderItem(@RequestBody @Valid OrderItemForm orderItem, UriComponentsBuilder uriBuilder) {
-        Optional<OrderItem> order = orderItemService.create(orderItem);
+        Optional<OrderItemCreateDto> order = orderItemService.create(orderItem);
         if (order.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         URI uri = uriBuilder.path("/orders/{id}").buildAndExpand(order.get().getOrderItemId()).toUri();
-        return ResponseEntity.created(uri).body(new OrderItemCreateDto(order.get()));
+        return ResponseEntity.created(uri).body(order.get());
     }
 
     @PutMapping
     @Transactional
     public ResponseEntity<Optional<OrderItemDto>> updateOrderItem(@RequestBody @Valid OrderItemUpdateForm orderItem) {
-        Optional<OrderItemDto> update = orderItemService.update(orderItem).map(OrderItemDto::new);
+        Optional<OrderItemDto> update = orderItemService.update(orderItem);
         if (update.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -68,11 +68,10 @@ public class OrderItemController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<OrderItemDto> deleteOrderItem(@PathVariable UUID id) {
-        Optional<OrderItemDto> findClient = orderItemService.getId(id);
-        if (findClient.isEmpty()) {
+        Optional<OrderItemDto> findOrder =  orderItemService.delete(id);;
+        if (findOrder.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        orderItemService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

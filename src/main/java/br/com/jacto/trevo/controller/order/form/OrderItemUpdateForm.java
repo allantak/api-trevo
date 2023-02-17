@@ -13,7 +13,6 @@ public class OrderItemUpdateForm {
     @NotNull
     private UUID clientId;
 
-    @NotBlank
     private String productName;
 
     private Integer quantity;

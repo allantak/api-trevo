@@ -1,6 +1,5 @@
 package br.com.jacto.trevo.controller.product;
 
-import br.com.jacto.trevo.controller.client.dto.ClientDetailDto;
 import br.com.jacto.trevo.controller.product.dto.ProductCreateDto;
 import br.com.jacto.trevo.controller.product.dto.ProductDetailDto;
 import br.com.jacto.trevo.controller.product.dto.ProductDto;
@@ -40,11 +39,8 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProductController.class)
@@ -82,18 +78,9 @@ public class PublicControllerTest {
     @Autowired
     private JacksonTester<ProductCultureDeleteForm> productCultureDeleteFormJson;
 
-
-
-
-
-
-
-
-
     public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
     public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14));
     public OrderItem order = new OrderItem(3, client, product);
-
     public Culture culture = new Culture("Cerejeiras", product);
 
 

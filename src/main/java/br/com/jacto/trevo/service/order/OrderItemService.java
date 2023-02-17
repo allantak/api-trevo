@@ -1,5 +1,6 @@
 package br.com.jacto.trevo.service.order;
 
+import br.com.jacto.trevo.controller.order.dto.OrderItemCreateDto;
 import br.com.jacto.trevo.controller.order.dto.OrderItemDto;
 import br.com.jacto.trevo.controller.order.form.OrderItemForm;
 import br.com.jacto.trevo.controller.order.form.OrderItemUpdateForm;
@@ -10,6 +11,7 @@ import br.com.jacto.trevo.repository.ClientRepository;
 import br.com.jacto.trevo.repository.OrderItemRepository;
 import br.com.jacto.trevo.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +36,7 @@ public class OrderItemService {
         return orderItemRepository.findById(id).map(OrderItemDto::new);
     }
 
-    public Optional<OrderItem> create(OrderItemForm orderItem) {
+    public Optional<OrderItemCreateDto> create(OrderItemForm orderItem) {
         Optional<Client> findClient = clientRepository.findById(orderItem.getClientId());
         Optional<Product> findProduct = productRepository.findByProductName(orderItem.getProductName());
 
@@ -45,14 +47,19 @@ public class OrderItemService {
         OrderItem order = new OrderItem(orderItem.getQuantity(), findClient.get(), findProduct.get());
         order.setClient(findClient.get());
         order.setProduct(findProduct.get());
-        return Optional.of(orderItemRepository.save(order));
+        return Optional.of(orderItemRepository.save(order)).map(OrderItemCreateDto::new);
     }
 
-    public void delete(UUID id) {
+    public Optional<OrderItemDto> delete(UUID id) {
+        Optional<OrderItemDto> findOrder = orderItemRepository.findById(id).map(OrderItemDto::new);
+        if (findOrder.isEmpty()) {
+            return Optional.empty();
+        }
         orderItemRepository.deleteById(id);
+        return findOrder;
     }
 
-    public Optional<OrderItem> update(OrderItemUpdateForm orderItem) {
+    public Optional<OrderItemDto> update(OrderItemUpdateForm orderItem) {
 
         Optional<OrderItem> findOrder = orderItemRepository.findById(orderItem.getOrderItemId());
         Optional<Client> findClient = clientRepository.findById(orderItem.getClientId());
@@ -71,7 +78,7 @@ public class OrderItemService {
             findOrder.get().setQuantity(orderItem.getQuantity());
         }
 
-        return Optional.of(orderItemRepository.save(findOrder.get()));
+        return Optional.of(orderItemRepository.save(findOrder.get())).map(OrderItemDto::new);
     }
 
 

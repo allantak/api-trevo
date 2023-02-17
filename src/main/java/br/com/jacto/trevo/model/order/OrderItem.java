@@ -63,4 +63,8 @@ public class OrderItem {
     public void setClient(Client client) {
         this.client = client;
     }
+
+    public void setOrderItemId(UUID orderItemId) {
+        this.orderItemId = orderItemId;
+    }
 }
