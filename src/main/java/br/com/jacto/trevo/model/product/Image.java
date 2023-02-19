@@ -42,4 +42,8 @@ public class Image {
     public void setImg(byte[] img) {
         this.img = img;
     }
+
+    public void setImageId(UUID imageId) {
+        this.imageId = imageId;
+    }
 }

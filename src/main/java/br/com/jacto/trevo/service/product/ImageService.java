@@ -1,6 +1,7 @@
 package br.com.jacto.trevo.service.product;
 
 import br.com.jacto.trevo.controller.image.dto.ImageDto;
+import br.com.jacto.trevo.controller.image.dto.ProductImageCreateDto;
 import br.com.jacto.trevo.controller.image.dto.ProductImageDto;
 import br.com.jacto.trevo.controller.image.form.ImageDeleteForm;
 import br.com.jacto.trevo.controller.image.form.ImageUpdateForm;
@@ -35,7 +36,7 @@ public class ImageService {
         return product.map(ProductImageDto::new);
     }
 
-    public Image upload(ProductImageForm image) throws IOException {
+    public ProductImageCreateDto upload(ProductImageForm image) throws IOException {
 
         Optional<Product> product = productRepository.findById(image.getProductId());
         if (product.isEmpty()) {
@@ -47,7 +48,7 @@ public class ImageService {
 
         imageRepository.save(uploadImage);
 
-        return uploadImage;
+        return new ProductImageCreateDto(uploadImage);
     }
 
     public Optional<ImageDto> updateImage(ImageUpdateForm img) throws IOException {

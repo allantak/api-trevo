@@ -2,6 +2,7 @@ package br.com.jacto.trevo.service.product;
 import static org.junit.Assert.*;
 
 import br.com.jacto.trevo.controller.image.dto.ImageDto;
+import br.com.jacto.trevo.controller.image.dto.ProductImageCreateDto;
 import br.com.jacto.trevo.controller.image.form.ImageDeleteForm;
 import br.com.jacto.trevo.controller.image.form.ImageUpdateForm;
 import br.com.jacto.trevo.controller.image.form.ProductImageForm;
@@ -48,10 +49,10 @@ public class ImageServiceTest {
         form.setImage(file);
         form.setProductId(product.getProductId());
 
-        Image upload = imageService.upload(form);
+        ProductImageCreateDto upload = imageService.upload(form);
 
         assertNotNull(upload);
-        assertEquals(file.getBytes(), upload.getImg());
+        assertNotNull(upload.getImageId());
     }
 
     @Test
@@ -63,7 +64,7 @@ public class ImageServiceTest {
         form.setImage(file);
         form.setProductId(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
 
-        Image upload = imageService.upload(form);
+        ProductImageCreateDto upload = imageService.upload(form);
 
         assertNull(upload);
     }

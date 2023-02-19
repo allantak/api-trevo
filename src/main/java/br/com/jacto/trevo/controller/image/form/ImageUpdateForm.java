@@ -1,6 +1,5 @@
 package br.com.jacto.trevo.controller.image.form;
 
-import br.com.jacto.trevo.model.product.Image;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 

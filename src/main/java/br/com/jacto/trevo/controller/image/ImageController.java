@@ -43,9 +43,12 @@ public class ImageController {
     @PostMapping("/products/images")
     @Transactional
     public ResponseEntity<ProductImageCreateDto> uploadImage(@ModelAttribute @Valid ProductImageForm image, UriComponentsBuilder uriBuilder) throws IOException {
-        Image img = imageService.upload(image);
+        ProductImageCreateDto img = imageService.upload(image);
+        if(img == null){
+            return ResponseEntity.notFound().build();
+        }
         URI uri = uriBuilder.path("/images/{id}").buildAndExpand(img.getImageId()).toUri();
-        return ResponseEntity.created(uri).body(new ProductImageCreateDto(img));
+        return ResponseEntity.created(uri).body(img);
 
     }
 
