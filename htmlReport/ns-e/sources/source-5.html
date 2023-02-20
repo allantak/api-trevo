@@ -1,0 +1,146 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ProductOrderClientDto</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">br.com.jacto.trevo.controller.product.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: ProductOrderClientDto (br.com.jacto.trevo.controller.product.dto)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProductOrderClientDto</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.controller.product.dto;
+&nbsp;
+&nbsp;import br.com.jacto.trevo.model.order.OrderItem;
+&nbsp;
+&nbsp;import java.util.UUID;
+&nbsp;
+&nbsp;public class ProductOrderClientDto {
+&nbsp;
+<b class="fc">&nbsp;    public ProductOrderClientDto(OrderItem order) {</b>
+<b class="fc">&nbsp;        this.orderItemId = order.getOrderItemId();</b>
+<b class="fc">&nbsp;        this.clientId = order.getClient().getId();</b>
+<b class="fc">&nbsp;        this.email = order.getClient().getEmail();</b>
+<b class="fc">&nbsp;        this.clientName = order.getClient().getClientName();</b>
+<b class="fc">&nbsp;        this.quantity = order.getQuantity();</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    private final UUID orderItemId;
+&nbsp;    private final UUID clientId;
+&nbsp;    private final String email;
+&nbsp;    private final String clientName;
+&nbsp;    private final Integer quantity;
+&nbsp;
+&nbsp;    public UUID getOrderItemId() {
+<b class="fc">&nbsp;        return orderItemId;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public UUID getClientId() {
+<b class="fc">&nbsp;        return clientId;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getEmail() {
+<b class="fc">&nbsp;        return email;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getClientName() {
+<b class="fc">&nbsp;        return clientName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Integer getQuantity() {
+<b class="fc">&nbsp;        return quantity;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-02-20 09:30</div>
+</div>
+</body>
+</html>

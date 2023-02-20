@@ -1,6 +1,5 @@
 package br.com.jacto.trevo.controller.product;
 
-
 import br.com.jacto.trevo.controller.product.dto.ProductCreateDto;
 import br.com.jacto.trevo.controller.product.dto.ProductDetailDto;
 import br.com.jacto.trevo.controller.product.dto.ProductDto;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,23 +40,18 @@ public class ProductController {
         return productService.getAll(pagination);
     }
 
-    @GetMapping("/orders/{id}")
-    public ResponseEntity<Optional<ProductOrderDto>> getProductOrder(@PathVariable UUID id) {
-        Optional<ProductOrderDto> productOrder = productService.productOrder(id);
-        if (productOrder.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(productOrder);
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDetailDto> getProductId(@PathVariable UUID id) {
+        Optional<ProductDetailDto> product = productService.getId(id);
+        return product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<ProductDetailDto>> getProductId(@PathVariable UUID id) {
-        Optional<ProductDetailDto> product = productService.getId(id);
-        if (product.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(product);
+    @GetMapping("/orders/{id}")
+    public ResponseEntity<ProductOrderDto> getProductOrder(@PathVariable UUID id) {
+        Optional<ProductOrderDto> productOrder = productService.productOrder(id);
+        return productOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
 
     @PostMapping
     @Transactional
@@ -70,42 +63,30 @@ public class ProductController {
 
     @PutMapping
     @Transactional
-    public ResponseEntity<Optional<Product>> updateProduct(@RequestBody @Valid ProductUpdateForm product) {
+    public ResponseEntity<Product> updateProduct(@RequestBody @Valid ProductUpdateForm product) {
         Optional<Product> updateProduct = productService.update(product);
-        if (updateProduct.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updateProduct);
+        return updateProduct.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/cultures")
     @Transactional
-    public ResponseEntity<Optional<Culture>> updateCulture(@RequestBody @Valid ProductCultureForm culture) {
+    public ResponseEntity<Culture> updateCulture(@RequestBody @Valid ProductCultureForm culture) {
         Optional<Culture> updateCulture = cultureService.update(culture);
-        if (updateCulture.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updateCulture);
+        return updateCulture.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/cultures")
     @Transactional
     public ResponseEntity<Culture> deleteCulture(@RequestBody @Valid ProductCultureDeleteForm culture) {
-        Optional<Culture> findCulture = cultureService.delete(culture);
-        if (findCulture.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.noContent().build();
+        Boolean findCulture = cultureService.delete(culture);
+        return findCulture ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Product> deleteProduct(@PathVariable UUID id) {
-        Optional<Product> deleteProduct = productService.delete(id);
-        if (deleteProduct.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteProduct(@PathVariable UUID id) {
+        Boolean deleteProduct = productService.delete(id);
+        return deleteProduct ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
 

@@ -8,6 +8,7 @@ import br.com.jacto.trevo.controller.image.form.ProductImageForm;
 import br.com.jacto.trevo.model.product.Image;
 import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.service.product.ImageService;
+import org.checkerframework.checker.nullness.Opt;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -19,6 +20,7 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,7 +34,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -199,7 +201,7 @@ public class ImageControllerTest {
         MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", Files.newInputStream(tempFile));
 
 
-        when(imageService.upload(any())).thenReturn(productCreateImg);
+        when(imageService.upload(any())).thenReturn(Optional.of(productCreateImg));
 
         var response = mockMvc.perform(
                         MockMvcRequestBuilders.multipart("/products/images")
@@ -210,10 +212,11 @@ public class ImageControllerTest {
                 .getResponse();
 
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-
+        assertTrue(response.containsHeader("Location"));
         var jsonExpect = productImageCreateDtoJson.write(productCreateImg).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
+
 
     }
 
@@ -229,7 +232,7 @@ public class ImageControllerTest {
         MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", Files.newInputStream(tempFile));
 
 
-        when(imageService.upload(any())).thenReturn(null);
+        when(imageService.upload(any())).thenReturn(Optional.empty());
 
         var response = mockMvc.perform(
                         MockMvcRequestBuilders.multipart("/products/images")
@@ -358,7 +361,9 @@ public class ImageControllerTest {
         form.setImageId(imgId);
         form.setProductId(productId);
 
-        when(imageService.deleteImage(any())).thenReturn(Optional.ofNullable(image));
+        ImageDto imgDto = new ImageDto(image);
+
+        when(imageService.deleteImage(any())).thenReturn(true);
 
         var response = mockMvc.perform(
                         delete("/images")
@@ -383,7 +388,7 @@ public class ImageControllerTest {
         form.setImageId(imgId);
         form.setProductId(productId);
 
-        when(imageService.deleteImage(any())).thenReturn(Optional.empty());
+        when(imageService.deleteImage(any())).thenReturn(false);
 
         var response = mockMvc.perform(
                         delete("/images")
@@ -412,6 +417,5 @@ public class ImageControllerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
     }
-
 
 }

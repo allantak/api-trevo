@@ -38,6 +38,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -279,7 +280,7 @@ public class PublicControllerTest {
                 .getResponse();
 
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-
+        assertTrue(response.containsHeader("Location"));
         var jsonExpect = productCreateDtoJson.write(productCreate).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
@@ -551,7 +552,7 @@ public class PublicControllerTest {
     public void deleteProductId() throws Exception {
         UUID productId = UUID.randomUUID();
 
-        when(productService.delete(productId)).thenReturn(Optional.ofNullable(product));
+        when(productService.delete(productId)).thenReturn(true);
 
         var response = mockMvc.perform(
                 delete("/products/" + productId)
@@ -568,7 +569,7 @@ public class PublicControllerTest {
     public void deleteProductIdCase2() throws Exception {
         UUID productId = UUID.randomUUID();
 
-        when(productService.delete(productId)).thenReturn(Optional.empty());
+        when(productService.delete(productId)).thenReturn(false);
 
         var response = mockMvc.perform(
                 delete("/products/" + productId)
@@ -599,7 +600,7 @@ public class PublicControllerTest {
         UUID cultureId = UUID.randomUUID();
         UUID productId = UUID.randomUUID();
 
-        when(cultureService.delete(any())).thenReturn(Optional.ofNullable(culture));
+        when(cultureService.delete(any())).thenReturn(true);
         ProductCultureDeleteForm form = new ProductCultureDeleteForm();
         form.setCultureId(cultureId);
         form.setProductId(productId);
@@ -621,7 +622,7 @@ public class PublicControllerTest {
         UUID cultureId = UUID.randomUUID();
         UUID productId = UUID.randomUUID();
 
-        when(cultureService.delete(any())).thenReturn(Optional.empty());
+        when(cultureService.delete(any())).thenReturn(false);
         ProductCultureDeleteForm form = new ProductCultureDeleteForm();
         form.setCultureId(cultureId);
         form.setProductId(productId);

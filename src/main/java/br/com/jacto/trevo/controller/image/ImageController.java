@@ -6,11 +6,9 @@ import br.com.jacto.trevo.controller.image.dto.ProductImageDto;
 import br.com.jacto.trevo.controller.image.form.ImageDeleteForm;
 import br.com.jacto.trevo.controller.image.form.ImageUpdateForm;
 import br.com.jacto.trevo.controller.image.form.ProductImageForm;
-import br.com.jacto.trevo.model.product.Image;
 import br.com.jacto.trevo.service.product.ImageService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,13 +41,12 @@ public class ImageController {
     @PostMapping("/products/images")
     @Transactional
     public ResponseEntity<ProductImageCreateDto> uploadImage(@ModelAttribute @Valid ProductImageForm image, UriComponentsBuilder uriBuilder) throws IOException {
-        ProductImageCreateDto img = imageService.upload(image);
-        if(img == null){
+        Optional<ProductImageCreateDto> img = imageService.upload(image);
+        if (img.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        URI uri = uriBuilder.path("/images/{id}").buildAndExpand(img.getImageId()).toUri();
-        return ResponseEntity.created(uri).body(img);
-
+        URI uri = uriBuilder.path("/images/{id}").buildAndExpand(img.get().getImageId()).toUri();
+        return ResponseEntity.created(uri).body(img.get());
     }
 
     @PutMapping("/images")
@@ -59,17 +56,11 @@ public class ImageController {
         return updateImage.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
     @DeleteMapping("/images")
     @Transactional
-    public ResponseEntity<ImageDto> deleteImage(@RequestBody @Valid ImageDeleteForm img) throws IOException {
-        Optional<Image> deleteImage = imageService.deleteImage(img);
-
-        if (deleteImage.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteImage(@RequestBody @Valid ImageDeleteForm img) {
+        Boolean deleteImage = imageService.deleteImage(img);
+        return deleteImage ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
 }

@@ -49,10 +49,10 @@ public class ImageServiceTest {
         form.setImage(file);
         form.setProductId(product.getProductId());
 
-        ProductImageCreateDto upload = imageService.upload(form);
+        Optional<ProductImageCreateDto> upload = imageService.upload(form);
 
         assertNotNull(upload);
-        assertNotNull(upload.getImageId());
+        assertNotNull(upload.get().getImageId());
     }
 
     @Test
@@ -64,9 +64,9 @@ public class ImageServiceTest {
         form.setImage(file);
         form.setProductId(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
 
-        ProductImageCreateDto upload = imageService.upload(form);
+        Optional<ProductImageCreateDto> upload = imageService.upload(form);
 
-        assertNull(upload);
+        assertEquals(Optional.empty(), upload);
     }
 
 
@@ -129,7 +129,7 @@ public class ImageServiceTest {
 
 
     @Test
-    public void deleteDaImageComIdDoProdutoEIdDaImageCorretamenteRetorneImageDeletada() throws IOException {
+    public void deleteDaImageComIdDoProdutoEIdDaImageCorretamente() throws IOException {
         em.persist(product);
         MockMultipartFile file = new MockMultipartFile("file", "filename.txt", "text/plain", "Hello, World!".getBytes());
 
@@ -140,11 +140,10 @@ public class ImageServiceTest {
         form.setImageId(image.getImageId());
         form.setProductId(product.getProductId());
 
-        Optional<Image> upload = imageService.deleteImage(form);
+        Boolean upload = imageService.deleteImage(form);
 
         assertNotNull(upload);
-        assertEquals(image.getImageId(), upload.get().getImageId());
-        assertEquals(file.getBytes(), upload.get().getImg());
+        assertTrue(upload);
     }
 
 
@@ -160,9 +159,9 @@ public class ImageServiceTest {
         form.setImageId(image.getImageId());
         form.setProductId(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
 
-        Optional<Image> upload = imageService.deleteImage(form);
+        Boolean upload = imageService.deleteImage(form);
 
-        assertEquals(Optional.empty(), upload);
+        assertFalse(upload);
     }
 
     @Test
@@ -177,9 +176,9 @@ public class ImageServiceTest {
         form.setImageId(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
         form.setProductId(product.getProductId());
 
-        Optional<Image> upload = imageService.deleteImage(form);
+        Boolean upload = imageService.deleteImage(form);
 
-        assertEquals(Optional.empty(), upload);
+        assertFalse(upload);
     }
 
 

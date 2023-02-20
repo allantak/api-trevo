@@ -24,25 +24,26 @@ public class ClientService {
         return clientRepository.findAll().stream().map(ClientDto::new).toList();
     }
 
-    public Client create(ClientForm client) {
+    public ClientDto create(ClientForm client) {
         Client register = new Client(client.getClientName(), client.getEmail(), client.getPhone());
-        return clientRepository.save(register);
+        Client convert = clientRepository.save(register);
+        return new ClientDto(convert);
     }
 
     public Optional<ClientDetailDto> getId(UUID id) {
         return clientRepository.findById(id).map(ClientDetailDto::new);
     }
 
-    public Optional<Client> delete(UUID id) {
+    public Boolean delete(UUID id) {
         Optional<Client> findClient = clientRepository.findById(id);
-        if(findClient.isEmpty()){
-            return Optional.empty();
+        if (findClient.isEmpty()) {
+            return false;
         }
         clientRepository.deleteById(id);
-        return findClient;
+        return true;
     }
 
-    public Optional<Client> update(ClientUpdateForm client) {
+    public Optional<ClientDetailDto> update(ClientUpdateForm client) {
 
         Optional<Client> findClient = clientRepository.findById(client.getClientId());
 
@@ -60,11 +61,11 @@ public class ClientService {
             findClient.get().setPhone(client.getPhone());
         }
 
-        return Optional.of(clientRepository.save(findClient.get()));
+        return Optional.of(clientRepository.save(findClient.get())).map(ClientDetailDto::new);
 
     }
 
-    public Optional<ClientOrderDto> clientOrder(UUID clientId){
+    public Optional<ClientOrderDto> clientOrder(UUID clientId) {
         return clientRepository.findById(clientId).map(ClientOrderDto::new);
     }
 

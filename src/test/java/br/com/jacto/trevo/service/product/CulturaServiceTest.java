@@ -18,8 +18,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 
 @RunWith(SpringRunner.class)
@@ -87,7 +86,7 @@ public class CulturaServiceTest {
     }
 
     @Test
-    public void deleteComDadosCorretamenteDeveRetornarDadosDeletados(){
+    public void deleteComDadosCorretamenteDeveRetornarTrue(){
         em.persist(product);
         em.persist(culture);
 
@@ -95,16 +94,14 @@ public class CulturaServiceTest {
         form.setCultureId(culture.getCultureId());
         form.setProductId(product.getProductId());
 
-        Optional<Culture> update = cultureService.delete(form);
+        Boolean update = cultureService.delete(form);
 
-        assertNotNull(update);
-        assertEquals(form.getCultureId(), update.get().getCultureId());
-        assertEquals(form.getProductId(), update.get().getProduct().getProductId());
+        assertTrue(update);
     }
 
 
     @Test
-    public void deleteComProductIdNaoCorrespondenteDeveRetornarOptinalEmpty() {
+    public void deleteComProductIdNaoCorrespondenteDeveRetornarFalse() {
         em.persist(product);
         em.persist(culture);
 
@@ -113,13 +110,13 @@ public class CulturaServiceTest {
         form.setProductId(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
 
 
-        Optional<Culture> update = cultureService.delete(form);
+        Boolean update = cultureService.delete(form);
 
-        assertEquals(Optional.empty(), update);
+        assertFalse(update);
     }
 
     @Test
-    public void deleteComCultureIdNaoCorrespondenteDeveRetornarOptinalEmpty() {
+    public void deleteComCultureIdNaoCorrespondenteDeveRetornarFalse() {
         em.persist(product);
         em.persist(culture);
 
@@ -127,9 +124,9 @@ public class CulturaServiceTest {
         form.setCultureId(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
         form.setProductId(product.getProductId());
 
-        Optional<Culture> update = cultureService.delete(form);
+        Boolean update = cultureService.delete(form);
 
-        assertEquals(Optional.empty(), update);
+        assertFalse(update);
     }
 
 

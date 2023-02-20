@@ -82,11 +82,10 @@ public class ClientServiceTest {
         form.setPhone("(14) 99832-20566");
 
 
-        Client create = clientService.create(form);
+        ClientDto create = clientService.create(form);
 
         assertEquals(form.getEmail(), create.getEmail());
-        assertEquals(form.getPhone(), create.getPhone());
-        assertEquals(form.getClientName(), create.getClientName());
+        assertNotNull(create.getClientId());
     }
 
 
@@ -100,8 +99,9 @@ public class ClientServiceTest {
         form.setClientName("Atualizado");
         form.setPhone("17 9982294859");
 
-        Optional<Client> update = clientService.update(form);
+        Optional<ClientDetailDto> update = clientService.update(form);
 
+        assertEquals(form.getClientId(), update.get().getClientId());
         assertEquals(form.getEmail(), update.get().getEmail());
         assertEquals(form.getPhone(), update.get().getPhone());
         assertEquals(form.getClientName(), update.get().getClientName());
@@ -117,7 +117,7 @@ public class ClientServiceTest {
         form.setClientName("Atualizado");
         form.setPhone("17 9982294859");
 
-        Optional<Client> update = clientService.update(form);
+        Optional<ClientDetailDto> update = clientService.update(form);
 
         assertEquals(Optional.empty(), update);
 
@@ -133,8 +133,8 @@ public class ClientServiceTest {
         form.setClientName("");
         form.setPhone("");
 
-        Optional<Client> update = clientService.update(form);
-
+        Optional<ClientDetailDto> update = clientService.update(form);
+        assertEquals(client.getId(), update.get().getClientId());
         assertEquals(client.getClientName(), update.get().getClientName());
         assertEquals(client.getEmail(), update.get().getEmail());
         assertEquals(client.getPhone(), update.get().getPhone());
@@ -147,8 +147,8 @@ public class ClientServiceTest {
         ClientUpdateForm form = new ClientUpdateForm();
         form.setClientId(id);
 
-        Optional<Client> update = clientService.update(form);
-
+        Optional<ClientDetailDto> update = clientService.update(form);
+        assertEquals(client.getId(), update.get().getClientId());
         assertEquals(client.getClientName(), update.get().getClientName());
         assertEquals(client.getEmail(), update.get().getEmail());
         assertEquals(client.getPhone(), update.get().getPhone());
@@ -158,21 +158,19 @@ public class ClientServiceTest {
     public void AoFazerDeleteComIdCorretamenteDeveExcluirOCliente(){
         UUID id = (UUID) em.persistAndGetId(client);
 
-        Optional<Client> deleteClient = clientService.delete(id);
+        Boolean deleteClient = clientService.delete(id);
         Optional<ClientDetailDto> findClient = clientService.getId(id);
-
-
-        assertEquals(id, deleteClient.get().getId());
+        assertTrue(deleteClient);
         assertEquals(Optional.empty(), findClient);
 
     }
 
     @Test
-    public void AoFazerDeleteComIdNaoExistenteDeveRetornaOptinalEmpty(){
+    public void AoFazerDeleteComIdNaoExistenteDeveRetornaFalse(){
         UUID id = (UUID) em.persistAndGetId(client);
 
-        Optional<Client> deleteClient = clientService.delete(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
-        assertEquals(Optional.empty(), deleteClient);
+        boolean deleteClient = clientService.delete(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
+        assertFalse(deleteClient);
     }
 
 

@@ -32,7 +32,7 @@ public class CultureService {
             return findCulture;
         }
 
-        if ( !findCulture.get().getProduct().getProductId().equals(culture.getProductId()) ) {
+        if (!findCulture.get().getProduct().getProductId().equals(culture.getProductId())) {
             return Optional.empty();
         }
 
@@ -41,18 +41,18 @@ public class CultureService {
         return Optional.of(cultureRepository.save(findCulture.get()));
     }
 
-    public Optional<Culture> delete(ProductCultureDeleteForm culture) {
+    public Boolean delete(ProductCultureDeleteForm culture) {
         Optional<Culture> findCulture = cultureRepository.findById(culture.getCultureId());
 
         if (findCulture.isEmpty()) {
-            return Optional.empty();
+            return false;
         }
 
-        if ( !findCulture.get().getProduct().getProductId().equals(culture.getProductId()) ) {
-            return Optional.empty();
+        if (!findCulture.get().getProduct().getProductId().equals(culture.getProductId())) {
+            return false;
         }
 
         cultureRepository.deleteById(culture.getCultureId());
-        return findCulture;
+        return true;
     }
 }

@@ -157,7 +157,6 @@ public class ClientControllerTest {
         ).andReturn().getResponse();
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
-
         var jsonExpect = clientDetailDtoJson.write(orderDto).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
@@ -167,8 +166,6 @@ public class ClientControllerTest {
     @DisplayName("ao procurar o cliente nao cadastrado retorne Not found")
     public void clientIdCase2() throws Exception {
         UUID clientId = UUID.randomUUID();
-
-
         client.setClientId(clientId);
 
         ClientDetailDto orderDto = new ClientDetailDto(client);
@@ -189,8 +186,6 @@ public class ClientControllerTest {
     @DisplayName("ao procurar o cliente nao sendo no formato UUID deve retornar Bad Request")
     public void clientIdCase3() throws Exception {
         UUID clientId = UUID.randomUUID();
-
-
         client.setClientId(clientId);
 
         ClientDetailDto orderDto = new ClientDetailDto(client);
@@ -218,8 +213,9 @@ public class ClientControllerTest {
         form.setClientName(client.getClientName());
         form.setPhone(client.getPhone());
         form.setEmail(client.getEmail());
+        ClientDto clientDto = new ClientDto(client);
 
-        when(clientService.create(any())).thenReturn(client);
+        when(clientService.create(any())).thenReturn(clientDto);
 
         var response = mockMvc.perform(
                 post("/clients")
@@ -229,8 +225,8 @@ public class ClientControllerTest {
         ).andReturn().getResponse();
 
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-
-        var jsonExpect = clientDtoJson.write(new ClientDto(client)).getJson();
+        assertTrue(response.containsHeader("Location"));
+        var jsonExpect = clientDtoJson.write(clientDto).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
     }
@@ -269,7 +265,7 @@ public class ClientControllerTest {
 
         ClientForm form = new ClientForm();
 
-        when(clientService.create(any())).thenReturn(client);
+        when(clientService.create(any())).thenReturn(new ClientDto(client));
 
         var response = mockMvc.perform(
                 post("/clients")
@@ -295,7 +291,9 @@ public class ClientControllerTest {
         form.setPhone(client.getPhone());
         form.setEmail(client.getEmail());
 
-        when(clientService.update(any())).thenReturn(Optional.ofNullable(client));
+        ClientDetailDto clientDetailDto = new ClientDetailDto(client);
+
+        when(clientService.update(any())).thenReturn(Optional.of(clientDetailDto));
 
         var response = mockMvc.perform(
                 put("/clients")
@@ -306,7 +304,7 @@ public class ClientControllerTest {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
 
-        var jsonExpect = clientDetailDtoJson.write(new ClientDetailDto(client)).getJson();
+        var jsonExpect = clientDetailDtoJson.write(clientDetailDto).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
     }
@@ -339,9 +337,6 @@ public class ClientControllerTest {
     @Test
     @DisplayName("Caso id do update nao valido retorne Bad request")
     public void updateClientCase3() throws Exception {
-
-        UUID clientId = UUID.randomUUID();
-
         ClientUpdateForm form = new ClientUpdateForm();
         form.setClientName(client.getClientName());
         form.setPhone(client.getPhone());
@@ -362,9 +357,6 @@ public class ClientControllerTest {
     @Test
     @DisplayName("Caso email vier com a formatacao errada ou vazi retorne Bad request")
     public void updateClientCase4() throws Exception {
-
-        UUID clientId = UUID.randomUUID();
-
         ClientUpdateForm form = new ClientUpdateForm();
         form.setClientName(client.getClientName());
         form.setPhone(client.getPhone());
@@ -390,8 +382,9 @@ public class ClientControllerTest {
 
         ClientUpdateForm form = new ClientUpdateForm();
         form.setClientId(clientId);
+        ClientDetailDto clientDetailDto = new ClientDetailDto(client);
 
-        when(clientService.update(any())).thenReturn(Optional.ofNullable(client));
+        when(clientService.update(any())).thenReturn(Optional.of(clientDetailDto));
 
         var response = mockMvc.perform(
                 put("/clients")
@@ -402,7 +395,7 @@ public class ClientControllerTest {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
 
-        var jsonExpect = clientDetailDtoJson.write(new ClientDetailDto(client)).getJson();
+        var jsonExpect = clientDetailDtoJson.write(clientDetailDto).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
     }
@@ -418,7 +411,9 @@ public class ClientControllerTest {
         form.setClientName("");
         form.setPhone("");
 
-        when(clientService.update(any())).thenReturn(Optional.ofNullable(client));
+        ClientDetailDto clientDetailDto = new ClientDetailDto(client);
+
+        when(clientService.update(any())).thenReturn(Optional.of(clientDetailDto));
 
         var response = mockMvc.perform(
                 put("/clients")
@@ -429,7 +424,7 @@ public class ClientControllerTest {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
 
-        var jsonExpect = clientDetailDtoJson.write(new ClientDetailDto(client)).getJson();
+        var jsonExpect = clientDetailDtoJson.write(clientDetailDto).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
     }
@@ -440,9 +435,7 @@ public class ClientControllerTest {
     public void deleteClientId() throws Exception {
         UUID clientId = UUID.randomUUID();
 
-        ClientDetailDto orderDto = new ClientDetailDto(client);
-
-        when(clientService.delete(clientId)).thenReturn(Optional.ofNullable(client));
+        when(clientService.delete(clientId)).thenReturn(true);
 
         var response = mockMvc.perform(
                 delete("/clients/" + clientId)
@@ -451,18 +444,11 @@ public class ClientControllerTest {
         ).andReturn().getResponse();
 
         assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
-
     }
 
     @Test
     @DisplayName("Ao deletar com id no fomarto incorreto deve retornar um BAD REQUEST")
     public void deleteCase2() throws Exception {
-        UUID clientId = UUID.randomUUID();
-
-        ClientDetailDto orderDto = new ClientDetailDto(client);
-
-        when(clientService.delete(clientId)).thenReturn(Optional.ofNullable(client));
-
         var response = mockMvc.perform(
                 delete("/clients/" + 1)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -470,17 +456,13 @@ public class ClientControllerTest {
         ).andReturn().getResponse();
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-
     }
 
     @Test
     @DisplayName("Ao deletar com id nao cadastrado deve retornar um NOT FOUND")
     public void deleteCase3() throws Exception {
         UUID clientId = UUID.randomUUID();
-
-        ClientDetailDto orderDto = new ClientDetailDto(client);
-
-        when(clientService.delete(clientId)).thenReturn(Optional.empty());
+        when(clientService.delete(clientId)).thenReturn(false);
 
         var response = mockMvc.perform(
                 delete("/clients/" + clientId)

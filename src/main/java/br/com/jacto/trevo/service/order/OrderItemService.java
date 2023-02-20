@@ -11,7 +11,6 @@ import br.com.jacto.trevo.repository.ClientRepository;
 import br.com.jacto.trevo.repository.OrderItemRepository;
 import br.com.jacto.trevo.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,7 +39,7 @@ public class OrderItemService {
         Optional<Client> findClient = clientRepository.findById(orderItem.getClientId());
         Optional<Product> findProduct = productRepository.findByProductName(orderItem.getProductName());
 
-        if(findClient.isEmpty() || findProduct.isEmpty()){
+        if (findClient.isEmpty() || findProduct.isEmpty()) {
             return Optional.empty();
         }
 
@@ -50,13 +49,13 @@ public class OrderItemService {
         return Optional.of(orderItemRepository.save(order)).map(OrderItemCreateDto::new);
     }
 
-    public Optional<OrderItemDto> delete(UUID id) {
+    public Boolean delete(UUID id) {
         Optional<OrderItemDto> findOrder = orderItemRepository.findById(id).map(OrderItemDto::new);
         if (findOrder.isEmpty()) {
-            return Optional.empty();
+            return false;
         }
         orderItemRepository.deleteById(id);
-        return findOrder;
+        return true;
     }
 
     public Optional<OrderItemDto> update(OrderItemUpdateForm orderItem) {
@@ -70,7 +69,7 @@ public class OrderItemService {
 
         if (orderItem.getProductName() != null && !orderItem.getProductName().trim().isEmpty()) {
             Optional<Product> findProduct = productRepository.findByProductName(orderItem.getProductName());
-            if(findProduct.isEmpty()) return Optional.empty();
+            if (findProduct.isEmpty()) return Optional.empty();
             findOrder.get().setProduct(findProduct.get());
         }
 

@@ -1,0 +1,178 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > OrderItemController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">br.com.jacto.trevo.controller.order</a>
+</div>
+
+<h1>Coverage Summary for Class: OrderItemController (br.com.jacto.trevo.controller.order)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OrderItemController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">OrderItemController$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.controller.order;
+&nbsp;
+&nbsp;import br.com.jacto.trevo.controller.order.dto.OrderItemCreateDto;
+&nbsp;import br.com.jacto.trevo.controller.order.dto.OrderItemDto;
+&nbsp;import br.com.jacto.trevo.controller.order.form.OrderItemForm;
+&nbsp;import br.com.jacto.trevo.controller.order.form.OrderItemUpdateForm;
+&nbsp;import br.com.jacto.trevo.service.order.OrderItemService;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.util.UriComponentsBuilder;
+&nbsp;
+&nbsp;import java.net.URI;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;import java.util.UUID;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/orders&quot;)
+<b class="fc">&nbsp;public class OrderItemController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    OrderItemService orderItemService;
+&nbsp;
+&nbsp;
+&nbsp;    @GetMapping
+&nbsp;    public List&lt;OrderItemDto&gt; getOrderItem() {
+<b class="fc">&nbsp;        return orderItemService.getAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;OrderItemDto&gt; getOrderItemId(@PathVariable UUID id) {
+<b class="fc">&nbsp;        Optional&lt;OrderItemDto&gt; findOrder = orderItemService.getId(id);</b>
+<b class="fc">&nbsp;        return findOrder.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping
+&nbsp;    @Transactional
+&nbsp;    public ResponseEntity&lt;OrderItemCreateDto&gt; createOrderItem(@RequestBody @Valid OrderItemForm orderItem, UriComponentsBuilder uriBuilder) {
+<b class="fc">&nbsp;        Optional&lt;OrderItemCreateDto&gt; order = orderItemService.create(orderItem);</b>
+<b class="fc">&nbsp;        if (order.isEmpty()) {</b>
+<b class="fc">&nbsp;            return ResponseEntity.notFound().build();</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        URI uri = uriBuilder.path(&quot;/orders/{id}&quot;).buildAndExpand(order.get().getOrderItemId()).toUri();</b>
+<b class="fc">&nbsp;        return ResponseEntity.created(uri).body(order.get());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping
+&nbsp;    @Transactional
+&nbsp;    public ResponseEntity&lt;OrderItemDto&gt; updateOrderItem(@RequestBody @Valid OrderItemUpdateForm orderItem) {
+<b class="fc">&nbsp;        Optional&lt;OrderItemDto&gt; update = orderItemService.update(orderItem);</b>
+<b class="fc">&nbsp;        return update.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/{id}&quot;)
+&nbsp;    @Transactional
+&nbsp;    public ResponseEntity&lt;Void&gt; deleteOrderItem(@PathVariable UUID id) {
+<b class="fc">&nbsp;        Boolean findOrder = orderItemService.delete(id);</b>
+&nbsp;        ;
+<b class="fc">&nbsp;        return findOrder ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-02-20 09:30</div>
+</div>
+</body>
+</html>

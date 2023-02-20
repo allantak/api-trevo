@@ -37,6 +37,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -183,7 +184,7 @@ public class OrderItemControllerTest {
                 .getResponse();
 
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-
+        assertTrue(response.containsHeader("Location"));
         var jsonExpect = orderItemCreateDtoJson.write(orderItemCreateDto).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
@@ -396,9 +397,7 @@ public class OrderItemControllerTest {
     public void deleteOrder() throws Exception {
         UUID orderId = UUID.randomUUID();
 
-        OrderItemDto orderItemDelete = new OrderItemDto(order);
-
-        when(orderItemService.delete(orderId)).thenReturn(Optional.of(orderItemDelete));
+        when(orderItemService.delete(orderId)).thenReturn(true);
 
         var response = mockMvc.perform(
                         delete("/orders/" +orderId)
@@ -415,7 +414,7 @@ public class OrderItemControllerTest {
     public void deleteOrderCase2() throws Exception {
         UUID orderId = UUID.randomUUID();
 
-        when(orderItemService.delete(orderId)).thenReturn(Optional.empty());
+        when(orderItemService.delete(orderId)).thenReturn(false);
 
         var response = mockMvc.perform(
                         delete("/orders/")

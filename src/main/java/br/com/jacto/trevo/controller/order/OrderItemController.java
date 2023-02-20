@@ -1,13 +1,9 @@
 package br.com.jacto.trevo.controller.order;
 
-
-import br.com.jacto.trevo.controller.client.dto.ClientDetailDto;
 import br.com.jacto.trevo.controller.order.dto.OrderItemCreateDto;
 import br.com.jacto.trevo.controller.order.dto.OrderItemDto;
 import br.com.jacto.trevo.controller.order.form.OrderItemForm;
 import br.com.jacto.trevo.controller.order.form.OrderItemUpdateForm;
-import br.com.jacto.trevo.model.client.Client;
-import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.service.order.OrderItemService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -35,12 +31,9 @@ public class OrderItemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<OrderItemDto>> getOrderItemId(@PathVariable UUID id) {
+    public ResponseEntity<OrderItemDto> getOrderItemId(@PathVariable UUID id) {
         Optional<OrderItemDto> findOrder = orderItemService.getId(id);
-        if(findOrder.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(findOrder);
+        return findOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -57,21 +50,16 @@ public class OrderItemController {
 
     @PutMapping
     @Transactional
-    public ResponseEntity<Optional<OrderItemDto>> updateOrderItem(@RequestBody @Valid OrderItemUpdateForm orderItem) {
+    public ResponseEntity<OrderItemDto> updateOrderItem(@RequestBody @Valid OrderItemUpdateForm orderItem) {
         Optional<OrderItemDto> update = orderItemService.update(orderItem);
-        if (update.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(update);
+        return update.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<OrderItemDto> deleteOrderItem(@PathVariable UUID id) {
-        Optional<OrderItemDto> findOrder =  orderItemService.delete(id);;
-        if (findOrder.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteOrderItem(@PathVariable UUID id) {
+        Boolean findOrder = orderItemService.delete(id);
+        ;
+        return findOrder ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }
