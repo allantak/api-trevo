@@ -7,10 +7,10 @@ import java.util.UUID;
 
 public class OrderItemUpdateForm {
 
-    @NotNull
+    @NotNull(message = "Obrigatório o ID do pedido")
     private UUID orderItemId;
 
-    @NotNull
+    @NotNull(message = "Obrigatório o ID do cliente")
     private UUID clientId;
 
     private String productName;

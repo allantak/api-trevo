@@ -7,13 +7,13 @@ import java.util.UUID;
 
 public class ImageUpdateForm {
 
-    @NotNull
+    @NotNull(message = "Obrigatório o ID do produto")
     private UUID productId;
 
-    @NotNull
+    @NotNull(message = "Obrigatório o ID da imagem")
     private UUID imageId;
 
-    @NotNull
+    @NotNull(message = "Obrigatório o arquivo de imagem")
     private MultipartFile img;
 
 

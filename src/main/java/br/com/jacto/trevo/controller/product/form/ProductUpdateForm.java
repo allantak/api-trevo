@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class ProductUpdateForm {
-    @NotNull
+    @NotNull(message = "Obrigatório o ID do produto")
     private UUID productId;
 
     private String productName;

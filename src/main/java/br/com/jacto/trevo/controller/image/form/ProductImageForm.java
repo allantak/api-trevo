@@ -6,9 +6,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
 public class ProductImageForm {
-    @NotNull
+    @NotNull(message = "Obrigatório o ID do produto")
     private UUID productId;
-    @NotNull
+    @NotNull(message = "Obrigatório o arquivo de imagem")
     private MultipartFile image;
 
     public MultipartFile getImage() {

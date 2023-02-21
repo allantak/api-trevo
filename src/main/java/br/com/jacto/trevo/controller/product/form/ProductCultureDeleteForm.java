@@ -5,10 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class ProductCultureDeleteForm {
-    @NotNull
+    @NotNull(message = "Obrigatório o ID da cultura")
     private UUID cultureId;
 
-    @NotNull
+    @NotNull(message = "Obrigatório o ID do produto")
     private UUID productId;
 
 

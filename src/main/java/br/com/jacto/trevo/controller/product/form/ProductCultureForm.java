@@ -7,10 +7,10 @@ import java.util.UUID;
 
 public class ProductCultureForm {
 
-    @NotNull
+    @NotNull(message = "Obrigatório o ID do produto")
     private UUID productId;
 
-    @NotNull
+    @NotNull(message = "Obrigatório o ID da cultura")
     private UUID cultureId;
 
     @NotBlank

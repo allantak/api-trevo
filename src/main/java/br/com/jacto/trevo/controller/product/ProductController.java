@@ -12,9 +12,14 @@ import br.com.jacto.trevo.model.product.Culture;
 import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.service.product.CultureService;
 import br.com.jacto.trevo.service.product.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +30,10 @@ import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
 
+
 @RestController
 @RequestMapping("/products")
+@Tag(name = "Produto", description = "Gerenciamento de produtos")
 public class ProductController {
 
     @Autowired
@@ -36,25 +43,28 @@ public class ProductController {
     private CultureService cultureService;
 
     @GetMapping
-    public Page<ProductDto> getProduct(Pageable pagination) {
+    @Operation(summary = "Lista todos os produtos", description = "Por padrão a quantidade de produto em uma pagina é 20, mas pode ser mudado")
+    public Page<ProductDto> getProduct(@ParameterObject Pageable pagination) {
         return productService.getAll(pagination);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Mostra o produto com mais detalhes")
     public ResponseEntity<ProductDetailDto> getProductId(@PathVariable UUID id) {
         Optional<ProductDetailDto> product = productService.getId(id);
         return product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/orders/{id}")
+    @Operation(summary = "Mostra o produto com seus detalhas e suas culturas")
     public ResponseEntity<ProductOrderDto> getProductOrder(@PathVariable UUID id) {
         Optional<ProductOrderDto> productOrder = productService.productOrder(id);
         return productOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
     @PostMapping
     @Transactional
+    @Operation(summary = "Registro de produto")
     public ResponseEntity<ProductCreateDto> createProduct(@RequestBody @Valid ProductForm product, UriComponentsBuilder uriBuilder) {
         ProductCreateDto save = productService.create(product);
         URI uri = uriBuilder.path("/products/{id}").buildAndExpand(save.getProductId()).toUri();
@@ -63,6 +73,7 @@ public class ProductController {
 
     @PutMapping
     @Transactional
+    @Operation(summary = "Atualização do produto")
     public ResponseEntity<Product> updateProduct(@RequestBody @Valid ProductUpdateForm product) {
         Optional<Product> updateProduct = productService.update(product);
         return updateProduct.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -70,23 +81,26 @@ public class ProductController {
 
     @PutMapping("/cultures")
     @Transactional
+    @Operation(summary = "Atualização da cultura do produto")
     public ResponseEntity<Culture> updateCulture(@RequestBody @Valid ProductCultureForm culture) {
         Optional<Culture> updateCulture = cultureService.update(culture);
         return updateCulture.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/cultures")
-    @Transactional
-    public ResponseEntity<Culture> deleteCulture(@RequestBody @Valid ProductCultureDeleteForm culture) {
-        Boolean findCulture = cultureService.delete(culture);
-        return findCulture ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
-    }
-
     @DeleteMapping("/{id}")
     @Transactional
+    @Operation(summary = "Excluir produto", description = "Culturas e pedidos vinculada ao produto serão excluído")
     public ResponseEntity<Void> deleteProduct(@PathVariable UUID id) {
         Boolean deleteProduct = productService.delete(id);
         return deleteProduct ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/cultures")
+    @Transactional
+    @Operation(summary = "Excluir cultura do produto")
+    public ResponseEntity<Culture> deleteCulture(@RequestBody @Valid ProductCultureDeleteForm culture) {
+        Boolean findCulture = cultureService.delete(culture);
+        return findCulture ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
 

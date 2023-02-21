@@ -8,16 +8,16 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class ProductForm {
-    @NotBlank
+    @NotBlank(message = "Obrigatório o nome do produto")
     private String productName;
 
-    @NotNull
+    @NotNull(message = "Obrigatório o status do produto")
     private Boolean status;
 
-    @NotBlank
+    @NotBlank(message = "Obrigatório a descricao do produto")
     private String description;
 
-    @NotNull @NotEmpty
+    @NotNull(message = "Obrigatório a lista de cultura") @NotEmpty
     private List<String> cultures;
 
     private Double areaSize;

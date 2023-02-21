@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class ClientUpdateForm {
 
-    @NotNull
+    @NotNull(message = "Obrigatório o ID do cliente")
     private UUID clientId;
 
     private String clientName;

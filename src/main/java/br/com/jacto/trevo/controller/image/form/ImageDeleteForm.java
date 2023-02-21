@@ -6,10 +6,10 @@ import java.util.UUID;
 
 public class ImageDeleteForm {
 
-    @NotNull
+    @NotNull(message = "Obrigatório o ID da imagem")
     private UUID imageId;
 
-    @NotNull
+    @NotNull(message = "Obrigatório o ID do produto")
     private UUID productId;
 
     public UUID getImageId() {
