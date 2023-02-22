@@ -8,11 +8,15 @@ import br.com.jacto.trevo.controller.image.form.ImageUpdateForm;
 import br.com.jacto.trevo.controller.image.form.ProductImageForm;
 import br.com.jacto.trevo.service.product.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -44,7 +48,7 @@ public class ImageController {
         return findImage.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/products/images")
+    @PostMapping(value = "/products/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Transactional
     @Operation(summary = "Registra uma imagem no produto")
     public ResponseEntity<ProductImageCreateDto> uploadImage(@ModelAttribute @Valid ProductImageForm image, UriComponentsBuilder uriBuilder) throws IOException {
@@ -56,7 +60,7 @@ public class ImageController {
         return ResponseEntity.created(uri).body(img.get());
     }
 
-    @PutMapping("/images")
+    @PutMapping(value = "/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Transactional
     @Operation(summary = "Atualiza a imagem do produto")
     public ResponseEntity<ImageDto> updateImage(@ModelAttribute @Valid ImageUpdateForm img) throws IOException {
