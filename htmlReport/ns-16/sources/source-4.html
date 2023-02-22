@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > ClientRepository</title>
+  <title>Coverage Report > ProductRepository</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -21,16 +21,28 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">br.com.jacto.trevo.repository</a>
 </div>
 
-<h1>Coverage Summary for Class: ClientRepository (br.com.jacto.trevo.repository)</h1>
+<h1>Coverage Summary for Class: ProductRepository (br.com.jacto.trevo.repository)</h1>
 
 <table class="coverageStats">
+
 <tr>
   <th class="name">Class</th>
 </tr>
+  <tr>
+    <td class="name">ProductRepository$MockitoMock$3PHUPfKP</td>
+  </tr>
+  <tr>
+    <td class="name">ProductRepository$MockitoMock$3PHUPfKP$auxiliary$9wt9M8Wd</td>
+  </tr>
+  <tr>
+    <td class="name">ProductRepository$MockitoMock$3PHUPfKP$auxiliary$9x2jImwW</td>
+  </tr>
+  <tr>
+    <td class="name">ProductRepository$MockitoMock$3PHUPfKP$auxiliary$dqAxR0Ca</td>
+  </tr>
 <tr>
-  <td class="name">ClientRepository</td>
+  <td class="name"><strong>Total</strong></td>
 </tr>
-
 </table>
 
 <br/>
@@ -40,14 +52,17 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.repository;
 &nbsp;
-&nbsp;import br.com.jacto.trevo.model.client.Client;
+&nbsp;import br.com.jacto.trevo.model.product.Product;
 &nbsp;import org.springframework.data.jpa.repository.JpaRepository;
 &nbsp;import org.springframework.stereotype.Repository;
 &nbsp;
+&nbsp;import java.util.Optional;
 &nbsp;import java.util.UUID;
 &nbsp;
 &nbsp;@Repository
-&nbsp;public interface ClientRepository extends JpaRepository&lt;Client, UUID&gt; {
+&nbsp;public interface ProductRepository extends JpaRepository&lt;Product, UUID&gt; {
+&nbsp;
+&nbsp;    Optional&lt;Product&gt; findByProductName(String productName);
 &nbsp;}
 </code>
 </pre>
@@ -72,7 +87,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-20 09:30</div>
+    <div style="float:right;">generated on 2023-02-22 09:42</div>
 </div>
 </body>
 </html>

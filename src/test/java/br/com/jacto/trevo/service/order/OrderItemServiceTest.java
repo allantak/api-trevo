@@ -7,63 +7,101 @@ import br.com.jacto.trevo.controller.order.form.OrderItemUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
+import br.com.jacto.trevo.repository.ClientRepository;
+import br.com.jacto.trevo.repository.OrderItemRepository;
+import br.com.jacto.trevo.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @Transactional
 @SpringBootTest
-@AutoConfigureTestEntityManager
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.AUTO_CONFIGURED)
 public class OrderItemServiceTest {
     @Autowired
     OrderItemService orderItemService;
 
-    @Autowired
-    TestEntityManager em;
+    @MockBean
+    OrderItemRepository orderItemRepository;
+
+    @MockBean
+    ClientRepository clientRepository;
+
+    @MockBean
+    ProductRepository productRepository;
 
     public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
     public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14));
     public OrderItem order = new OrderItem(3, client, product);
 
-    public void persisting() {
-        em.persistAndFlush(client);
-        em.persistAndFlush(product);
-        em.persist(order);
-
-        List<OrderItem> list = new ArrayList<OrderItem>();
-        list.add(order);
-
-        client.setOrders(list);
-        product.setOrders(list);
-
-        em.persist(client);
-        em.persist(product);
-        em.flush();
-    }
-
-
-    @Test
-    public void updateComDadosCorretamenteDeveRetornarOsDadosAtualizadoDoPedido() {
-        persisting();
+    public OrderItemUpdateForm formUpdate() {
         OrderItemUpdateForm form = new OrderItemUpdateForm();
         form.setOrderItemId(order.getOrderItemId());
         form.setClientId(client.getId());
         form.setProductName(product.getProductName());
         form.setQuantity(order.getQuantity());
 
+        return form;
+    }
+
+    @Test
+    @DisplayName("Listagem de todos pedidos cadastrados")
+    public void orderGetAll() {
+        List<OrderItem> orderItemList = Collections.singletonList(order);
+
+        when(orderItemRepository.findAll()).thenReturn(orderItemList);
+
+        List<OrderItemDto> result = orderItemService.getAll();
+        assertEquals(orderItemList.size(), result.size());
+        assertEquals(orderItemList.get(0).getOrderItemId(), result.get(0).getOrderItemId());
+    }
+
+    @Test
+    @DisplayName("Pedido pelo id")
+    public void orderGetById() {
+
+        OrderItemDto orderItemDto = new OrderItemDto(order);
+        when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
+
+        Optional<OrderItemDto> result = orderItemService.getId(UUID.randomUUID());
+        assertEquals(orderItemDto.getOrderItemId(), result.get().getOrderItemId());
+        assertEquals(orderItemDto.getEmail(), result.get().getEmail());
+        assertEquals(orderItemDto.getProductName(), result.get().getProductName());
+        assertEquals(orderItemDto.getQuantity(), result.get().getQuantity());
+    }
+
+    @Test
+    @DisplayName("Caso nao encontre id do pedido")
+    public void orderGetByIdCase2() {
+        when(orderItemRepository.findById(any())).thenReturn(Optional.empty());
+
+        Optional<OrderItemDto> result = orderItemService.getId(UUID.randomUUID());
+        assertEquals(Optional.empty(), result);
+    }
+
+
+    @Test
+    @DisplayName("Atualizacao de pedido")
+    public void updateOrderItem() {
+        OrderItemUpdateForm form = formUpdate();
+
+        when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
+        when(orderItemRepository.save(any())).thenReturn(order);
 
         Optional<OrderItemDto> update = orderItemService.update(form);
 
@@ -76,42 +114,63 @@ public class OrderItemServiceTest {
 
 
     @Test
-    public void seOPedidoNaoExistirDeveRetornarOptianlEmpty() {
-        persisting();
-        OrderItemUpdateForm form = new OrderItemUpdateForm();
-        form.setOrderItemId(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
-        form.setClientId(client.getId());
-        form.setProductName(product.getProductName());
+    @DisplayName("Caso o id de pedido nao encontrado")
+    public void updateCase2() {
+        OrderItemUpdateForm form = formUpdate();
+
+        when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(orderItemRepository.findById(any())).thenReturn(Optional.empty());
+        when(orderItemRepository.save(any())).thenReturn(order);
 
 
         Optional<OrderItemDto> update = orderItemService.update(form);
 
         assertEquals(Optional.empty(), update);
-
     }
 
     @Test
-    public void seOIdClienteNaoForCorrespondeteDoPedidoDeveRetornarOptianlEmpty() {
-        persisting();
-        OrderItemUpdateForm form = new OrderItemUpdateForm();
-        form.setOrderItemId(order.getOrderItemId());
-        form.setClientId(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
-        form.setProductName(product.getProductName());
-        form.setQuantity(order.getQuantity());
+    @DisplayName("se O Id Cliente Nao For Correspondete Do Pedido Deve Retornar Optianl Empty")
+    public void updateCase3() {
+        OrderItemUpdateForm form = formUpdate();
 
+        when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
+        when(clientRepository.findById(any())).thenReturn(Optional.empty());
+        when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
+        when(orderItemRepository.save(any())).thenReturn(order);
 
         Optional<OrderItemDto> update = orderItemService.update(form);
 
         assertEquals(Optional.empty(), update);
-
     }
 
     @Test
-    public void updateSeOsValoresEstiveremNullDeveUtilizarOsDadosJaExistente() {
-        persisting();
-        OrderItemUpdateForm form = new OrderItemUpdateForm();
-        form.setOrderItemId(order.getOrderItemId());
-        form.setClientId(client.getId());
+    @DisplayName("se O Id Product Nao For Correspondete Do Pedido Deve Retornar Optianl Empty")
+    public void updateCase4() {
+        OrderItemUpdateForm form = formUpdate();
+
+        when(productRepository.findByProductName(any())).thenReturn(Optional.empty());
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
+        when(orderItemRepository.save(any())).thenReturn(order);
+
+        Optional<OrderItemDto> update = orderItemService.update(form);
+
+        assertEquals(Optional.empty(), update);
+    }
+
+    @Test
+    @DisplayName("update Se Os Valores Estiverem Null DeveUtilizar Os Dados Ja Existente")
+    public void updateCase5() {
+        OrderItemUpdateForm form = formUpdate();
+        form.setProductName(null);
+        form.setProductName(null);
+        form.setQuantity(null);
+
+        when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
+        when(orderItemRepository.save(any())).thenReturn(order);
 
 
         Optional<OrderItemDto> update = orderItemService.update(form);
@@ -121,81 +180,110 @@ public class OrderItemServiceTest {
         assertEquals(form.getOrderItemId(), update.get().getOrderItemId());
         assertEquals(order.getQuantity(), update.get().getQuantity());
         assertEquals(client.getEmail(), update.get().getEmail());
-
     }
 
 
     @Test
-    public void updateSeOsValoresEstiveremVazioDeveRetornarOsValoresJaExistente() {
-        persisting();
-        OrderItemUpdateForm form = new OrderItemUpdateForm();
-        form.setOrderItemId(order.getOrderItemId());
-        form.setClientId(client.getId());
+    @DisplayName("update Se Os Valores Estiverem Vazio DeveUtilizar Os Dados Ja Existente")
+    public void updateCase6() {
+        OrderItemUpdateForm form = formUpdate();
+        form.setProductName("");
         form.setProductName("");
 
-        Optional<OrderItemDto> update = orderItemService.update(form);
-
-        assertEquals(product.getProductName(), update.get().getProductName());
-    }
-
-    @Test
-    public void casoProdutoNameNaoForEncontradoDeveRetornarUmOptionalEmpty() {
-        persisting();
-
-        OrderItemUpdateForm form = new OrderItemUpdateForm();
-        form.setOrderItemId(order.getOrderItemId());
-        form.setClientId(client.getId());
-        form.setProductName("Trator Nao Existente");
+        when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
+        when(orderItemRepository.save(any())).thenReturn(order);
 
 
         Optional<OrderItemDto> update = orderItemService.update(form);
-
-        assertEquals(Optional.empty(), update);
-    }
-
-
-    @Test
-    public void createComDadosCorretamenteDeveRetornarOsDadosCriadoDoPedido() {
-        persisting();
-
-        OrderItemForm form = new OrderItemForm();
-        form.setClientId(client.getId());
-        form.setProductName(product.getProductName());
-        form.setQuantity(2);
-
-
-        Optional<OrderItemCreateDto> update = orderItemService.create(form);
 
         assertNotNull(update);
-        assertNotNull(update.get().getOrderItemId());
+        assertEquals(product.getProductName(), update.get().getProductName());
+        assertEquals(form.getOrderItemId(), update.get().getOrderItemId());
+        assertEquals(order.getQuantity(), update.get().getQuantity());
+        assertEquals(client.getEmail(), update.get().getEmail());
     }
 
-    @Test
-    public void casoOClienteNaoECadastradoNaoPodeFazerUmPedido() {
-        persisting();
-
-        OrderItemForm form = new OrderItemForm();
-        form.setClientId(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
-        form.setProductName(product.getProductName());
-        form.setQuantity(2);
-
-
-        Optional<OrderItemCreateDto> update = orderItemService.create(form);
-
-        assertEquals(Optional.empty(), update);
-    }
 
     @Test
-    public void casoOProdutoNameNaoAchadoNaoPodeFazerUmPedido() {
-        persisting();
+    @DisplayName("create Com Dados Corretamente Deve Retornar Os Dados Criado Do Pedido")
+    public void createOrder() {
+
         OrderItemForm form = new OrderItemForm();
         form.setClientId(client.getId());
-        form.setProductName("Trator Nao Registrado");
-        form.setQuantity(2);
+        form.setProductName(product.getProductName());
+        form.setQuantity(order.getQuantity());
+
+        when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(orderItemRepository.save(any())).thenReturn(order);
+
+
+        Optional<OrderItemCreateDto> create = orderItemService.create(form);
+
+        assertNotNull(create);
+        assertEquals(order.getOrderItemId(), create.get().getOrderItemId());
+    }
+
+    @Test
+    @DisplayName("caso O Cliente Nao E Cadastrado Nao Pode Fazer Um Pedido")
+    public void createOrderCase2() {
+        OrderItemForm form = new OrderItemForm();
+        form.setClientId(client.getId());
+        form.setProductName(product.getProductName());
+        form.setQuantity(order.getQuantity());
+
+        when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
+        when(clientRepository.findById(any())).thenReturn(Optional.empty());
+        when(orderItemRepository.save(any())).thenReturn(order);
 
 
         Optional<OrderItemCreateDto> update = orderItemService.create(form);
 
         assertEquals(Optional.empty(), update);
+    }
+
+    @Test
+    @DisplayName("caso O Produto Name Nao Achado Nao Pode Fazer Um Pedido")
+    public void createOrderCase3() {
+        OrderItemForm form = new OrderItemForm();
+        form.setClientId(client.getId());
+        form.setProductName(product.getProductName());
+        form.setQuantity(order.getQuantity());
+
+        when(productRepository.findByProductName(any())).thenReturn(Optional.empty());
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(orderItemRepository.save(any())).thenReturn(order);
+
+
+        Optional<OrderItemCreateDto> update = orderItemService.create(form);
+
+        assertEquals(Optional.empty(), update);
+    }
+
+    @Test
+    @DisplayName("Deletar o pedido pelo id")
+    public void deleteOrder() {
+        UUID orderId = UUID.randomUUID();
+
+        when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
+
+        Boolean update = orderItemService.delete(orderId);
+
+        assertTrue(update);
+    }
+
+
+    @Test
+    @DisplayName("Caso ao deletar nao encontre o pedido")
+    public void deleteOrderCase2() {
+        UUID orderId = UUID.randomUUID();
+
+        when(orderItemRepository.findById(any())).thenReturn(Optional.empty());
+
+        Boolean update = orderItemService.delete(orderId);
+
+        assertFalse(update);
     }
 }

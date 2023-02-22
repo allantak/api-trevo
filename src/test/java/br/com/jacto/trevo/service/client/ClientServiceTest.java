@@ -4,6 +4,8 @@ import br.com.jacto.trevo.controller.client.dto.ClientDetailDto;
 import br.com.jacto.trevo.controller.client.dto.ClientDto;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import br.com.jacto.trevo.controller.client.dto.ClientOrderDto;
 import br.com.jacto.trevo.controller.client.form.ClientForm;
@@ -11,14 +13,14 @@ import br.com.jacto.trevo.controller.client.form.ClientUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
+import br.com.jacto.trevo.repository.ClientRepository;
 import jakarta.transaction.Transactional;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
@@ -27,60 +29,75 @@ import java.util.*;
 @RunWith(SpringRunner.class)
 @Transactional
 @SpringBootTest
-@AutoConfigureTestEntityManager
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.AUTO_CONFIGURED)
 public class ClientServiceTest {
 
     @Autowired
     private ClientService clientService;
 
-    @Autowired
-    private TestEntityManager em;
+    @MockBean
+    private ClientRepository clientRepository;
+
     public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura",120.0, LocalDate.ofEpochDay(2023-02-14));
+    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14));
     public OrderItem order = new OrderItem(3, client, product);
 
     @Test
-    public void deveTrazerUmaListaDeCadastroDeClienteNoFormatoDoDTO() {
+    @DisplayName("deve Trazer Uma Lista De Cadastro De Cliente No Formato Do DTO")
+    public void listClient() {
 
+        client.setClientId(UUID.randomUUID());
 
-        UUID id = (UUID) em.persistAndGetId(client);
+        List<Client> listClient = new ArrayList<Client>();
+        listClient.add(client);
+
+        when(clientRepository.findAll()).thenReturn(listClient);
+
         List<ClientDto> testList = clientService.getAll();
 
         assertNotNull(testList);
-        assertEquals(id, testList.get(0).getClientId());
+        assertEquals(client.getId(), testList.get(0).getClientId());
         assertEquals(client.getEmail(), testList.get(0).getEmail());
     }
 
     @Test
-    public void deveRetornarUmClienteDetalhado(){
+    @DisplayName("deve Retornar Um Cliente Detalhado")
+    public void clientDetail() {
 
-        UUID id = (UUID) em.persistAndGetId(client);
-        Optional<ClientDetailDto> clientDetail =clientService.getId(id);
+        client.setClientId(UUID.randomUUID());
 
-        assertEquals(id, clientDetail.get().getClientId());
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+
+        Optional<ClientDetailDto> clientDetail = clientService.getId(client.getId());
+
+        assertEquals(client.getId(), clientDetail.get().getClientId());
         assertEquals(client.getEmail(), clientDetail.get().getEmail());
         assertEquals(client.getPhone(), clientDetail.get().getPhone());
         assertEquals(client.getClientName(), clientDetail.get().getClientName());
     }
 
     @Test
-    public void deveRetornarFalseSeForInvalidoOClienteIdOptinalEmpty(){
+    @DisplayName("deve Retornar False Se For Invalido O Cliente Id Optinal Empty")
+    public void clientDetailCase2() {
         UUID clientId = UUID.fromString("ce896c60-05a8-465b-a7ad-706e1cc17169");
 
-        Optional<ClientDetailDto> clientDetail =clientService.getId(clientId);
+        when(clientRepository.findById(any())).thenReturn(Optional.empty());
+
+        Optional<ClientDetailDto> clientDetail = clientService.getId(clientId);
 
         assertEquals(Optional.empty(), clientDetail);
     }
 
     @Test
-    public void deveCriarERetornarUmCadastroNovoDeCliente(){
+    @DisplayName("deve Criar E Retornar Um Cadastro Novo De Cliente")
+    public void createCliente() {
+        client.setClientId(UUID.randomUUID());
 
         ClientForm form = new ClientForm();
         form.setClientName("Testando");
-        form.setEmail("test@gmail.com");
+        form.setEmail(client.getEmail());
         form.setPhone("(14) 99832-20566");
 
+        when(clientRepository.save(any())).thenReturn(client);
 
         ClientDto create = clientService.create(form);
 
@@ -90,14 +107,18 @@ public class ClientServiceTest {
 
 
     @Test
-    public void AoFazerUpdateComTodasAsInformacoesCorretasDeveRetornarClientAtualizado(){
-        UUID id = (UUID) em.persistAndGetId(client);
+    @DisplayName("Ao Fazer Update Com Todas As Informacoes Corretas Deve Retornar Client Atualizado")
+    public void updateClient() {
+        client.setClientId(UUID.randomUUID());
 
         ClientUpdateForm form = new ClientUpdateForm();
-        form.setClientId(id);
+        form.setClientId(client.getId());
         form.setEmail("atualizado@gmail.com");
         form.setClientName("Atualizado");
         form.setPhone("17 9982294859");
+
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(clientRepository.save(any())).thenReturn(client);
 
         Optional<ClientDetailDto> update = clientService.update(form);
 
@@ -108,14 +129,18 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void AoFazerUpdateComIdNaoExistenteDeveRetornarOptinalEmpty(){
-        UUID id = (UUID) em.persistAndGetId(client);
+    @DisplayName("Ao Fazer Update Com Id Nao Existente Deve Retornar Optinal Empty")
+    public void updateClientCase2() {
+        client.setClientId(UUID.randomUUID());
 
         ClientUpdateForm form = new ClientUpdateForm();
         form.setClientId(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
         form.setEmail("atualizado@gmail.com");
         form.setClientName("Atualizado");
         form.setPhone("17 9982294859");
+
+        when(clientRepository.findById(any())).thenReturn(Optional.empty());
+        when(clientRepository.save(any())).thenReturn(client);
 
         Optional<ClientDetailDto> update = clientService.update(form);
 
@@ -124,15 +149,20 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void AoFazerUpdateComCampoVazioDeveRetornarODadoJaExistente(){
-        UUID id = (UUID) em.persistAndGetId(client);
+    @DisplayName("Ao Fazer Update Com Campo Vazio Deve Retornar O Dado Ja Existente")
+    public void updateClientCase3() {
+        client.setClientId(UUID.randomUUID());
 
         ClientUpdateForm form = new ClientUpdateForm();
-        form.setClientId(id);
+        form.setClientId(client.getId());
         form.setEmail("");
         form.setClientName("");
         form.setPhone("");
 
+
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(clientRepository.save(any())).thenReturn(client);
+
         Optional<ClientDetailDto> update = clientService.update(form);
         assertEquals(client.getId(), update.get().getClientId());
         assertEquals(client.getClientName(), update.get().getClientName());
@@ -141,11 +171,15 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void AoFazerUpdateComCampoNullDeveRetornarODadoJaExistente(){
-        UUID id = (UUID) em.persistAndGetId(client);
+    @DisplayName("Ao Fazer Update Com Campo Null Deve Retornar O Dado Ja Existente")
+    public void updateClietCase4() {
+        client.setClientId(UUID.randomUUID());
 
         ClientUpdateForm form = new ClientUpdateForm();
-        form.setClientId(id);
+        form.setClientId(client.getId());
+
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(clientRepository.save(any())).thenReturn(client);
 
         Optional<ClientDetailDto> update = clientService.update(form);
         assertEquals(client.getId(), update.get().getClientId());
@@ -155,40 +189,41 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void AoFazerDeleteComIdCorretamenteDeveExcluirOCliente(){
-        UUID id = (UUID) em.persistAndGetId(client);
+    @DisplayName("Ao Fazer Delete Com Id Corretamente Deve Excluir O Cliente")
+    public void deleteClient() {
+        client.setClientId(UUID.randomUUID());
 
-        Boolean deleteClient = clientService.delete(id);
-        Optional<ClientDetailDto> findClient = clientService.getId(id);
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+
+        Boolean deleteClient = clientService.delete(client.getId());
+
         assertTrue(deleteClient);
-        assertEquals(Optional.empty(), findClient);
 
     }
 
     @Test
-    public void AoFazerDeleteComIdNaoExistenteDeveRetornaFalse(){
-        UUID id = (UUID) em.persistAndGetId(client);
+    @DisplayName("Ao Fazer Delete Com Id Nao Existente Deve Retorna False")
+    public void deleteClientCase2() {
+
+        client.setClientId(UUID.randomUUID());
+
+        when(clientRepository.findById(any())).thenReturn(Optional.empty());
 
         boolean deleteClient = clientService.delete(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
         assertFalse(deleteClient);
     }
 
-
     @Test
-    public void ListarClienteComSuasPedidos(){
-        em.persistAndFlush(client);
-        em.persistAndFlush(product);
-        em.persist(order);
-
+    @DisplayName("Cliente Com Suas Pedidos")
+    public void clientOrder() {
         List<OrderItem> list = new ArrayList<OrderItem>();
         list.add(order);
 
         client.setOrders(list);
-        product.setOrders(list);
 
-        em.persist(client);
-        em.persist(product);
-        em.flush();
+        client.setClientId(UUID.randomUUID());
+
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
 
         Optional<ClientOrderDto> clientOrder = clientService.clientOrder(client.getId());
 
@@ -200,7 +235,9 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void AoListarAOrderDoClienteComIdNaoExistenteRetorneOptinalEmpty(){
+    @DisplayName("Ao Listar A Order Do Cliente Com Id Nao Existente Retorne Optinal Empty")
+    public void clientOrderCase2() {
+        when(clientRepository.findById(any())).thenReturn(Optional.empty());
         Optional<ClientOrderDto> clientOrder = clientService.clientOrder(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
         assertEquals(Optional.empty(), clientOrder);
     }

@@ -83,13 +83,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 <b class="fc">&nbsp;public class ImageUpdateForm {</b>
 &nbsp;
-&nbsp;    @NotNull
+&nbsp;    @NotNull(message = &quot;Obrigatório o ID do produto&quot;)
 &nbsp;    private UUID productId;
 &nbsp;
-&nbsp;    @NotNull
+&nbsp;    @NotNull(message = &quot;Obrigatório o ID da imagem&quot;)
 &nbsp;    private UUID imageId;
 &nbsp;
-&nbsp;    @NotNull
+&nbsp;    @NotNull(message = &quot;Obrigatório o arquivo de imagem&quot;)
 &nbsp;    private MultipartFile img;
 &nbsp;
 &nbsp;
@@ -140,7 +140,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-20 09:30</div>
+    <div style="float:right;">generated on 2023-02-22 09:42</div>
 </div>
 </body>
 </html>

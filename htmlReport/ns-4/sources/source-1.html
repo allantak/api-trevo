@@ -92,9 +92,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import br.com.jacto.trevo.controller.client.form.ClientForm;
 &nbsp;import br.com.jacto.trevo.controller.client.form.ClientUpdateForm;
 &nbsp;import br.com.jacto.trevo.service.client.ClientService;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
 &nbsp;import jakarta.transaction.Transactional;
 &nbsp;import jakarta.validation.Valid;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.core.annotation.Order;
 &nbsp;import org.springframework.http.ResponseEntity;
 &nbsp;import org.springframework.web.bind.annotation.*;
 &nbsp;import org.springframework.web.util.UriComponentsBuilder;
@@ -106,23 +109,27 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;@RestController
 &nbsp;@RequestMapping(&quot;/clients&quot;)
+&nbsp;@Tag(name = &quot;Cliente&quot;, description = &quot;Gerenciamento de clientes&quot;)
 <b class="fc">&nbsp;public class ClientController {</b>
 &nbsp;
 &nbsp;    @Autowired
 &nbsp;    private ClientService clientService;
 &nbsp;
 &nbsp;    @GetMapping
+&nbsp;    @Operation(summary = &quot;Listagem de clientes registrados&quot;)
 &nbsp;    public List&lt;ClientDto&gt; getClient() {
 <b class="fc">&nbsp;        return clientService.getAll();</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;/orders/{id}&quot;)
+&nbsp;    @Operation(summary = &quot;Mostra os pedidos do cliente&quot;)
 &nbsp;    public ResponseEntity&lt;ClientOrderDto&gt; getClientOrder(@PathVariable UUID id) {
 <b class="fc">&nbsp;        Optional&lt;ClientOrderDto&gt; clientOrder = clientService.clientOrder(id);</b>
 <b class="fc">&nbsp;        return clientOrder.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    @Operation(summary = &quot;Mostra os detalhes do cliente&quot;)
 &nbsp;    public ResponseEntity&lt;ClientDetailDto&gt; getClientId(@PathVariable UUID id) {
 <b class="fc">&nbsp;        Optional&lt;ClientDetailDto&gt; client = clientService.getId(id);</b>
 <b class="fc">&nbsp;        return client.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
@@ -130,6 +137,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @PostMapping
 &nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Registra o cliente&quot;)
 &nbsp;    public ResponseEntity&lt;ClientDto&gt; createClient(@RequestBody @Valid ClientForm client, UriComponentsBuilder uriBuilder) {
 <b class="fc">&nbsp;        ClientDto save = clientService.create(client);</b>
 <b class="fc">&nbsp;        URI uri = uriBuilder.path(&quot;/clients/{id}&quot;).buildAndExpand(save.getClientId()).toUri();</b>
@@ -138,6 +146,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @PutMapping
 &nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Atualiza o cliente&quot;)
 &nbsp;    public ResponseEntity&lt;ClientDetailDto&gt; updateClient(@RequestBody @Valid ClientUpdateForm client) {
 <b class="fc">&nbsp;        Optional&lt;ClientDetailDto&gt; updateClient = clientService.update(client);</b>
 <b class="fc">&nbsp;        return updateClient.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
@@ -145,6 +154,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @DeleteMapping(&quot;/{id}&quot;)
 &nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Excluir cliente&quot;)
 &nbsp;    public ResponseEntity&lt;Void&gt; deleteClient(@PathVariable UUID id) {
 <b class="fc">&nbsp;        Boolean findClient = clientService.delete(id);</b>
 <b class="fc">&nbsp;        return findClient ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();</b>
@@ -174,7 +184,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-20 09:30</div>
+    <div style="float:right;">generated on 2023-02-22 09:42</div>
 </div>
 </body>
 </html>

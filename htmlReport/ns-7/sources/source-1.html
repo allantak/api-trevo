@@ -93,9 +93,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import br.com.jacto.trevo.controller.image.form.ImageUpdateForm;
 &nbsp;import br.com.jacto.trevo.controller.image.form.ProductImageForm;
 &nbsp;import br.com.jacto.trevo.service.product.ImageService;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
 &nbsp;import jakarta.transaction.Transactional;
 &nbsp;import jakarta.validation.Valid;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.core.annotation.Order;
 &nbsp;import org.springframework.http.ResponseEntity;
 &nbsp;import org.springframework.web.bind.annotation.*;
 &nbsp;import org.springframework.web.util.UriComponentsBuilder;
@@ -107,18 +110,21 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;@RestController
 &nbsp;@RequestMapping
+&nbsp;@Tag(name = &quot;Imagem&quot;, description = &quot;Gerenciamento de imagens&quot;)
 <b class="fc">&nbsp;public class ImageController {</b>
 &nbsp;
 &nbsp;    @Autowired
 &nbsp;    ImageService imageService;
 &nbsp;
 &nbsp;    @GetMapping(&quot;/images/{id}&quot;)
+&nbsp;    @Operation(summary = &quot;Mostra a imagem específica&quot;)
 &nbsp;    public ResponseEntity&lt;ImageDto&gt; getId(@PathVariable UUID id) {
 <b class="fc">&nbsp;        Optional&lt;ImageDto&gt; findImage = imageService.getImage(id);</b>
 <b class="fc">&nbsp;        return findImage.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;/products/images/{id}&quot;)
+&nbsp;    @Operation(summary = &quot;Mostra a imagem do produto específico&quot;)
 &nbsp;    public ResponseEntity&lt;ProductImageDto&gt; getImageProductId(@PathVariable UUID id) {
 <b class="fc">&nbsp;        Optional&lt;ProductImageDto&gt; findImage = imageService.getImageProduct(id);</b>
 <b class="fc">&nbsp;        return findImage.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
@@ -126,6 +132,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @PostMapping(&quot;/products/images&quot;)
 &nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Registra uma imagem no produto&quot;)
 &nbsp;    public ResponseEntity&lt;ProductImageCreateDto&gt; uploadImage(@ModelAttribute @Valid ProductImageForm image, UriComponentsBuilder uriBuilder) throws IOException {
 <b class="fc">&nbsp;        Optional&lt;ProductImageCreateDto&gt; img = imageService.upload(image);</b>
 <b class="fc">&nbsp;        if (img.isEmpty()) {</b>
@@ -137,6 +144,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @PutMapping(&quot;/images&quot;)
 &nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Atualiza a imagem do produto&quot;)
 &nbsp;    public ResponseEntity&lt;ImageDto&gt; updateImage(@ModelAttribute @Valid ImageUpdateForm img) throws IOException {
 <b class="fc">&nbsp;        Optional&lt;ImageDto&gt; updateImage = imageService.updateImage(img);</b>
 <b class="fc">&nbsp;        return updateImage.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
@@ -144,6 +152,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @DeleteMapping(&quot;/images&quot;)
 &nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Exclui a imagem&quot;)
 &nbsp;    public ResponseEntity&lt;Void&gt; deleteImage(@RequestBody @Valid ImageDeleteForm img) {
 <b class="fc">&nbsp;        Boolean deleteImage = imageService.deleteImage(img);</b>
 <b class="fc">&nbsp;        return deleteImage ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();</b>
@@ -173,7 +182,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-20 09:30</div>
+    <div style="float:right;">generated on 2023-02-22 09:42</div>
 </div>
 </body>
 </html>

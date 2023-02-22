@@ -81,14 +81,14 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 <b class="fc">&nbsp;public class ClientForm {</b>
 &nbsp;
-&nbsp;    @NotBlank
+&nbsp;    @NotBlank(message = &quot;Obrigatório o nome&quot;)
 &nbsp;    private String clientName;
 &nbsp;
 &nbsp;    @NotBlank
 &nbsp;    @Email(message = &quot;Formato do email é inválido&quot;)
 &nbsp;    private String email;
 &nbsp;
-&nbsp;    @NotBlank
+&nbsp;    @NotBlank(message = &quot;Obrigatório o telefone&quot;)
 &nbsp;    private String phone;
 &nbsp;
 &nbsp;    public String getClientName() {
@@ -138,7 +138,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-20 09:30</div>
+    <div style="float:right;">generated on 2023-02-22 09:42</div>
 </div>
 </body>
 </html>

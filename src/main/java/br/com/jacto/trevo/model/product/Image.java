@@ -46,4 +46,8 @@ public class Image {
     public void setImageId(UUID imageId) {
         this.imageId = imageId;
     }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 }

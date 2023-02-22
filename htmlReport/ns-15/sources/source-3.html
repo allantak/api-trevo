@@ -40,64 +40,64 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">ProductService</td>
 <td class="coverageStat">
   <span class="percent">
-    57,1%
+    85,7%
   </span>
   <span class="absValue">
-    (4/7)
+    (6/7)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    74,2%
+    93,5%
   </span>
   <span class="absValue">
-    (23/31)
+    (29/31)
   </span>
 </td>
 </tr>
   <tr>
-    <td class="name">ProductService$MockitoMock$RfiNEKEH</td>
+    <td class="name">ProductService$MockitoMock$eVLZ5J5z</td>
   </tr>
   <tr>
-    <td class="name">ProductService$MockitoMock$RfiNEKEH$auxiliary$7yw70adk</td>
+    <td class="name">ProductService$MockitoMock$eVLZ5J5z$auxiliary$1juQJpLb</td>
   </tr>
   <tr>
-    <td class="name">ProductService$MockitoMock$RfiNEKEH$auxiliary$GzfRN5ni</td>
+    <td class="name">ProductService$MockitoMock$eVLZ5J5z$auxiliary$31ANY24w</td>
   </tr>
   <tr>
-    <td class="name">ProductService$MockitoMock$RfiNEKEH$auxiliary$kQjYMgwx</td>
+    <td class="name">ProductService$MockitoMock$eVLZ5J5z$auxiliary$3v7CAPwz</td>
   </tr>
   <tr>
-    <td class="name">ProductService$MockitoMock$RfiNEKEH$auxiliary$LcTlGAo2</td>
+    <td class="name">ProductService$MockitoMock$eVLZ5J5z$auxiliary$4DQepspJ</td>
   </tr>
   <tr>
-    <td class="name">ProductService$MockitoMock$RfiNEKEH$auxiliary$M2a2Uq9a</td>
+    <td class="name">ProductService$MockitoMock$eVLZ5J5z$auxiliary$4OrmNRDW</td>
   </tr>
   <tr>
-    <td class="name">ProductService$MockitoMock$RfiNEKEH$auxiliary$niZMMX5l</td>
+    <td class="name">ProductService$MockitoMock$eVLZ5J5z$auxiliary$ha96W9zN</td>
   </tr>
   <tr>
-    <td class="name">ProductService$MockitoMock$RfiNEKEH$auxiliary$sVuXjepr</td>
+    <td class="name">ProductService$MockitoMock$eVLZ5J5z$auxiliary$tBGtpRha</td>
   </tr>
   <tr>
-    <td class="name">ProductService$MockitoMock$RfiNEKEH$auxiliary$VXHEkgKu</td>
+    <td class="name">ProductService$MockitoMock$eVLZ5J5z$auxiliary$wZPPEKEO</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
 <td class="coverageStat">
   <span class="percent">
-    57,1%
+    85,7%
   </span>
   <span class="absValue">
-    (4/7)
+    (6/7)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    74,2%
+    93,5%
   </span>
   <span class="absValue">
-    (23/31)
+    (29/31)
   </span>
 </td>
 </tr>
@@ -162,12 +162,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Boolean delete(UUID id) {
-<b class="nc">&nbsp;        Optional&lt;Product&gt; findProduct = productRepository.findById(id);</b>
-<b class="nc">&nbsp;        if (findProduct.isEmpty()) {</b>
-<b class="nc">&nbsp;            return false;</b>
+<b class="fc">&nbsp;        Optional&lt;Product&gt; findProduct = productRepository.findById(id);</b>
+<b class="fc">&nbsp;        if (findProduct.isEmpty()) {</b>
+<b class="fc">&nbsp;            return false;</b>
 &nbsp;        }
-<b class="nc">&nbsp;        productRepository.deleteById(id);</b>
-<b class="nc">&nbsp;        return true;</b>
+<b class="fc">&nbsp;        productRepository.deleteById(id);</b>
+<b class="fc">&nbsp;        return true;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Optional&lt;Product&gt; update(ProductUpdateForm product) {
@@ -201,7 +201,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Optional&lt;ProductOrderDto&gt; productOrder(UUID id) {
-<b class="nc">&nbsp;        return productRepository.findById(id).map(ProductOrderDto::new);</b>
+<b class="fc">&nbsp;        return productRepository.findById(id).map(ProductOrderDto::new);</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -227,7 +227,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-20 09:30</div>
+    <div style="float:right;">generated on 2023-02-22 09:42</div>
 </div>
 </body>
 </html>

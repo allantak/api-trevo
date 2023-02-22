@@ -6,12 +6,14 @@ import java.util.UUID;
 
 @Entity()
 public class Culture {
-    public Culture(){}
+    public Culture() {
+    }
 
-    public Culture(String cultureName, Product product){
+    public Culture(String cultureName, Product product) {
         this.cultureName = cultureName;
         this.product = product;
     }
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID cultureId;
@@ -38,5 +40,9 @@ public class Culture {
 
     public void setCultureName(String cultureName) {
         this.cultureName = cultureName;
+    }
+
+    public void setCultureId(UUID cultureId) {
+        this.cultureId = cultureId;
     }
 }

@@ -83,13 +83,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 <b class="fc">&nbsp;public class OrderItemForm {</b>
 &nbsp;
-&nbsp;    @NotNull
+&nbsp;    @NotNull(message = &quot;Obrigatório o ID do cliente&quot;)
 &nbsp;    private UUID clientId;
 &nbsp;
-&nbsp;    @NotBlank
+&nbsp;    @NotBlank(message = &quot;Obrigatório o nome do produto&quot;)
 &nbsp;    private String productName;
 &nbsp;
-&nbsp;    @NotNull
+&nbsp;    @NotNull(message = &quot;Obrigatório o quantidade do produto&quot;)
 &nbsp;    private Integer quantity;
 &nbsp;
 &nbsp;    public UUID getClientId() {
@@ -139,7 +139,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-20 09:30</div>
+    <div style="float:right;">generated on 2023-02-22 09:42</div>
 </div>
 </body>
 </html>

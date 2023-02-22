@@ -84,16 +84,16 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import java.util.List;
 &nbsp;
 <b class="fc">&nbsp;public class ProductForm {</b>
-&nbsp;    @NotBlank
+&nbsp;    @NotBlank(message = &quot;Obrigatório o nome do produto&quot;)
 &nbsp;    private String productName;
 &nbsp;
-&nbsp;    @NotNull
+&nbsp;    @NotNull(message = &quot;Obrigatório o status do produto&quot;)
 &nbsp;    private Boolean status;
 &nbsp;
-&nbsp;    @NotBlank
+&nbsp;    @NotBlank(message = &quot;Obrigatório a descricao do produto&quot;)
 &nbsp;    private String description;
 &nbsp;
-&nbsp;    @NotNull @NotEmpty
+&nbsp;    @NotNull(message = &quot;Obrigatório a lista de cultura&quot;) @NotEmpty
 &nbsp;    private List&lt;String&gt; cultures;
 &nbsp;
 &nbsp;    private Double areaSize;
@@ -172,7 +172,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-20 09:30</div>
+    <div style="float:right;">generated on 2023-02-22 09:42</div>
 </div>
 </body>
 </html>

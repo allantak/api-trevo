@@ -98,9 +98,14 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import br.com.jacto.trevo.model.product.Product;
 &nbsp;import br.com.jacto.trevo.service.product.CultureService;
 &nbsp;import br.com.jacto.trevo.service.product.ProductService;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.Parameter;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
 &nbsp;import jakarta.transaction.Transactional;
 &nbsp;import jakarta.validation.Valid;
+&nbsp;import org.springdoc.core.annotations.ParameterObject;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.core.annotation.Order;
 &nbsp;import org.springframework.data.domain.Page;
 &nbsp;import org.springframework.data.domain.Pageable;
 &nbsp;import org.springframework.http.ResponseEntity;
@@ -111,8 +116,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import java.util.Optional;
 &nbsp;import java.util.UUID;
 &nbsp;
+&nbsp;
 &nbsp;@RestController
 &nbsp;@RequestMapping(&quot;/products&quot;)
+&nbsp;@Tag(name = &quot;Produto&quot;, description = &quot;Gerenciamento de produtos&quot;)
 <b class="fc">&nbsp;public class ProductController {</b>
 &nbsp;
 &nbsp;    @Autowired
@@ -122,25 +129,28 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    private CultureService cultureService;
 &nbsp;
 &nbsp;    @GetMapping
-&nbsp;    public Page&lt;ProductDto&gt; getProduct(Pageable pagination) {
+&nbsp;    @Operation(summary = &quot;Lista todos os produtos&quot;, description = &quot;Por padrão a quantidade de produto em uma pagina é 20, mas pode ser mudado&quot;)
+&nbsp;    public Page&lt;ProductDto&gt; getProduct(@ParameterObject Pageable pagination) {
 <b class="fc">&nbsp;        return productService.getAll(pagination);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    @Operation(summary = &quot;Mostra o produto com mais detalhes&quot;)
 &nbsp;    public ResponseEntity&lt;ProductDetailDto&gt; getProductId(@PathVariable UUID id) {
 <b class="fc">&nbsp;        Optional&lt;ProductDetailDto&gt; product = productService.getId(id);</b>
 <b class="fc">&nbsp;        return product.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;/orders/{id}&quot;)
+&nbsp;    @Operation(summary = &quot;Mostra o produto com seus detalhas e suas culturas&quot;)
 &nbsp;    public ResponseEntity&lt;ProductOrderDto&gt; getProductOrder(@PathVariable UUID id) {
 <b class="fc">&nbsp;        Optional&lt;ProductOrderDto&gt; productOrder = productService.productOrder(id);</b>
 <b class="fc">&nbsp;        return productOrder.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
-&nbsp;
 &nbsp;    @PostMapping
 &nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Registro de produto&quot;)
 &nbsp;    public ResponseEntity&lt;ProductCreateDto&gt; createProduct(@RequestBody @Valid ProductForm product, UriComponentsBuilder uriBuilder) {
 <b class="fc">&nbsp;        ProductCreateDto save = productService.create(product);</b>
 <b class="fc">&nbsp;        URI uri = uriBuilder.path(&quot;/products/{id}&quot;).buildAndExpand(save.getProductId()).toUri();</b>
@@ -149,6 +159,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @PutMapping
 &nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Atualização do produto&quot;)
 &nbsp;    public ResponseEntity&lt;Product&gt; updateProduct(@RequestBody @Valid ProductUpdateForm product) {
 <b class="fc">&nbsp;        Optional&lt;Product&gt; updateProduct = productService.update(product);</b>
 <b class="fc">&nbsp;        return updateProduct.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
@@ -156,23 +167,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @PutMapping(&quot;/cultures&quot;)
 &nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Atualização da cultura do produto&quot;)
 &nbsp;    public ResponseEntity&lt;Culture&gt; updateCulture(@RequestBody @Valid ProductCultureForm culture) {
 <b class="fc">&nbsp;        Optional&lt;Culture&gt; updateCulture = cultureService.update(culture);</b>
 <b class="fc">&nbsp;        return updateCulture.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    @DeleteMapping(&quot;/cultures&quot;)
-&nbsp;    @Transactional
-&nbsp;    public ResponseEntity&lt;Culture&gt; deleteCulture(@RequestBody @Valid ProductCultureDeleteForm culture) {
-<b class="fc">&nbsp;        Boolean findCulture = cultureService.delete(culture);</b>
-<b class="fc">&nbsp;        return findCulture ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();</b>
-&nbsp;    }
-&nbsp;
 &nbsp;    @DeleteMapping(&quot;/{id}&quot;)
 &nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Excluir produto&quot;, description = &quot;Culturas e pedidos vinculada ao produto serão excluído&quot;)
 &nbsp;    public ResponseEntity&lt;Void&gt; deleteProduct(@PathVariable UUID id) {
 <b class="fc">&nbsp;        Boolean deleteProduct = productService.delete(id);</b>
 <b class="fc">&nbsp;        return deleteProduct ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/cultures&quot;)
+&nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Excluir cultura do produto&quot;)
+&nbsp;    public ResponseEntity&lt;Culture&gt; deleteCulture(@RequestBody @Valid ProductCultureDeleteForm culture) {
+<b class="fc">&nbsp;        Boolean findCulture = cultureService.delete(culture);</b>
+<b class="fc">&nbsp;        return findCulture ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();</b>
 &nbsp;    }
 &nbsp;
 &nbsp;
@@ -200,7 +214,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-20 09:30</div>
+    <div style="float:right;">generated on 2023-02-22 09:42</div>
 </div>
 </body>
 </html>

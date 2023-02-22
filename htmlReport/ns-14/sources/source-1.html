@@ -40,61 +40,61 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">OrderItemService</td>
 <td class="coverageStat">
   <span class="percent">
-    50%
+    100%
   </span>
   <span class="absValue">
-    (3/6)
+    (6/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    74,1%
+    100%
   </span>
   <span class="absValue">
-    (20/27)
+    (27/27)
   </span>
 </td>
 </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$u6zTnsRM</td>
+    <td class="name">OrderItemService$MockitoMock$fqErZkc6</td>
   </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$u6zTnsRM$auxiliary$6t4XYeEv</td>
+    <td class="name">OrderItemService$MockitoMock$fqErZkc6$auxiliary$40CYEkyv</td>
   </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$u6zTnsRM$auxiliary$coiEjaZV</td>
+    <td class="name">OrderItemService$MockitoMock$fqErZkc6$auxiliary$bnpXSGNs</td>
   </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$u6zTnsRM$auxiliary$KYJ4FwBa</td>
+    <td class="name">OrderItemService$MockitoMock$fqErZkc6$auxiliary$EQqwq6OR</td>
   </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$u6zTnsRM$auxiliary$lKhZIeRl</td>
+    <td class="name">OrderItemService$MockitoMock$fqErZkc6$auxiliary$SK6zl9iL</td>
   </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$u6zTnsRM$auxiliary$lxgdvlz3</td>
+    <td class="name">OrderItemService$MockitoMock$fqErZkc6$auxiliary$soLAnbsl</td>
   </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$u6zTnsRM$auxiliary$OKKYjEIh</td>
+    <td class="name">OrderItemService$MockitoMock$fqErZkc6$auxiliary$w89fzWGX</td>
   </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$u6zTnsRM$auxiliary$YI3wsQ6G</td>
+    <td class="name">OrderItemService$MockitoMock$fqErZkc6$auxiliary$wzKuvFzL</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
 <td class="coverageStat">
   <span class="percent">
-    50%
+    100%
   </span>
   <span class="absValue">
-    (3/6)
+    (6/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    74,1%
+    100%
   </span>
   <span class="absValue">
-    (20/27)
+    (27/27)
   </span>
 </td>
 </tr>
@@ -135,11 +135,11 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;
 &nbsp;    public List&lt;OrderItemDto&gt; getAll() {
-<b class="nc">&nbsp;        return orderItemRepository.findAll().stream().map(OrderItemDto::new).toList();</b>
+<b class="fc">&nbsp;        return orderItemRepository.findAll().stream().map(OrderItemDto::new).toList();</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Optional&lt;OrderItemDto&gt; getId(UUID id) {
-<b class="nc">&nbsp;        return orderItemRepository.findById(id).map(OrderItemDto::new);</b>
+<b class="fc">&nbsp;        return orderItemRepository.findById(id).map(OrderItemDto::new);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Optional&lt;OrderItemCreateDto&gt; create(OrderItemForm orderItem) {
@@ -157,12 +157,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Boolean delete(UUID id) {
-<b class="nc">&nbsp;        Optional&lt;OrderItemDto&gt; findOrder = orderItemRepository.findById(id).map(OrderItemDto::new);</b>
-<b class="nc">&nbsp;        if (findOrder.isEmpty()) {</b>
-<b class="nc">&nbsp;            return false;</b>
+<b class="fc">&nbsp;        Optional&lt;OrderItem&gt; findOrder = orderItemRepository.findById(id);</b>
+<b class="fc">&nbsp;        if (findOrder.isEmpty()) {</b>
+<b class="fc">&nbsp;            return false;</b>
 &nbsp;        }
-<b class="nc">&nbsp;        orderItemRepository.deleteById(id);</b>
-<b class="nc">&nbsp;        return true;</b>
+<b class="fc">&nbsp;        orderItemRepository.deleteById(id);</b>
+<b class="fc">&nbsp;        return true;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Optional&lt;OrderItemDto&gt; update(OrderItemUpdateForm orderItem) {
@@ -212,7 +212,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-20 09:30</div>
+    <div style="float:right;">generated on 2023-02-22 09:42</div>
 </div>
 </body>
 </html>

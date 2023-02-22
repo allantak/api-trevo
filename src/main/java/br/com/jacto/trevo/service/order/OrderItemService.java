@@ -50,7 +50,7 @@ public class OrderItemService {
     }
 
     public Boolean delete(UUID id) {
-        Optional<OrderItemDto> findOrder = orderItemRepository.findById(id).map(OrderItemDto::new);
+        Optional<OrderItem> findOrder = orderItemRepository.findById(id);
         if (findOrder.isEmpty()) {
             return false;
         }

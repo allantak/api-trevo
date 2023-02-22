@@ -40,61 +40,61 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">ImageService</td>
 <td class="coverageStat">
   <span class="percent">
-    66,7%
+    100%
   </span>
   <span class="absValue">
-    (4/6)
+    (6/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    85,7%
+    96,4%
   </span>
   <span class="absValue">
-    (24/28)
+    (27/28)
   </span>
 </td>
 </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$PhdARN8W</td>
+    <td class="name">ImageService$MockitoMock$KORISIva</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$PhdARN8W$auxiliary$15zpIWMi</td>
+    <td class="name">ImageService$MockitoMock$KORISIva$auxiliary$EZGD1dDk</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$PhdARN8W$auxiliary$bR7YsE9h</td>
+    <td class="name">ImageService$MockitoMock$KORISIva$auxiliary$khL4BqKc</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$PhdARN8W$auxiliary$d9xLbLxA</td>
+    <td class="name">ImageService$MockitoMock$KORISIva$auxiliary$McZbGwz1</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$PhdARN8W$auxiliary$E1cEFtbM</td>
+    <td class="name">ImageService$MockitoMock$KORISIva$auxiliary$QEq6TwZH</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$PhdARN8W$auxiliary$g4r8lMN1</td>
+    <td class="name">ImageService$MockitoMock$KORISIva$auxiliary$tjX5Dmtp</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$PhdARN8W$auxiliary$jhtCZeAb</td>
+    <td class="name">ImageService$MockitoMock$KORISIva$auxiliary$VBW9PTAm</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$PhdARN8W$auxiliary$nZkiGX0r</td>
+    <td class="name">ImageService$MockitoMock$KORISIva$auxiliary$X0q655cg</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
 <td class="coverageStat">
   <span class="percent">
-    66,7%
+    100%
   </span>
   <span class="absValue">
-    (4/6)
+    (6/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    85,7%
+    96,4%
   </span>
   <span class="absValue">
-    (24/28)
+    (27/28)
   </span>
 </td>
 </tr>
@@ -133,13 +133,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    private ProductRepository productRepository;
 &nbsp;
 &nbsp;    public Optional&lt;ImageDto&gt; getImage(UUID id) {
-<b class="nc">&nbsp;        Optional&lt;Image&gt; img = imageRepository.findById(id);</b>
-<b class="nc">&nbsp;        return img.map(ImageDto::new);</b>
+<b class="fc">&nbsp;        Optional&lt;Image&gt; img = imageRepository.findById(id);</b>
+<b class="fc">&nbsp;        return img.map(ImageDto::new);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Optional&lt;ProductImageDto&gt; getImageProduct(UUID id) {
-<b class="nc">&nbsp;        Optional&lt;Product&gt; product = productRepository.findById(id);</b>
-<b class="nc">&nbsp;        return product.map(ProductImageDto::new);</b>
+<b class="fc">&nbsp;        Optional&lt;Product&gt; product = productRepository.findById(id);</b>
+<b class="fc">&nbsp;        return product.map(ProductImageDto::new);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Optional&lt;ProductImageCreateDto&gt; upload(ProductImageForm image) throws IOException {
@@ -177,7 +177,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    public Boolean deleteImage(ImageDeleteForm img) {
 <b class="fc">&nbsp;        Optional&lt;Image&gt; findImage = imageRepository.findById(img.getImageId());</b>
 <b class="fc">&nbsp;        if (findImage.isEmpty()) {</b>
-<b class="fc">&nbsp;            return false;</b>
+<b class="nc">&nbsp;            return false;</b>
 &nbsp;        }
 &nbsp;
 <b class="fc">&nbsp;        if (!findImage.get().getProduct().getProductId().equals(img.getProductId())) {</b>
@@ -212,7 +212,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-20 09:30</div>
+    <div style="float:right;">generated on 2023-02-22 09:42</div>
 </div>
 </body>
 </html>

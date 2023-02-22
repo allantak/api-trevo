@@ -91,9 +91,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import br.com.jacto.trevo.controller.order.form.OrderItemForm;
 &nbsp;import br.com.jacto.trevo.controller.order.form.OrderItemUpdateForm;
 &nbsp;import br.com.jacto.trevo.service.order.OrderItemService;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
 &nbsp;import jakarta.transaction.Transactional;
 &nbsp;import jakarta.validation.Valid;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.core.annotation.Order;
 &nbsp;import org.springframework.http.ResponseEntity;
 &nbsp;import org.springframework.web.bind.annotation.*;
 &nbsp;import org.springframework.web.util.UriComponentsBuilder;
@@ -105,6 +108,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;@RestController
 &nbsp;@RequestMapping(&quot;/orders&quot;)
+&nbsp;@Tag(name = &quot;Pedido&quot;, description = &quot;Gerenciamento de pedidos&quot;)
 <b class="fc">&nbsp;public class OrderItemController {</b>
 &nbsp;
 &nbsp;    @Autowired
@@ -112,11 +116,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;
 &nbsp;    @GetMapping
+&nbsp;    @Operation(summary = &quot;Lista todos os pedidos registrado&quot;)
 &nbsp;    public List&lt;OrderItemDto&gt; getOrderItem() {
 <b class="fc">&nbsp;        return orderItemService.getAll();</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    @Operation(summary = &quot;Mostra o id do pedido&quot;)
 &nbsp;    public ResponseEntity&lt;OrderItemDto&gt; getOrderItemId(@PathVariable UUID id) {
 <b class="fc">&nbsp;        Optional&lt;OrderItemDto&gt; findOrder = orderItemService.getId(id);</b>
 <b class="fc">&nbsp;        return findOrder.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
@@ -124,6 +130,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @PostMapping
 &nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Registro de pedidos&quot;, description = &quot;Para registrar um pedido é obrigatorio os id de produto e cliente&quot;)
 &nbsp;    public ResponseEntity&lt;OrderItemCreateDto&gt; createOrderItem(@RequestBody @Valid OrderItemForm orderItem, UriComponentsBuilder uriBuilder) {
 <b class="fc">&nbsp;        Optional&lt;OrderItemCreateDto&gt; order = orderItemService.create(orderItem);</b>
 <b class="fc">&nbsp;        if (order.isEmpty()) {</b>
@@ -136,6 +143,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @PutMapping
 &nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Atualização do pedido&quot;)
 &nbsp;    public ResponseEntity&lt;OrderItemDto&gt; updateOrderItem(@RequestBody @Valid OrderItemUpdateForm orderItem) {
 <b class="fc">&nbsp;        Optional&lt;OrderItemDto&gt; update = orderItemService.update(orderItem);</b>
 <b class="fc">&nbsp;        return update.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
@@ -143,9 +151,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @DeleteMapping(&quot;/{id}&quot;)
 &nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Delete de pedido&quot;)
 &nbsp;    public ResponseEntity&lt;Void&gt; deleteOrderItem(@PathVariable UUID id) {
 <b class="fc">&nbsp;        Boolean findOrder = orderItemService.delete(id);</b>
-&nbsp;        ;
 <b class="fc">&nbsp;        return findOrder ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();</b>
 &nbsp;    }
 &nbsp;}
@@ -172,7 +180,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-20 09:30</div>
+    <div style="float:right;">generated on 2023-02-22 09:42</div>
 </div>
 </body>
 </html>
