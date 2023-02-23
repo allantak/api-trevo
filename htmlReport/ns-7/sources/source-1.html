@@ -43,7 +43,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (6/6)
+    (7/7)
   </span>
 </td>
 <td class="coverageStat">
@@ -51,7 +51,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (14/14)
+    (16/16)
   </span>
 </td>
 </tr>
@@ -65,7 +65,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (6/6)
+    (7/7)
   </span>
 </td>
 <td class="coverageStat">
@@ -73,7 +73,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (14/14)
+    (16/16)
   </span>
 </td>
 </tr>
@@ -98,7 +98,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import jakarta.transaction.Transactional;
 &nbsp;import jakarta.validation.Valid;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
-&nbsp;import org.springframework.core.annotation.Order;
+&nbsp;import org.springframework.core.io.ByteArrayResource;
+&nbsp;import org.springframework.http.HttpHeaders;
+&nbsp;import org.springframework.http.MediaType;
 &nbsp;import org.springframework.http.ResponseEntity;
 &nbsp;import org.springframework.web.bind.annotation.*;
 &nbsp;import org.springframework.web.util.UriComponentsBuilder;
@@ -117,20 +119,22 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    ImageService imageService;
 &nbsp;
 &nbsp;    @GetMapping(&quot;/images/{id}&quot;)
-&nbsp;    @Operation(summary = &quot;Mostra a imagem específica&quot;)
-&nbsp;    public ResponseEntity&lt;ImageDto&gt; getId(@PathVariable UUID id) {
-<b class="fc">&nbsp;        Optional&lt;ImageDto&gt; findImage = imageService.getImage(id);</b>
-<b class="fc">&nbsp;        return findImage.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
+&nbsp;    @Operation(summary = &quot;Mostra a imagem no corpo da resposta&quot;)
+&nbsp;    public ResponseEntity&lt;ByteArrayResource&gt; getId(@PathVariable UUID id) {
+<b class="fc">&nbsp;        Optional&lt;ByteArrayResource&gt; findImage = imageService.getImage(id);</b>
+<b class="fc">&nbsp;        return findImage.map(byteArrayResource -&gt; ResponseEntity.ok()</b>
+<b class="fc">&nbsp;                .contentType(MediaType.IMAGE_PNG)</b>
+<b class="fc">&nbsp;                .body(byteArrayResource)).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;/products/images/{id}&quot;)
-&nbsp;    @Operation(summary = &quot;Mostra a imagem do produto específico&quot;)
+&nbsp;    @Operation(summary = &quot;Listagem das imagens do produto específico&quot;, description = &quot;Para retorna da imagens no corpo da respota é pegar a lista de identificadores de imagem e fazer uma solicitação GET para cada um deles.&quot;)
 &nbsp;    public ResponseEntity&lt;ProductImageDto&gt; getImageProductId(@PathVariable UUID id) {
 <b class="fc">&nbsp;        Optional&lt;ProductImageDto&gt; findImage = imageService.getImageProduct(id);</b>
 <b class="fc">&nbsp;        return findImage.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    @PostMapping(&quot;/products/images&quot;)
+&nbsp;    @PostMapping(value = &quot;/products/images&quot;, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 &nbsp;    @Transactional
 &nbsp;    @Operation(summary = &quot;Registra uma imagem no produto&quot;)
 &nbsp;    public ResponseEntity&lt;ProductImageCreateDto&gt; uploadImage(@ModelAttribute @Valid ProductImageForm image, UriComponentsBuilder uriBuilder) throws IOException {
@@ -142,7 +146,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        return ResponseEntity.created(uri).body(img.get());</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    @PutMapping(&quot;/images&quot;)
+&nbsp;    @PutMapping(value = &quot;/images&quot;, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 &nbsp;    @Transactional
 &nbsp;    @Operation(summary = &quot;Atualiza a imagem do produto&quot;)
 &nbsp;    public ResponseEntity&lt;ImageDto&gt; updateImage(@ModelAttribute @Valid ImageUpdateForm img) throws IOException {
@@ -182,7 +186,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-22 09:42</div>
+    <div style="float:right;">generated on 2023-02-23 07:13</div>
 </div>
 </body>
 </html>

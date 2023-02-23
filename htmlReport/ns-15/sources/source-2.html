@@ -48,36 +48,36 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    96,4%
+    96,8%
   </span>
   <span class="absValue">
-    (27/28)
+    (30/31)
   </span>
 </td>
 </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$KORISIva</td>
+    <td class="name">ImageService$MockitoMock$NRewM7ym</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$KORISIva$auxiliary$EZGD1dDk</td>
+    <td class="name">ImageService$MockitoMock$NRewM7ym$auxiliary$6rnekWfi</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$KORISIva$auxiliary$khL4BqKc</td>
+    <td class="name">ImageService$MockitoMock$NRewM7ym$auxiliary$92RnI1n6</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$KORISIva$auxiliary$McZbGwz1</td>
+    <td class="name">ImageService$MockitoMock$NRewM7ym$auxiliary$FSBBf9Nj</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$KORISIva$auxiliary$QEq6TwZH</td>
+    <td class="name">ImageService$MockitoMock$NRewM7ym$auxiliary$g94Vul2q</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$KORISIva$auxiliary$tjX5Dmtp</td>
+    <td class="name">ImageService$MockitoMock$NRewM7ym$auxiliary$HMuCyyfg</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$KORISIva$auxiliary$VBW9PTAm</td>
+    <td class="name">ImageService$MockitoMock$NRewM7ym$auxiliary$QxHdVq6Y</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$KORISIva$auxiliary$X0q655cg</td>
+    <td class="name">ImageService$MockitoMock$NRewM7ym$auxiliary$VnGwhUXX</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -91,10 +91,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    96,4%
+    96,8%
   </span>
   <span class="absValue">
-    (27/28)
+    (30/31)
   </span>
 </td>
 </tr>
@@ -118,6 +118,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import br.com.jacto.trevo.repository.ImageRepository;
 &nbsp;import br.com.jacto.trevo.repository.ProductRepository;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.core.io.ByteArrayResource;
 &nbsp;import org.springframework.stereotype.Service;
 &nbsp;
 &nbsp;import java.io.IOException;
@@ -132,9 +133,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @Autowired
 &nbsp;    private ProductRepository productRepository;
 &nbsp;
-&nbsp;    public Optional&lt;ImageDto&gt; getImage(UUID id) {
+&nbsp;    public Optional&lt;ByteArrayResource&gt; getImage(UUID id) {
 <b class="fc">&nbsp;        Optional&lt;Image&gt; img = imageRepository.findById(id);</b>
-<b class="fc">&nbsp;        return img.map(ImageDto::new);</b>
+<b class="fc">&nbsp;        if(img.isEmpty()){</b>
+<b class="fc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        ByteArrayResource resource = new ByteArrayResource(img.get().getImg());</b>
+<b class="fc">&nbsp;        return Optional.of(resource);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Optional&lt;ProductImageDto&gt; getImageProduct(UUID id) {
@@ -212,7 +217,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-22 09:42</div>
+    <div style="float:right;">generated on 2023-02-23 07:13</div>
 </div>
 </body>
 </html>

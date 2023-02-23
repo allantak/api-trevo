@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > ImageRepository</title>
+  <title>Coverage Report > ProductRepository</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -21,7 +21,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">br.com.jacto.trevo.repository</a>
 </div>
 
-<h1>Coverage Summary for Class: ImageRepository (br.com.jacto.trevo.repository)</h1>
+<h1>Coverage Summary for Class: ProductRepository (br.com.jacto.trevo.repository)</h1>
 
 <table class="coverageStats">
 
@@ -29,16 +29,16 @@ Current scope:     <a href="../../index.html">all classes</a>
   <th class="name">Class</th>
 </tr>
   <tr>
-    <td class="name">ImageRepository$MockitoMock$lMUnQv2V</td>
+    <td class="name">ProductRepository$MockitoMock$SGbhiY2V</td>
   </tr>
   <tr>
-    <td class="name">ImageRepository$MockitoMock$lMUnQv2V$auxiliary$4LlOXEsu</td>
+    <td class="name">ProductRepository$MockitoMock$SGbhiY2V$auxiliary$gv4DrYje</td>
   </tr>
   <tr>
-    <td class="name">ImageRepository$MockitoMock$lMUnQv2V$auxiliary$7SYWpD5m</td>
+    <td class="name">ProductRepository$MockitoMock$SGbhiY2V$auxiliary$NFycxDtC</td>
   </tr>
   <tr>
-    <td class="name">ImageRepository$MockitoMock$lMUnQv2V$auxiliary$jTIndU3S</td>
+    <td class="name">ProductRepository$MockitoMock$SGbhiY2V$auxiliary$nPYMRy8l</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -52,14 +52,17 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.repository;
 &nbsp;
-&nbsp;import br.com.jacto.trevo.model.product.Image;
+&nbsp;import br.com.jacto.trevo.model.product.Product;
 &nbsp;import org.springframework.data.jpa.repository.JpaRepository;
 &nbsp;import org.springframework.stereotype.Repository;
 &nbsp;
+&nbsp;import java.util.Optional;
 &nbsp;import java.util.UUID;
 &nbsp;
 &nbsp;@Repository
-&nbsp;public interface ImageRepository extends JpaRepository&lt;Image, UUID&gt; {
+&nbsp;public interface ProductRepository extends JpaRepository&lt;Product, UUID&gt; {
+&nbsp;
+&nbsp;    Optional&lt;Product&gt; findByProductName(String productName);
 &nbsp;}
 </code>
 </pre>
@@ -84,7 +87,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-22 09:42</div>
+    <div style="float:right;">generated on 2023-02-23 07:13</div>
 </div>
 </body>
 </html>
