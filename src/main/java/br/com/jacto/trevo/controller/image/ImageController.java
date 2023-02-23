@@ -8,14 +8,12 @@ import br.com.jacto.trevo.controller.image.form.ImageUpdateForm;
 import br.com.jacto.trevo.controller.image.form.ProductImageForm;
 import br.com.jacto.trevo.service.product.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,14 +33,16 @@ public class ImageController {
     ImageService imageService;
 
     @GetMapping("/images/{id}")
-    @Operation(summary = "Mostra a imagem específica")
-    public ResponseEntity<ImageDto> getId(@PathVariable UUID id) {
-        Optional<ImageDto> findImage = imageService.getImage(id);
-        return findImage.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @Operation(summary = "Mostra a imagem no corpo da resposta")
+    public ResponseEntity<ByteArrayResource> getId(@PathVariable UUID id) {
+        Optional<ByteArrayResource> findImage = imageService.getImage(id);
+        return findImage.map(byteArrayResource -> ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(byteArrayResource)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/products/images/{id}")
-    @Operation(summary = "Mostra a imagem do produto específico")
+    @Operation(summary = "Listagem das imagens do produto específico", description = "Para retorna da imagens no corpo da respota é pegar a lista de identificadores de imagem e fazer uma solicitação GET para cada um deles.")
     public ResponseEntity<ProductImageDto> getImageProductId(@PathVariable UUID id) {
         Optional<ProductImageDto> findImage = imageService.getImageProduct(id);
         return findImage.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());

@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -54,14 +55,12 @@ public class ImageServiceTest {
     @DisplayName("mostra a imagem pelo id")
     public void getImage() throws IOException {
         image.setImageId(UUID.randomUUID());
-
         when(imageRepository.findById(any())).thenReturn(Optional.ofNullable(image));
 
-        Optional<ImageDto> response = imageService.getImage(image.getImageId());
+        Optional<ByteArrayResource> response = imageService.getImage(image.getImageId());
 
         assertNotNull(response);
-        assertNotNull(response.get().getImageId());
-        assertEquals(image.getImg(), response.get().getImg());
+        assertEquals(image.getImg(), response.get().getByteArray());
     }
 
     @Test
@@ -71,7 +70,7 @@ public class ImageServiceTest {
 
         when(imageRepository.findById(any())).thenReturn(Optional.empty());
 
-        Optional<ImageDto> response = imageService.getImage(image.getImageId());
+        Optional<ByteArrayResource> response = imageService.getImage(image.getImageId());
 
         assertEquals(Optional.empty(), response);
     }
@@ -91,7 +90,6 @@ public class ImageServiceTest {
 
         assertNotNull(response);
         assertNotNull(response.get().getProductId());
-        assertEquals(image.getImg(), response.get().getImgs().get(0).getImg());
     }
 
     @Test

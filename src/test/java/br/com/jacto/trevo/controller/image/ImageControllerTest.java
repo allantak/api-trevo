@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -73,7 +74,8 @@ public class ImageControllerTest {
     public void getImgId() throws Exception {
         UUID imgID = UUID.randomUUID();
         image.setImageId(imgID);
-        ImageDto imgDto = new ImageDto(image);
+        byte[] imageBytes = "test image".getBytes();
+        ByteArrayResource imgDto = new ByteArrayResource(imageBytes);
 
         when(imageService.getImage(imgID)).thenReturn(Optional.of(imgDto));
 
@@ -84,12 +86,11 @@ public class ImageControllerTest {
                 ).andReturn()
                 .getResponse();
 
+        String resultBytes = response.getContentAsString();
+
         assertEquals(HttpStatus.OK.value(), response.getStatus());
 
-        var jsonExpect = imageDtoJson.write(imgDto).getJson();
-
-        assertEquals(jsonExpect, response.getContentAsString());
-
+        assertEquals("test image", resultBytes);
     }
 
     @Test

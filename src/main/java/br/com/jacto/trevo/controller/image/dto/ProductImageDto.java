@@ -10,18 +10,17 @@ public class ProductImageDto {
 
     public ProductImageDto(Product product){
         this.productId = product.getProductId();
-        this.imgs = product.getImgs().stream().map(ImageDto::new).toList();
-
+        this.imgs = product.getImgs().stream().map(ProductImageListDto::new).toList();
     }
 
     private final UUID productId;
-    private final List<ImageDto> imgs;
+    private final List<ProductImageListDto> imgs;
 
     public UUID getProductId() {
         return productId;
     }
 
-    public List<ImageDto> getImgs() {
+    public List<ProductImageListDto> getImgs() {
         return imgs;
     }
 }

@@ -11,6 +11,7 @@ import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.ImageRepository;
 import br.com.jacto.trevo.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,9 +26,13 @@ public class ImageService {
     @Autowired
     private ProductRepository productRepository;
 
-    public Optional<ImageDto> getImage(UUID id) {
+    public Optional<ByteArrayResource> getImage(UUID id) {
         Optional<Image> img = imageRepository.findById(id);
-        return img.map(ImageDto::new);
+        if(img.isEmpty()){
+            return Optional.empty();
+        }
+        ByteArrayResource resource = new ByteArrayResource(img.get().getImg());
+        return Optional.of(resource);
     }
 
     public Optional<ProductImageDto> getImageProduct(UUID id) {
