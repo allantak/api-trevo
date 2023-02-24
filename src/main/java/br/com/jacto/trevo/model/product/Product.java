@@ -1,5 +1,7 @@
 package br.com.jacto.trevo.model.product;
 
+import br.com.jacto.trevo.model.client.Client;
+import br.com.jacto.trevo.model.manager.Manager;
 import br.com.jacto.trevo.model.order.OrderItem;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -52,6 +54,12 @@ public class Product {
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orders;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "managerId", referencedColumnName = "managerId")
+    private Manager manager;
+
 
     public void setOrders(List<OrderItem> orders) {
         this.orders = orders;
