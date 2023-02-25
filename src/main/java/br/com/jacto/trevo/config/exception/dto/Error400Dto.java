@@ -1,4 +1,4 @@
-package br.com.jacto.trevo.config.dto;
+package br.com.jacto.trevo.config.exception.dto;
 
 import org.springframework.validation.FieldError;
 

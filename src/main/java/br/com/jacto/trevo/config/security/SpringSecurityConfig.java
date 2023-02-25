@@ -1,4 +1,4 @@
-package br.com.jacto.trevo.config;
+package br.com.jacto.trevo.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

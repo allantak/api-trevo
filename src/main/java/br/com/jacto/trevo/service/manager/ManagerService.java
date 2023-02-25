@@ -5,6 +5,9 @@ import br.com.jacto.trevo.controller.auth.form.ManagerForm;
 import br.com.jacto.trevo.model.manager.Manager;
 import br.com.jacto.trevo.repository.ManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,10 +24,15 @@ public class ManagerService implements UserDetailsService {
         return managerRepository.findByUsername(username);
     }
 
+    public Authentication auth(ManagerForm user){
+        return new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+    }
+
     public ManagerDto createManager(ManagerForm manager){
         String encoder = new BCryptPasswordEncoder().encode(manager.getPassword());
         Manager save = new Manager(manager.getUsername(), encoder);
         Manager convert = managerRepository.save(save);
         return new ManagerDto(convert);
     }
+
 }

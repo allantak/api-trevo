@@ -1,7 +1,7 @@
-package br.com.jacto.trevo.config;
+package br.com.jacto.trevo.config.exception;
 
-import br.com.jacto.trevo.config.dto.Error400Dto;
-import br.com.jacto.trevo.config.dto.Error409;
+import br.com.jacto.trevo.config.exception.dto.Error400Dto;
+import br.com.jacto.trevo.config.exception.dto.Error409;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;

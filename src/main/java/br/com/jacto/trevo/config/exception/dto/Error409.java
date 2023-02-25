@@ -1,4 +1,4 @@
-package br.com.jacto.trevo.config.dto;
+package br.com.jacto.trevo.config.exception.dto;
 
 public class Error409 {
     public Error409(Throwable error){
