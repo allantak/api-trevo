@@ -1,8 +1,7 @@
 package br.com.jacto.trevo.controller.product.form;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class ProductCultureForm {

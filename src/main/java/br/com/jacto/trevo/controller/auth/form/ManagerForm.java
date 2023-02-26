@@ -1,7 +1,8 @@
 package br.com.jacto.trevo.controller.auth.form;
 
 import br.com.jacto.trevo.model.manager.Manager;
-import jakarta.validation.constraints.NotBlank;
+
+import javax.validation.constraints.NotBlank;
 
 public class ManagerForm {
 

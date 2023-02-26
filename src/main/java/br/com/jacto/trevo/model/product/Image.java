@@ -1,6 +1,6 @@
 package br.com.jacto.trevo.model.product;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.util.UUID;
 
@@ -15,7 +15,7 @@ public class Image {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue()
     private UUID imageId;
 
 

@@ -14,7 +14,7 @@ import br.com.jacto.trevo.model.client.Client;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.ClientRepository;
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;

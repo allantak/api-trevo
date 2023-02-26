@@ -14,7 +14,7 @@ import br.com.jacto.trevo.model.product.Image;
 import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.ImageRepository;
 import br.com.jacto.trevo.repository.ProductRepository;
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;

@@ -1,8 +1,6 @@
 package br.com.jacto.trevo.controller.order.form;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class OrderItemUpdateForm {

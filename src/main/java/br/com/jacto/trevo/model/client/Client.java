@@ -1,8 +1,8 @@
 package br.com.jacto.trevo.model.client;
 
 import br.com.jacto.trevo.model.order.OrderItem;
-import jakarta.persistence.*;
 
+import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,7 +19,7 @@ public class Client {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue()
     private UUID clientId;
 
     @Column(nullable = false)

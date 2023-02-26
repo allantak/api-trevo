@@ -3,9 +3,8 @@ package br.com.jacto.trevo.model.order;
 import br.com.jacto.trevo.model.client.Client;
 import br.com.jacto.trevo.model.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -20,7 +19,7 @@ public class OrderItem {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue()
     private UUID orderItemId;
 
     @Column(nullable = false)

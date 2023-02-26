@@ -1,10 +1,9 @@
 package br.com.jacto.trevo.model.product;
 
-import br.com.jacto.trevo.model.client.Client;
 import br.com.jacto.trevo.model.manager.Manager;
 import br.com.jacto.trevo.model.order.OrderItem;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,7 +24,7 @@ public class Product {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue()
     private UUID productId;
 
     @Column(nullable = false)

@@ -1,11 +1,10 @@
 package br.com.jacto.trevo.model.manager;
 
-import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
-import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import javax.persistence.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,7 +21,7 @@ public class Manager implements UserDetails {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue()
     private UUID managerId;
 
     @Column(nullable = false, unique = true)
