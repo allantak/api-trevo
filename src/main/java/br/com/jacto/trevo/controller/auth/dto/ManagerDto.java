@@ -9,7 +9,7 @@ public class ManagerDto {
         this.managerId = manager.getManagerId();
     }
 
-    private UUID managerId;
+    private final UUID managerId;
 
     public UUID getManagerId() {
         return managerId;

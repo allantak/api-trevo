@@ -5,8 +5,13 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 public class ProductForm {
+
+    @NotNull(message = "Obrigatório id do gerente")
+    private UUID managerId;
+
     @NotBlank(message = "Obrigatório o nome do produto")
     private String productName;
 
@@ -22,6 +27,10 @@ public class ProductForm {
     private Double areaSize;
 
     private LocalDate createAt;
+
+    public UUID getManagerId() {
+        return managerId;
+    }
 
     public List<String> getCultures() {
         return cultures;
@@ -47,6 +56,9 @@ public class ProductForm {
         return description;
     }
 
+    public void setManagerId(UUID managerId) {
+        this.managerId = managerId;
+    }
 
     public void setCreateAt(LocalDate createAt) {
         this.createAt = createAt;
@@ -71,4 +83,6 @@ public class ProductForm {
     public void setAreaSize(Double areaSize) {
         this.areaSize = areaSize;
     }
+
+
 }

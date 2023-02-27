@@ -1,7 +1,9 @@
 package br.com.jacto.trevo.config;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,6 +18,11 @@ public class SpringDocConfig {
                                 " Algumas funcionalidade presente nessa API, gerenciamento de cliente, produtos e pedidos." +
                                 " Objetivo é divulgar um novo portfólio de produtos para os clientes da Indústria Trevo, bem\n" +
                                 "como captar as propostas de interesse nesses produtos.")
-                        .version("1.0.0"));
+                        .version("1.0.0"))
+                .components(new Components()
+                        .addSecuritySchemes("bearer-key",
+                                new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
+                        ));
+
     }
 }

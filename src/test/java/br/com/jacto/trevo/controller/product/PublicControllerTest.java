@@ -1,5 +1,6 @@
 package br.com.jacto.trevo.controller.product;
 
+import br.com.jacto.trevo.config.security.TokenService;
 import br.com.jacto.trevo.controller.product.dto.ProductCreateDto;
 import br.com.jacto.trevo.controller.product.dto.ProductDetailDto;
 import br.com.jacto.trevo.controller.product.dto.ProductDto;
@@ -12,6 +13,7 @@ import br.com.jacto.trevo.model.client.Client;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Culture;
 import br.com.jacto.trevo.model.product.Product;
+import br.com.jacto.trevo.repository.ManagerRepository;
 import br.com.jacto.trevo.service.product.CultureService;
 import br.com.jacto.trevo.service.product.ProductService;
 import org.junit.Test;
@@ -27,6 +29,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
@@ -47,6 +50,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(ProductController.class)
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
+@TestPropertySource(properties = "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration")
 public class PublicControllerTest {
 
     @Autowired
@@ -57,6 +61,12 @@ public class PublicControllerTest {
 
     @MockBean
     CultureService cultureService;
+
+    @MockBean
+    private TokenService tokenService;
+
+    @MockBean
+    private ManagerRepository managerRepository;
 
     @Autowired
     private JacksonTester<PageImpl<ProductDto>> productDtoJson;
@@ -262,6 +272,7 @@ public class PublicControllerTest {
         ProductCreateDto productCreate = new ProductCreateDto(product);
 
         ProductForm form = new ProductForm();
+        form.setManagerId(UUID.randomUUID());
         form.setProductName(product.getProductName());
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
@@ -288,7 +299,7 @@ public class PublicControllerTest {
     }
 
     @Test
-    @DisplayName("Cadastrum produto com falta de dados necessarios")
+    @DisplayName("Cadastar um produto com falta de dados necessarios")
     public void createProductCase2() throws Exception {
 
         ProductForm form = new ProductForm();
@@ -317,6 +328,7 @@ public class PublicControllerTest {
         product.setCultures(listClient);
 
         ProductForm form = new ProductForm();
+        form.setManagerId(UUID.randomUUID());
         form.setProductName(product.getProductName());
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());

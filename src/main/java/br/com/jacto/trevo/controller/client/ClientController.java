@@ -7,6 +7,7 @@ import br.com.jacto.trevo.controller.client.form.ClientForm;
 import br.com.jacto.trevo.controller.client.form.ClientUpdateForm;
 import br.com.jacto.trevo.service.client.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class ClientController {
 
     @GetMapping
     @Operation(summary = "Listagem de clientes registrados")
+    @SecurityRequirement(name = "bearer-key")
     public List<ClientDto> getClient() {
         return clientService.getAll();
     }

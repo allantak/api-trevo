@@ -6,6 +6,7 @@ import br.com.jacto.trevo.controller.order.form.OrderItemForm;
 import br.com.jacto.trevo.controller.order.form.OrderItemUpdateForm;
 import br.com.jacto.trevo.service.order.OrderItemService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class OrderItemController {
 
     @GetMapping
     @Operation(summary = "Lista todos os pedidos registrado")
+    @SecurityRequirement(name = "bearer-key")
     public List<OrderItemDto> getOrderItem() {
         return orderItemService.getAll();
     }

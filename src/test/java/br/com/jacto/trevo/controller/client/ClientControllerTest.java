@@ -1,5 +1,6 @@
 package br.com.jacto.trevo.controller.client;
 
+import br.com.jacto.trevo.config.security.TokenService;
 import br.com.jacto.trevo.controller.client.dto.ClientDetailDto;
 import br.com.jacto.trevo.controller.client.dto.ClientDto;
 import br.com.jacto.trevo.controller.client.dto.ClientOrderDto;
@@ -8,8 +9,10 @@ import br.com.jacto.trevo.controller.client.form.ClientUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
+import br.com.jacto.trevo.repository.ManagerRepository;
 import br.com.jacto.trevo.service.client.ClientService;
 import net.bytebuddy.implementation.bytecode.Throw;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -23,8 +26,10 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.Assert.*;
@@ -44,6 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ClientController.class)
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
+@TestPropertySource(properties = "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration")
 public class ClientControllerTest {
 
     @Autowired
@@ -52,6 +58,11 @@ public class ClientControllerTest {
     @MockBean
     private ClientService clientService;
 
+    @MockBean
+    private TokenService tokenService;
+
+    @MockBean
+    private ManagerRepository managerRepository;
 
     @Autowired
     private JacksonTester<ClientOrderDto> clientOrderDtoJson;
@@ -68,6 +79,7 @@ public class ClientControllerTest {
     public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
     public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14));
     public OrderItem order = new OrderItem(3, client, product);
+
 
     @Test
     @DisplayName("Liste os cliente clientes cadastrados e retorne 200")
@@ -113,9 +125,11 @@ public class ClientControllerTest {
     @Test
     @DisplayName("Retorne error caso o id for invalido")
     public void clientOrderIdCase2() throws Exception {
+        UUID clientId = UUID.randomUUID();
+        when(clientService.clientOrder(any())).thenReturn(Optional.empty());
 
         var response = mockMvc.perform(
-                get("/clients/orders/")
+                get("/clients/orders/" + clientId)
                         .contentType(MediaType.APPLICATION_JSON)
 
         ).andReturn().getResponse();
@@ -170,10 +184,10 @@ public class ClientControllerTest {
 
         ClientDetailDto orderDto = new ClientDetailDto(client);
 
-        when(clientService.getId(clientId)).thenReturn(Optional.of(orderDto));
+        when(clientService.getId(clientId)).thenReturn(Optional.empty());
 
         var response = mockMvc.perform(
-                get("/clients/")
+                get("/clients/"+ clientId)
                         .contentType(MediaType.APPLICATION_JSON)
 
         ).andReturn().getResponse();

@@ -1,5 +1,6 @@
 package br.com.jacto.trevo.controller.order;
 
+import br.com.jacto.trevo.config.security.TokenService;
 import br.com.jacto.trevo.controller.order.dto.OrderItemCreateDto;
 import br.com.jacto.trevo.controller.order.dto.OrderItemDto;
 import br.com.jacto.trevo.controller.order.form.OrderItemForm;
@@ -11,6 +12,7 @@ import br.com.jacto.trevo.model.client.Client;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Culture;
 import br.com.jacto.trevo.model.product.Product;
+import br.com.jacto.trevo.repository.ManagerRepository;
 import br.com.jacto.trevo.service.order.OrderItemService;
 import br.com.jacto.trevo.service.product.ProductService;
 import org.junit.Test;
@@ -26,6 +28,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
@@ -46,6 +49,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(OrderItemController.class)
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
+@TestPropertySource(properties = "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration")
 public class OrderItemControllerTest {
 
     @Autowired
@@ -53,6 +57,12 @@ public class OrderItemControllerTest {
 
     @MockBean
     OrderItemService orderItemService;
+
+    @MockBean
+    private TokenService tokenService;
+
+    @MockBean
+    private ManagerRepository managerRepository;
 
     @Autowired
     private JacksonTester<List<OrderItemDto>> listOrderDtoJson;
@@ -128,10 +138,10 @@ public class OrderItemControllerTest {
 
         OrderItemDto orderDto = new OrderItemDto(order);
 
-        when(orderItemService.getId(orderId)).thenReturn(Optional.of(orderDto));
+        when(orderItemService.getId(orderId)).thenReturn(Optional.empty());
 
         var response = mockMvc.perform(
-                        get("/orders/")
+                        get("/orders/" + orderId)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andReturn()
@@ -417,7 +427,7 @@ public class OrderItemControllerTest {
         when(orderItemService.delete(orderId)).thenReturn(false);
 
         var response = mockMvc.perform(
-                        delete("/orders/")
+                        delete("/orders/" + orderId)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andReturn()

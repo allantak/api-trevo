@@ -13,8 +13,9 @@ import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.service.product.CultureService;
 import br.com.jacto.trevo.service.product.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springdoc.core.annotations.ParameterObject;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -62,7 +63,8 @@ public class ProductController {
 
     @PostMapping
     @Transactional
-    @Operation(summary = "Registro de produto")
+    @Operation(summary = "Registro de produto", description = "Não colocar o creatAt pegará a data atual por padrão")
+    @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<ProductCreateDto> createProduct(@RequestBody @Valid ProductForm product, UriComponentsBuilder uriBuilder) {
         ProductCreateDto save = productService.create(product);
         URI uri = uriBuilder.path("/products/{id}").buildAndExpand(save.getProductId()).toUri();
@@ -72,6 +74,7 @@ public class ProductController {
     @PutMapping
     @Transactional
     @Operation(summary = "Atualização do produto")
+    @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<Product> updateProduct(@RequestBody @Valid ProductUpdateForm product) {
         Optional<Product> updateProduct = productService.update(product);
         return updateProduct.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -80,6 +83,7 @@ public class ProductController {
     @PutMapping("/cultures")
     @Transactional
     @Operation(summary = "Atualização da cultura do produto")
+    @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<Culture> updateCulture(@RequestBody @Valid ProductCultureForm culture) {
         Optional<Culture> updateCulture = cultureService.update(culture);
         return updateCulture.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -88,6 +92,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     @Transactional
     @Operation(summary = "Excluir produto", description = "Culturas e pedidos vinculada ao produto serão excluído")
+    @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<Void> deleteProduct(@PathVariable UUID id) {
         Boolean deleteProduct = productService.delete(id);
         return deleteProduct ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
@@ -96,6 +101,7 @@ public class ProductController {
     @DeleteMapping("/cultures")
     @Transactional
     @Operation(summary = "Excluir cultura do produto")
+    @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<Culture> deleteCulture(@RequestBody @Valid ProductCultureDeleteForm culture) {
         Boolean findCulture = cultureService.delete(culture);
         return findCulture ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();

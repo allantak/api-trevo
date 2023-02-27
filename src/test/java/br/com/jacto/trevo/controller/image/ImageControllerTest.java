@@ -1,5 +1,6 @@
 package br.com.jacto.trevo.controller.image;
 
+import br.com.jacto.trevo.config.security.TokenService;
 import br.com.jacto.trevo.controller.image.dto.ImageDto;
 import br.com.jacto.trevo.controller.image.dto.ProductImageCreateDto;
 import br.com.jacto.trevo.controller.image.dto.ProductImageDto;
@@ -7,6 +8,7 @@ import br.com.jacto.trevo.controller.image.form.ImageDeleteForm;
 import br.com.jacto.trevo.controller.image.form.ProductImageForm;
 import br.com.jacto.trevo.model.product.Image;
 import br.com.jacto.trevo.model.product.Product;
+import br.com.jacto.trevo.repository.ManagerRepository;
 import br.com.jacto.trevo.service.product.ImageService;
 import org.checkerframework.checker.nullness.Opt;
 import org.junit.Test;
@@ -23,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -45,6 +48,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(ImageController.class)
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
+@TestPropertySource(properties = "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration")
 public class ImageControllerTest {
 
     @MockBean
@@ -52,6 +56,12 @@ public class ImageControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private TokenService tokenService;
+
+    @MockBean
+    private ManagerRepository managerRepository;
 
     @Autowired
     private JacksonTester<ImageDto> imageDtoJson;

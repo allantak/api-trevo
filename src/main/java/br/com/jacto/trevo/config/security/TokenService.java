@@ -1,11 +1,13 @@
 package br.com.jacto.trevo.config.security;
 
+import br.com.jacto.trevo.controller.auth.dto.TokenDto;
 import br.com.jacto.trevo.model.manager.Manager;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -18,14 +20,15 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    public String token(Manager manager) {
+    public TokenDto token(Manager manager) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            return JWT.create()
+            String tokenJWT= JWT.create()
                     .withIssuer("API trevo")
                     .withSubject(manager.getUsername())
                     .withExpiresAt(dateExpiration())
                     .sign(algorithm);
+            return new TokenDto(manager.getManagerId(), tokenJWT);
         } catch (JWTCreationException exception) {
             throw new RuntimeException("Error ao gerar token", exception);
         }
@@ -44,6 +47,7 @@ public class TokenService {
         }
     }
 
+    @Bean
     private Instant dateExpiration() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }

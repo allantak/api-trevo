@@ -27,11 +27,9 @@ public class ErrorHandler {
 
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity errorHandler404(DataIntegrityViolationException exception) {
+    public ResponseEntity errorHandler409(DataIntegrityViolationException exception) {
         var duplicate = exception.getCause();
         return ResponseEntity.status(409).body(new Error409(duplicate.getCause()));
     }
-
-
 
 }

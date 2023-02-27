@@ -1,5 +1,6 @@
 package br.com.jacto.trevo.config.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,10 +12,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig {
+
+    @Autowired
+    SecurityFilter securityFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws  Exception{
         return http.csrf().disable()
@@ -22,12 +28,15 @@ public class SpringSecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/clients").authenticated()
-                .antMatchers(HttpMethod.GET, "/clients/**", "/auths", "/products/**", "/images/**", "/orders/{id}").permitAll()
-                .antMatchers(HttpMethod.POST, "/clients", "/orders").permitAll()
+                .antMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/clients/**", "/products/**", "/images/**", "/orders/{id}").permitAll()
+                .antMatchers(HttpMethod.POST, "/clients", "/orders", "/login", "/register").permitAll()
                 .antMatchers(HttpMethod.PUT, "/clients", "/orders").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/clients/{id}", "/orders").permitAll()
                 .anyRequest().authenticated()
-                .and().build();
+                .and()
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
 
     }
 
