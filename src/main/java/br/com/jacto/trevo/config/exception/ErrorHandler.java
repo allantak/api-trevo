@@ -25,7 +25,6 @@ public class ErrorHandler {
         return ResponseEntity.badRequest().body(erros.stream().map(Error400Dto::new).toList());
     }
 
-
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity errorHandler409(DataIntegrityViolationException exception) {
         var duplicate = exception.getCause();

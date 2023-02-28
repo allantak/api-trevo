@@ -350,6 +350,38 @@ public class PublicControllerTest {
     }
 
     @Test
+    @DisplayName("Nao permitido fazer cadastro de produto")
+    public void createProductCase4() throws Exception {
+        UUID productId = UUID.randomUUID();
+        product.setProductId(productId);
+
+        List<Culture> listClient = new ArrayList<Culture>();
+        listClient.add(culture);
+        product.setCultures(listClient);
+
+        ProductForm form = new ProductForm();
+        form.setManagerId(UUID.randomUUID());
+        form.setProductName(product.getProductName());
+        form.setDescription(product.getDescription());
+        form.setAreaSize(product.getAreaSize());
+        form.setStatus(product.isStatus());
+        form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
+        form.setCreateAt(product.getCreateAt());
+
+        when(productService.create(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        var response = mockMvc.perform(
+                        post("/products")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(productFormJson.write(form).getJson())
+                )
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
+    }
+
+    @Test
     @DisplayName("Atualizacao do produto")
     public void updateProduct() throws Exception {
         UUID productId = UUID.randomUUID();
@@ -489,6 +521,33 @@ public class PublicControllerTest {
     }
 
     @Test
+    @DisplayName("Nao permitido fazer atualizacao")
+    public void updateProductCase6() throws Exception {
+        UUID productId = UUID.randomUUID();
+
+        ProductUpdateForm form = new ProductUpdateForm();
+        form.setProductId(productId);
+        form.setProductName(product.getProductName());
+        form.setDescription(product.getDescription());
+        form.setAreaSize(product.getAreaSize());
+        form.setStatus(product.isStatus());
+        form.setCreateAt(product.getCreateAt());
+
+        when(productService.update(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        var response = mockMvc.perform(
+                        put("/products")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(productUpdateFormJson.write(form).getJson())
+                )
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
+
+    }
+
+    @Test
     @DisplayName("Atualizacao de cultura em um produto")
     public void updateCulture() throws Exception {
         UUID productId = UUID.randomUUID();
@@ -558,6 +617,31 @@ public class PublicControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
     }
 
+    @Test
+    @DisplayName("Nao permitido fazer atualizicao de produto")
+    public void updateCultureCase4() throws Exception {
+        UUID productId = UUID.randomUUID();
+        UUID cultureId = UUID.randomUUID();
+
+        ProductCultureForm form = new ProductCultureForm();
+        form.setProductId(productId);
+        form.setCultureId(cultureId);
+        form.setProductName(product.getProductName());
+
+        when(cultureService.update(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        var response = mockMvc.perform(
+                        put("/products/cultures")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(productCultureFormJson.write(form).getJson())
+                )
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
+    }
+
+
 
     @Test
     @DisplayName("Ao deletar retorne No-content")
@@ -603,6 +687,23 @@ public class PublicControllerTest {
         ).andReturn().getResponse();
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+
+    }
+
+    @Test
+    @DisplayName("Nao permitido deletar produto")
+    public void deleteProductIdCase4() throws Exception {
+        UUID productId = UUID.randomUUID();
+
+        when(productService.delete(productId)).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        var response = mockMvc.perform(
+                delete("/products/" + productId)
+                        .contentType(MediaType.APPLICATION_JSON)
+
+        ).andReturn().getResponse();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
 
     }
 
@@ -661,5 +762,26 @@ public class PublicControllerTest {
         ).andReturn().getResponse();
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+    }
+
+    @Test
+    @DisplayName("nao permitido deletar cultura do produto")
+    public void deleteCultureIdCase4() throws Exception {
+        UUID cultureId = UUID.randomUUID();
+        UUID productId = UUID.randomUUID();
+
+        when(cultureService.delete(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+        ProductCultureDeleteForm form = new ProductCultureDeleteForm();
+        form.setCultureId(cultureId);
+        form.setProductId(productId);
+
+        var response = mockMvc.perform(
+                delete("/products/cultures")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(productCultureDeleteFormJson.write(form).getJson())
+
+        ).andReturn().getResponse();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
     }
 }

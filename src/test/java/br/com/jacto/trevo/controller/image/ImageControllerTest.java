@@ -29,6 +29,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -272,6 +273,32 @@ public class ImageControllerTest {
     }
 
     @Test
+    @DisplayName("Nao permitido fazer upload de imagem")
+    public void uploadImgCase4() throws Exception {
+        UUID productId = UUID.randomUUID();
+        UUID imgId = UUID.randomUUID();
+        image.setImageId(imgId);
+
+        Path tempFile = Files.createTempFile("test", ".jpg");
+        Files.write(tempFile, "Teste".getBytes());
+        MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", Files.newInputStream(tempFile));
+
+
+        when(imageService.upload(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        var response = mockMvc.perform(
+                        MockMvcRequestBuilders.multipart("/products/images")
+                                .file(imageFile)
+                                .param("productId", productId.toString())
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                ).andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
+
+    }
+
+    @Test
     @DisplayName("Atualizacao de uma imagem")
     public void updateImg() throws Exception {
         UUID productId = UUID.randomUUID();
@@ -360,6 +387,39 @@ public class ImageControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
     }
 
+    @Test
+    @DisplayName("Nao permissao para fazer atualizacao na imagem")
+    public void updateImgCase4() throws Exception {
+        UUID productId = UUID.randomUUID();
+        UUID imgId = UUID.randomUUID();
+        image.setImageId(imgId);
+
+        Path tempFile = Files.createTempFile("test", ".jpg");
+        Files.write(tempFile, "Teste".getBytes());
+        MockMultipartFile imageFile = new MockMultipartFile("img", "test.jpg", "image/jpeg", Files.newInputStream(tempFile));
+
+        ImageDto imgDto = new ImageDto(image);
+
+        when(imageService.updateImage(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        var response = mockMvc.perform(
+                        MockMvcRequestBuilders.multipart("/images")
+                                .file(imageFile)
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                                .with(request -> {
+                                    request.setMethod("PUT");
+                                    request.setParameter("productId", productId.toString());
+                                    request.setParameter("imageId", imgId.toString());
+                                    return request;
+                                })
+                )
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
+
+    }
+
 
     @Test
     @DisplayName("Deletar uma imagem")
@@ -427,6 +487,31 @@ public class ImageControllerTest {
                 .getResponse();
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+    }
+
+    @Test
+    @DisplayName("nao permissao para deletar imagem")
+    public void deleteImgCase4() throws Exception {
+        UUID productId = UUID.randomUUID();
+        UUID imgId = UUID.randomUUID();
+        image.setImageId(imgId);
+
+        ImageDeleteForm form = new ImageDeleteForm();
+        form.setImageId(imgId);
+        form.setProductId(productId);
+
+        when(imageService.deleteImage(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        var response = mockMvc.perform(
+                        delete("/images")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(imageDeleteFormJson.write(form).getJson())
+
+                )
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
     }
 
 }

@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @Controller
 @Tag(name = "Autenticar", description = "Gerenciamento de gerente")
@@ -40,7 +39,6 @@ public class AuthenticationController {
     public ResponseEntity<TokenDto> authManager(@RequestBody @Valid ManagerForm user) {
         Authentication verify = managerService.auth(user);
         Authentication authentication = manager.authenticate(verify);
-        System.out.println(authentication.getPrincipal());
         TokenDto token = tokenService.token((Manager) authentication.getPrincipal());
         return ResponseEntity.ok(token);
 

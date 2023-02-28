@@ -106,6 +106,26 @@ public class OrderItemControllerTest {
 
     }
 
+    @Test
+    @DisplayName("Nao permitido fazer listagem de pedidos")
+    public void listOrderCase2() throws Exception {
+
+        List<OrderItemDto> listOrder = new ArrayList<OrderItemDto>();
+        listOrder.add(new OrderItemDto(order));
+
+        when(orderItemService.getAll()).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        var response = mockMvc.perform(
+                        get("/orders")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
+
+    }
+
 
     @Test
     @DisplayName("Pesquisar pelo id do pedido")

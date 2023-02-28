@@ -97,6 +97,20 @@ public class ClientControllerTest {
     }
 
     @Test
+    @DisplayName("Nao ter permissao para listar os clientes")
+    public void listClientCase2() throws Exception {
+        UUID clientId = UUID.randomUUID();
+        client.setClientId(clientId);
+        List<ClientDto> listClient = new ArrayList<ClientDto>();
+        listClient.add(new ClientDto(client));
+
+        when(clientService.getAll()).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        mockMvc.perform(get("/clients"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     @DisplayName("Liste os pedidos do cliente")
     public void clientOrderId() throws Exception {
         UUID clientId = UUID.randomUUID();
