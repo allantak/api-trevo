@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > ImageDeleteForm</title>
+  <title>Coverage Report > ClientController</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,18 +18,15 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">br.com.jacto.trevo.controller.image.form</a>
+    <a href="../index.html">br.com.jacto.trevo.controller.client</a>
 </div>
 
-<h1>Coverage Summary for Class: ImageDeleteForm (br.com.jacto.trevo.controller.image.form)</h1>
+<h1>Coverage Summary for Class: ClientController (br.com.jacto.trevo.controller.client)</h1>
 
 <table class="coverageStats">
+
 <tr>
   <th class="name">Class</th>
-<th class="coverageStat 
-">
-  Class, %
-</th>
 <th class="coverageStat 
 ">
   Method, %
@@ -40,13 +37,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">ImageDeleteForm</td>
+  <td class="name">ClientController</td>
 <td class="coverageStat">
   <span class="percent">
     100%
   </span>
   <span class="absValue">
-    (1/1)
+    (7/7)
   </span>
 </td>
 <td class="coverageStat">
@@ -54,19 +51,32 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (5/5)
-  </span>
-</td>
-<td class="coverageStat">
-  <span class="percent">
-    100%
-  </span>
-  <span class="absValue">
-    (5/5)
+    (13/13)
   </span>
 </td>
 </tr>
-
+  <tr>
+    <td class="name">ClientController$$EnhancerBySpringCGLIB$$547343d9</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+</tr>
 </table>
 
 <br/>
@@ -74,35 +84,118 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.controller.image.form;
+<code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.controller.client;
 &nbsp;
-&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import br.com.jacto.trevo.controller.client.dto.ClientDetailDto;
+&nbsp;import br.com.jacto.trevo.controller.client.dto.ClientDto;
+&nbsp;import br.com.jacto.trevo.controller.client.dto.ClientOrderDto;
+&nbsp;import br.com.jacto.trevo.controller.client.form.ClientForm;
+&nbsp;import br.com.jacto.trevo.controller.client.form.ClientUpdateForm;
+&nbsp;import br.com.jacto.trevo.service.client.ClientService;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.media.ArraySchema;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
+&nbsp;import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.util.UriComponentsBuilder;
 &nbsp;
+&nbsp;import javax.transaction.Transactional;
+&nbsp;import javax.validation.Valid;
+&nbsp;import java.net.URI;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
 &nbsp;import java.util.UUID;
 &nbsp;
-<b class="fc">&nbsp;public class ImageDeleteForm {</b>
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/clients&quot;)
+&nbsp;@Tag(name = &quot;Cliente&quot;, description = &quot;Gerenciamento de clientes&quot;)
+<b class="fc">&nbsp;public class ClientController {</b>
 &nbsp;
-&nbsp;    @NotNull(message = &quot;Obrigatório o ID da imagem&quot;)
-&nbsp;    private UUID imageId;
+&nbsp;    @Autowired
+&nbsp;    private ClientService clientService;
 &nbsp;
-&nbsp;    @NotNull(message = &quot;Obrigatório o ID do produto&quot;)
-&nbsp;    private UUID productId;
-&nbsp;
-&nbsp;    public UUID getImageId() {
-<b class="fc">&nbsp;        return imageId;</b>
+&nbsp;    @GetMapping
+&nbsp;    @Operation(summary = &quot;Listagem de clientes registrados&quot;)
+&nbsp;    @SecurityRequirement(name = &quot;bearer-key&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, array = @ArraySchema(schema = @Schema(implementation = ClientDto.class)))),
+&nbsp;            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public List&lt;ClientDto&gt; getClient() {
+<b class="fc">&nbsp;        return clientService.getAll();</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public UUID getProductId() {
-<b class="fc">&nbsp;        return productId;</b>
+&nbsp;    @GetMapping(&quot;/orders/{id}&quot;)
+&nbsp;    @Operation(summary = &quot;Mostra os pedidos do cliente&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ClientOrderDto.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;ClientOrderDto&gt; getClientOrder(@PathVariable UUID id) {
+<b class="fc">&nbsp;        Optional&lt;ClientOrderDto&gt; clientOrder = clientService.clientOrder(id);</b>
+<b class="fc">&nbsp;        return clientOrder.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public void setImageId(UUID imageId) {
-<b class="fc">&nbsp;        this.imageId = imageId;</b>
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    @Operation(summary = &quot;Mostra os detalhes do cliente&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ClientDetailDto.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;ClientDetailDto&gt; getClientId(@PathVariable UUID id) {
+<b class="fc">&nbsp;        Optional&lt;ClientDetailDto&gt; client = clientService.getId(id);</b>
+<b class="fc">&nbsp;        return client.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public void setProductId(UUID productId) {
-<b class="fc">&nbsp;        this.productId = productId;</b>
+&nbsp;    @PostMapping
+&nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Registra o cliente&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ClientDto.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Conflict&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;ClientDto&gt; createClient(@RequestBody @Valid ClientForm client, UriComponentsBuilder uriBuilder) {
+<b class="fc">&nbsp;        ClientDto save = clientService.create(client);</b>
+<b class="fc">&nbsp;        URI uri = uriBuilder.path(&quot;/clients/{id}&quot;).buildAndExpand(save.getClientId()).toUri();</b>
+<b class="fc">&nbsp;        return ResponseEntity.created(uri).body(save);</b>
 &nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping
+&nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Atualiza o cliente&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ClientDetailDto.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Conflict&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;ClientDetailDto&gt; updateClient(@RequestBody @Valid ClientUpdateForm client) {
+<b class="fc">&nbsp;        Optional&lt;ClientDetailDto&gt; updateClient = clientService.update(client);</b>
+<b class="fc">&nbsp;        return updateClient.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/{id}&quot;)
+&nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Excluir cliente&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Success no-content&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;Void&gt; deleteClient(@PathVariable UUID id) {
+<b class="fc">&nbsp;        Boolean findClient = clientService.delete(id);</b>
+<b class="fc">&nbsp;        return findClient ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();</b>
+&nbsp;    }
+&nbsp;
 &nbsp;}
 </code>
 </pre>
@@ -127,7 +220,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-23 07:13</div>
+    <div style="float:right;">generated on 2023-03-01 08:45</div>
 </div>
 </body>
 </html>

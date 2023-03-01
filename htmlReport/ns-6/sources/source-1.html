@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > ClientForm</title>
+  <title>Coverage Report > AuthenticationController</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">br.com.jacto.trevo.controller.client.form</a>
+    <a href="../index.html">br.com.jacto.trevo.controller.auth</a>
 </div>
 
-<h1>Coverage Summary for Class: ClientForm (br.com.jacto.trevo.controller.client.form)</h1>
+<h1>Coverage Summary for Class: AuthenticationController (br.com.jacto.trevo.controller.auth)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -40,7 +40,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">ClientForm</td>
+  <td class="name">AuthenticationController</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -54,7 +54,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (7/7)
+    (3/3)
   </span>
 </td>
 <td class="coverageStat">
@@ -74,45 +74,73 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.controller.client.form;
+<code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.controller.auth;
 &nbsp;
-&nbsp;import jakarta.validation.constraints.Email;
-&nbsp;import jakarta.validation.constraints.NotBlank;
+&nbsp;import br.com.jacto.trevo.config.security.TokenService;
+&nbsp;import br.com.jacto.trevo.controller.auth.dto.ManagerDto;
+&nbsp;import br.com.jacto.trevo.controller.auth.dto.TokenDto;
+&nbsp;import br.com.jacto.trevo.controller.auth.form.ManagerForm;
+&nbsp;import br.com.jacto.trevo.model.manager.Manager;
+&nbsp;import br.com.jacto.trevo.service.manager.ManagerService;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
+&nbsp;import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.security.authentication.AuthenticationManager;
+&nbsp;import org.springframework.security.core.Authentication;
+&nbsp;import org.springframework.stereotype.Controller;
+&nbsp;import org.springframework.web.bind.annotation.PostMapping;
+&nbsp;import org.springframework.web.bind.annotation.RequestBody;
 &nbsp;
-<b class="fc">&nbsp;public class ClientForm {</b>
+&nbsp;import javax.validation.Valid;
 &nbsp;
-&nbsp;    @NotBlank(message = &quot;Obrigatório o nome&quot;)
-&nbsp;    private String clientName;
+&nbsp;@Controller
+&nbsp;@Tag(name = &quot;Autenticar&quot;, description = &quot;Gerenciamento de gerente&quot;)
+<b class="fc">&nbsp;public class AuthenticationController {</b>
 &nbsp;
-&nbsp;    @NotBlank
-&nbsp;    @Email(message = &quot;Formato do email é inválido&quot;)
-&nbsp;    private String email;
+&nbsp;    @Autowired
+&nbsp;    private AuthenticationManager manager;
 &nbsp;
-&nbsp;    @NotBlank(message = &quot;Obrigatório o telefone&quot;)
-&nbsp;    private String phone;
+&nbsp;    @Autowired
+&nbsp;    private ManagerService managerService;
 &nbsp;
-&nbsp;    public String getClientName() {
-<b class="fc">&nbsp;        return clientName;</b>
+&nbsp;    @Autowired
+&nbsp;    private TokenService tokenService;
+&nbsp;
+&nbsp;
+&nbsp;    @PostMapping(&quot;/login&quot;)
+&nbsp;    @Operation(summary = &quot;Autenticar o gerente&quot;, description = &quot;login da conta do gerente&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = TokenDto.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;TokenDto&gt; authManager(@RequestBody @Valid ManagerForm user) {
+<b class="fc">&nbsp;        Authentication verify = managerService.auth(user);</b>
+<b class="fc">&nbsp;        Authentication authentication = manager.authenticate(verify);</b>
+<b class="fc">&nbsp;        TokenDto token = tokenService.token((Manager) authentication.getPrincipal());</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(token);</b>
+&nbsp;
 &nbsp;    }
 &nbsp;
-&nbsp;    public String getEmail() {
-<b class="fc">&nbsp;        return email;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public String getPhone() {
-<b class="fc">&nbsp;        return phone;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public void setClientName(String clientName) {
-<b class="fc">&nbsp;        this.clientName = clientName;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public void setEmail(String email) {
-<b class="fc">&nbsp;        this.email = email;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public void setPhone(String phone) {
-<b class="fc">&nbsp;        this.phone = phone;</b>
+&nbsp;    @PostMapping(&quot;/register&quot;)
+&nbsp;    @SecurityRequirement(name = &quot;bearer-key&quot;)
+&nbsp;    @Operation(summary = &quot;Registrar gerente&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ManagerDto.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Conflict&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;ManagerDto&gt; createManager(@RequestBody @Valid ManagerForm user) {
+<b class="fc">&nbsp;        ManagerDto managerDto = managerService.createManager(user);</b>
+<b class="fc">&nbsp;        return ResponseEntity.status(HttpStatus.CREATED).body(managerDto);</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -138,7 +166,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-23 07:13</div>
+    <div style="float:right;">generated on 2023-03-01 08:45</div>
 </div>
 </body>
 </html>

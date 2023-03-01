@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > Culture</title>
+  <title>Coverage Report > ProductController</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">br.com.jacto.trevo.model.product</a>
+    <a href="../index.html">br.com.jacto.trevo.controller.product</a>
 </div>
 
-<h1>Coverage Summary for Class: Culture (br.com.jacto.trevo.model.product)</h1>
+<h1>Coverage Summary for Class: ProductController (br.com.jacto.trevo.controller.product)</h1>
 
 <table class="coverageStats">
 
@@ -37,15 +37,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">Culture</td>
-<td class="coverageStat">
-  <span class="percent">
-    100%
-  </span>
-  <span class="absValue">
-    (7/7)
-  </span>
-</td>
+  <td class="name">ProductController</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -54,24 +46,17 @@ Current scope:     <a href="../../index.html">all classes</a>
     (9/9)
   </span>
 </td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (19/19)
+  </span>
+</td>
 </tr>
   <tr>
-    <td class="name">Culture$HibernateProxy$5bwbKy0C</td>
-  </tr>
-  <tr>
-    <td class="name">Culture$HibernateProxy$DYUUNCj1</td>
-  </tr>
-  <tr>
-    <td class="name">Culture$HibernateProxy$ewAnp4Rl</td>
-  </tr>
-  <tr>
-    <td class="name">Culture$HibernateProxy$SA25kI2P</td>
-  </tr>
-  <tr>
-    <td class="name">Culture$HibernateProxy$U4fDmqZG</td>
-  </tr>
-  <tr>
-    <td class="name">Culture$HibernateProxy$UZcdSaTv</td>
+    <td class="name">ProductController$$EnhancerBySpringCGLIB$$a932b13f</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -80,7 +65,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (7/7)
+    (9/9)
   </span>
 </td>
 <td class="coverageStat">
@@ -88,7 +73,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (9/9)
+    (19/19)
   </span>
 </td>
 </tr>
@@ -99,53 +84,167 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.model.product;
+<code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.controller.product;
 &nbsp;
-&nbsp;import jakarta.persistence.*;
+&nbsp;import br.com.jacto.trevo.controller.product.dto.ProductCreateDto;
+&nbsp;import br.com.jacto.trevo.controller.product.dto.ProductDetailDto;
+&nbsp;import br.com.jacto.trevo.controller.product.dto.ProductDto;
+&nbsp;import br.com.jacto.trevo.controller.product.dto.ProductOrderDto;
+&nbsp;import br.com.jacto.trevo.controller.product.form.ProductCultureDeleteForm;
+&nbsp;import br.com.jacto.trevo.controller.product.form.ProductCultureForm;
+&nbsp;import br.com.jacto.trevo.controller.product.form.ProductForm;
+&nbsp;import br.com.jacto.trevo.controller.product.form.ProductUpdateForm;
+&nbsp;import br.com.jacto.trevo.model.product.Culture;
+&nbsp;import br.com.jacto.trevo.model.product.Product;
+&nbsp;import br.com.jacto.trevo.service.product.CultureService;
+&nbsp;import br.com.jacto.trevo.service.product.ProductService;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.media.ArraySchema;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
+&nbsp;import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
+&nbsp;import org.springdoc.api.annotations.ParameterObject;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.Pageable;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.util.UriComponentsBuilder;
 &nbsp;
+&nbsp;import javax.transaction.Transactional;
+&nbsp;import javax.validation.Valid;
+&nbsp;import java.net.URI;
+&nbsp;import java.util.Optional;
 &nbsp;import java.util.UUID;
 &nbsp;
-&nbsp;@Entity()
-&nbsp;public class Culture {
-<b class="fc">&nbsp;    public Culture() {</b>
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/products&quot;)
+&nbsp;@Tag(name = &quot;Produto&quot;, description = &quot;Gerenciamento de produtos&quot;)
+<b class="fc">&nbsp;public class ProductController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ProductService productService;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private CultureService cultureService;
+&nbsp;
+&nbsp;    @GetMapping
+&nbsp;    @Operation(summary = &quot;Lista todos os produtos&quot;, description = &quot;Por padrão a quantidade de produto em uma pagina é 20, mas pode ser mudado&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, array = @ArraySchema(schema = @Schema(implementation = ProductDto.class)))),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public Page&lt;ProductDto&gt; getProduct(@ParameterObject Pageable pagination) {
+<b class="fc">&nbsp;        return productService.getAll(pagination);</b>
 &nbsp;    }
 &nbsp;
-<b class="fc">&nbsp;    public Culture(String cultureName, Product product) {</b>
-<b class="fc">&nbsp;        this.cultureName = cultureName;</b>
-<b class="fc">&nbsp;        this.product = product;</b>
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    @Operation(summary = &quot;Mostra o produto com mais detalhes&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ProductDetailDto.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;ProductDetailDto&gt; getProductId(@PathVariable UUID id) {
+<b class="fc">&nbsp;        Optional&lt;ProductDetailDto&gt; product = productService.getId(id);</b>
+<b class="fc">&nbsp;        return product.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    @Id
-&nbsp;    @GeneratedValue(strategy = GenerationType.UUID)
-&nbsp;    private UUID cultureId;
-&nbsp;
-&nbsp;    @Column(nullable = false)
-&nbsp;    private String cultureName;
-&nbsp;
-&nbsp;    @ManyToOne
-&nbsp;    @JoinColumn(name = &quot;productId&quot;, referencedColumnName = &quot;productId&quot;)
-&nbsp;    private Product product;
-&nbsp;
-&nbsp;
-&nbsp;    public UUID getCultureId() {
-<b class="fc">&nbsp;        return cultureId;</b>
+&nbsp;    @GetMapping(&quot;/orders/{id}&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ProductOrderDto.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    @Operation(summary = &quot;Mostra o produto com seus detalhas e suas culturas&quot;)
+&nbsp;    public ResponseEntity&lt;ProductOrderDto&gt; getProductOrder(@PathVariable UUID id) {
+<b class="fc">&nbsp;        Optional&lt;ProductOrderDto&gt; productOrder = productService.productOrder(id);</b>
+<b class="fc">&nbsp;        return productOrder.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public String getCultureName() {
-<b class="fc">&nbsp;        return cultureName;</b>
+&nbsp;    @PostMapping
+&nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Registro de produto&quot;, description = &quot;Não colocar o creatAt pegará a data atual por padrão&quot;)
+&nbsp;    @SecurityRequirement(name = &quot;bearer-key&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ProductCreateDto.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;ProductCreateDto&gt; createProduct(@RequestBody @Valid ProductForm product, UriComponentsBuilder uriBuilder) {
+<b class="fc">&nbsp;        Optional&lt;ProductCreateDto&gt; save = productService.create(product);</b>
+<b class="fc">&nbsp;        if (save.isEmpty()) {</b>
+<b class="fc">&nbsp;            return ResponseEntity.notFound().build();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        URI uri = uriBuilder.path(&quot;/products/{id}&quot;).buildAndExpand(save.get().getProductId()).toUri();</b>
+<b class="fc">&nbsp;        return ResponseEntity.created(uri).body(save.get());</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public Product getProduct() {
-<b class="fc">&nbsp;        return product;</b>
+&nbsp;    @PutMapping
+&nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Atualização do produto&quot;)
+&nbsp;    @SecurityRequirement(name = &quot;bearer-key&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = Product.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;Product&gt; updateProduct(@RequestBody @Valid ProductUpdateForm product) {
+<b class="fc">&nbsp;        Optional&lt;Product&gt; updateProduct = productService.update(product);</b>
+<b class="fc">&nbsp;        return updateProduct.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public void setCultureName(String cultureName) {
-<b class="fc">&nbsp;        this.cultureName = cultureName;</b>
+&nbsp;    @PutMapping(&quot;/cultures&quot;)
+&nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Atualização da cultura do produto&quot;)
+&nbsp;    @SecurityRequirement(name = &quot;bearer-key&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = Culture.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;Culture&gt; updateCulture(@RequestBody @Valid ProductCultureForm culture) {
+<b class="fc">&nbsp;        Optional&lt;Culture&gt; updateCulture = cultureService.update(culture);</b>
+<b class="fc">&nbsp;        return updateCulture.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public void setCultureId(UUID cultureId) {
-<b class="fc">&nbsp;        this.cultureId = cultureId;</b>
+&nbsp;    @DeleteMapping(&quot;/{id}&quot;)
+&nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Excluir produto&quot;, description = &quot;Culturas e pedidos vinculada ao produto serão excluído&quot;)
+&nbsp;    @SecurityRequirement(name = &quot;bearer-key&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Success no-content&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+&nbsp;            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;Void&gt; deleteProduct(@PathVariable UUID id) {
+<b class="fc">&nbsp;        Boolean deleteProduct = productService.delete(id);</b>
+<b class="fc">&nbsp;        return deleteProduct ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();</b>
 &nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/cultures&quot;)
+&nbsp;    @Transactional
+&nbsp;    @Operation(summary = &quot;Excluir cultura do produto&quot;)
+&nbsp;    @SecurityRequirement(name = &quot;bearer-key&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Success no-content&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+&nbsp;            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;Culture&gt; deleteCulture(@RequestBody @Valid ProductCultureDeleteForm culture) {
+<b class="fc">&nbsp;        Boolean findCulture = cultureService.delete(culture);</b>
+<b class="fc">&nbsp;        return findCulture ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
 &nbsp;}
 </code>
 </pre>
@@ -170,7 +269,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-02-23 07:13</div>
+    <div style="float:right;">generated on 2023-03-01 08:45</div>
 </div>
 </body>
 </html>
