@@ -7,21 +7,18 @@ import br.com.jacto.trevo.controller.client.dto.ClientOrderDto;
 import br.com.jacto.trevo.controller.client.form.ClientForm;
 import br.com.jacto.trevo.controller.client.form.ClientUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
+import br.com.jacto.trevo.model.manager.Manager;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.ManagerRepository;
 import br.com.jacto.trevo.service.client.ClientService;
-import net.bytebuddy.implementation.bytecode.Throw;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -29,10 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
-
-import static org.junit.Assert.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -40,10 +34,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ClientController.class)
@@ -77,7 +74,11 @@ public class ClientControllerTest {
 
 
     public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14));
+
+
+    public Manager manager = new Manager("test", "12345");
+    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14), manager);
+
     public OrderItem order = new OrderItem(3, client, product);
 
 
@@ -201,7 +202,7 @@ public class ClientControllerTest {
         when(clientService.getId(clientId)).thenReturn(Optional.empty());
 
         var response = mockMvc.perform(
-                get("/clients/"+ clientId)
+                get("/clients/" + clientId)
                         .contentType(MediaType.APPLICATION_JSON)
 
         ).andReturn().getResponse();
@@ -501,7 +502,6 @@ public class ClientControllerTest {
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 
     }
-
 
 
 }

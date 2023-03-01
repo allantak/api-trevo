@@ -1,7 +1,6 @@
 package br.com.jacto.trevo.model.product;
 
 import javax.persistence.*;
-
 import java.util.UUID;
 
 @Entity()

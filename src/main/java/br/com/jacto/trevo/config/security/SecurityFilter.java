@@ -27,7 +27,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String tokenJWT = getToken(request);
 
-        if( tokenJWT != null){
+        if (tokenJWT != null) {
             String subject = tokenService.getSubject(tokenJWT);
             UserDetails findManager = managerRepository.findByUsername(subject);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(findManager, null, findManager.getAuthorities());

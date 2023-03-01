@@ -6,9 +6,10 @@ import java.util.UUID;
 
 public class ProductImageCreateDto {
 
-    public ProductImageCreateDto(Image img){
+    public ProductImageCreateDto(Image img) {
         this.imageId = img.getImageId();
     }
+
     private final UUID imageId;
 
     public UUID getImageId() {

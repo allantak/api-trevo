@@ -5,7 +5,7 @@ import br.com.jacto.trevo.model.product.Image;
 import java.util.UUID;
 
 public class ProductImageListDto {
-    public ProductImageListDto(Image img){
+    public ProductImageListDto(Image img) {
         this.imageId = img.getImageId();
     }
 

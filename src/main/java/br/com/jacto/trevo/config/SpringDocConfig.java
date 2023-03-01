@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class SpringDocConfig {
     @Bean
     public OpenAPI customOpenAPI() {
-        return (OpenAPI) new OpenAPI()
+        return new OpenAPI()
                 .info(new Info()
                         .title("API Trevo")
                         .description("API que gerencia os pulverizadores de fertilizantes da indústria trevo." +

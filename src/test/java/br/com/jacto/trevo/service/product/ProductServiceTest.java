@@ -1,20 +1,17 @@
 package br.com.jacto.trevo.service.product;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 import br.com.jacto.trevo.controller.product.dto.ProductCreateDto;
 import br.com.jacto.trevo.controller.product.dto.ProductDto;
 import br.com.jacto.trevo.controller.product.dto.ProductOrderDto;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
 import br.com.jacto.trevo.controller.product.form.ProductUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
+import br.com.jacto.trevo.model.manager.Manager;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Culture;
 import br.com.jacto.trevo.model.product.Product;
+import br.com.jacto.trevo.repository.ManagerRepository;
 import br.com.jacto.trevo.repository.ProductRepository;
-import javax.transaction.Transactional;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -27,8 +24,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @Transactional
@@ -41,10 +43,14 @@ public class ProductServiceTest {
     @MockBean
     ProductRepository productRepository;
 
-    public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14));
-    public OrderItem order = new OrderItem(3, client, product);
+    @MockBean
+    ManagerRepository managerRepository;
 
+
+    public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
+    public Manager manager = new Manager("test", "12345");
+    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14), manager);
+    public OrderItem order = new OrderItem(3, client, product);
     public Culture culture = new Culture("Cerejeiras", product);
 
     @Test
@@ -98,17 +104,40 @@ public class ProductServiceTest {
         product.setProductId(UUID.randomUUID());
 
         when(productRepository.save(any())).thenReturn(product);
+        when(managerRepository.findById(any())).thenReturn(Optional.ofNullable(manager));
 
-        ProductCreateDto product = productService.create(form);
+        Optional<ProductCreateDto> product = productService.create(form);
         assertNotNull(product);
-        assertNotNull(product.getProductId());
-        assertEquals(product.getProductName(), form.getProductName());
+        assertNotNull(product.get().getProductId());
+        assertEquals(product.get().getProductName(), form.getProductName());
+    }
+
+    @Test
+    @DisplayName("Cadastrar um produto sem o gerente")
+    public void createProductCase2() {
+        List<String> listCulture = new ArrayList<String>();
+        listCulture.add(culture.getCultureName());
+
+        ProductForm form = new ProductForm();
+        form.setCultures(listCulture);
+        form.setProductName(product.getProductName());
+        form.setStatus(product.isStatus());
+        form.setDescription(product.getDescription());
+        form.setAreaSize(product.getAreaSize());
+        form.setCreateAt(product.getCreateAt());
+        product.setProductId(UUID.randomUUID());
+
+        when(productRepository.save(any())).thenReturn(product);
+        when(managerRepository.findById(any())).thenReturn(Optional.empty());
+
+        Optional<ProductCreateDto> product = productService.create(form);
+        assertEquals(Optional.empty(), product);
     }
 
 
     @Test
     @DisplayName("ao Fazer Update Com Id Existente Deve Fazer Atualizacao")
-    public void updateProduct(){
+    public void updateProduct() {
         ProductUpdateForm form = new ProductUpdateForm();
         form.setProductId(product.getProductId());
         form.setProductName("update");
@@ -125,14 +154,14 @@ public class ProductServiceTest {
         assertNotNull(update);
         assertEquals(LocalDate.parse("2023-02-14"), update.get().getCreateAt());
         assertEquals("update", update.get().getProductName());
-        assertEquals(false, update.get().isStatus());
+        assertFalse(update.get().isStatus());
         assertEquals(Optional.of(123.0), Optional.ofNullable(update.get().getAreaSize()));
         assertEquals("update", update.get().getDescription());
     }
 
     @Test
     @DisplayName("ao Fazer Update Com Id Nao Existente Deve Retonar Optinal Empty")
-    public void updateProductCase2(){
+    public void updateProductCase2() {
         ProductUpdateForm form = new ProductUpdateForm();
         form.setProductId(UUID.fromString("a6d8726e-d3d3-410e-86be-3404c68959cb"));
         form.setProductName(product.getProductName());
@@ -151,7 +180,7 @@ public class ProductServiceTest {
 
     @Test
     @DisplayName("ao Fazer Update Com Id Existente Com Dados Null Deve Retornar O Dado Ja Existente")
-    public void updateProductCase3(){
+    public void updateProductCase3() {
         ProductUpdateForm form = new ProductUpdateForm();
         form.setProductId(product.getProductId());
 
@@ -164,13 +193,13 @@ public class ProductServiceTest {
         assertEquals(product.getCreateAt(), update.get().getCreateAt());
         assertEquals(product.getProductName(), update.get().getProductName());
         assertEquals(product.isStatus(), update.get().isStatus());
-        assertEquals( product.getAreaSize(), update.get().getAreaSize());
+        assertEquals(product.getAreaSize(), update.get().getAreaSize());
         assertEquals(product.getDescription(), update.get().getDescription());
     }
 
     @Test
     @DisplayName("ao Fazer Update Com Id Existente Com Dados Null E Vazio Deve Retornar O Dado Ja Existente")
-    public void updateProductCase4(){
+    public void updateProductCase4() {
         ProductUpdateForm form = new ProductUpdateForm();
         form.setProductId(product.getProductId());
         form.setProductName("");
@@ -185,7 +214,7 @@ public class ProductServiceTest {
         assertEquals(product.getCreateAt(), update.get().getCreateAt());
         assertEquals(product.getProductName(), update.get().getProductName());
         assertEquals(product.isStatus(), update.get().isStatus());
-        assertEquals( product.getAreaSize(), update.get().getAreaSize());
+        assertEquals(product.getAreaSize(), update.get().getAreaSize());
         assertEquals(product.getDescription(), update.get().getDescription());
     }
 

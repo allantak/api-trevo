@@ -28,7 +28,7 @@ public class ImageService {
 
     public Optional<ByteArrayResource> getImage(UUID id) {
         Optional<Image> img = imageRepository.findById(id);
-        if(img.isEmpty()){
+        if (img.isEmpty()) {
             return Optional.empty();
         }
         ByteArrayResource resource = new ByteArrayResource(img.get().getImg());

@@ -21,7 +21,8 @@ public class ProductForm {
     @NotBlank(message = "Obrigatório a descricao do produto")
     private String description;
 
-    @NotNull(message = "Obrigatório a lista de cultura") @NotEmpty
+    @NotNull(message = "Obrigatório a lista de cultura")
+    @NotEmpty
     private List<String> cultures;
 
     private Double areaSize;

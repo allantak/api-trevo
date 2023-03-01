@@ -1,13 +1,13 @@
 package br.com.jacto.trevo.model.product;
 
 import javax.persistence.*;
-
 import java.util.UUID;
 
 @Entity
 public class Image {
 
-    public Image(){}
+    public Image() {
+    }
 
     public Image(byte[] imageBytes, Product product) {
         this.img = imageBytes;

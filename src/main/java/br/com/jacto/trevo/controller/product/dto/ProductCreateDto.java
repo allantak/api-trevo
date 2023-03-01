@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class ProductCreateDto {
 
-    public ProductCreateDto(Product product){
+    public ProductCreateDto(Product product) {
         this.productId = product.getProductId();
         this.productName = product.getProductName();
     }

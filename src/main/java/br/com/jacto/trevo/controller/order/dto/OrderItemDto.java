@@ -2,12 +2,11 @@ package br.com.jacto.trevo.controller.order.dto;
 
 import br.com.jacto.trevo.model.order.OrderItem;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public class OrderItemDto {
 
-    public OrderItemDto(OrderItem order){
+    public OrderItemDto(OrderItem order) {
 
         this.orderItemId = order.getOrderItemId();
         this.email = order.getClient().getEmail();

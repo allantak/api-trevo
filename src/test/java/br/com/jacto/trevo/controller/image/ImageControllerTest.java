@@ -6,11 +6,11 @@ import br.com.jacto.trevo.controller.image.dto.ProductImageCreateDto;
 import br.com.jacto.trevo.controller.image.dto.ProductImageDto;
 import br.com.jacto.trevo.controller.image.form.ImageDeleteForm;
 import br.com.jacto.trevo.controller.image.form.ProductImageForm;
+import br.com.jacto.trevo.model.manager.Manager;
 import br.com.jacto.trevo.model.product.Image;
 import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.ManagerRepository;
 import br.com.jacto.trevo.service.product.ImageService;
-import org.checkerframework.checker.nullness.Opt;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -23,7 +23,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -39,7 +38,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -76,7 +76,8 @@ public class ImageControllerTest {
     private JacksonTester<ImageDeleteForm> imageDeleteFormJson;
 
 
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14));
+    public Manager manager = new Manager("test", "12345");
+    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14), manager);
     byte[] testBytes = new byte[]{0x01, 0x02, 0x03, 0x04, 0x05};
     public Image image = new Image(testBytes, product);
 

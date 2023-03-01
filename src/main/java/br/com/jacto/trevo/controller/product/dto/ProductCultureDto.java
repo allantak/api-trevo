@@ -11,7 +11,7 @@ public class ProductCultureDto {
         this.cultureName = culture.getCultureName();
     }
 
-    private UUID cultureId;
+    private final UUID cultureId;
 
     private String cultureName;
 

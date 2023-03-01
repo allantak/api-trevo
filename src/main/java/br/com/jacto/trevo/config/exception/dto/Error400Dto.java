@@ -4,7 +4,7 @@ import org.springframework.validation.FieldError;
 
 public class Error400Dto {
 
-    public Error400Dto(FieldError erro){
+    public Error400Dto(FieldError erro) {
         this.campo = erro.getField();
         this.mensagem = erro.getDefaultMessage();
     }

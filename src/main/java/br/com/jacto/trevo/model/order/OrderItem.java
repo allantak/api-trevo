@@ -3,16 +3,17 @@ package br.com.jacto.trevo.model.order;
 import br.com.jacto.trevo.model.client.Client;
 import br.com.jacto.trevo.model.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.*;
 
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
 public class OrderItem {
 
-    public OrderItem(){}
+    public OrderItem() {
+    }
 
-    public OrderItem(Integer quantity, Client client, Product product){
+    public OrderItem(Integer quantity, Client client, Product product) {
         this.quantity = quantity;
         this.client = client;
         this.product = product;

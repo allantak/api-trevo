@@ -5,16 +5,12 @@ import br.com.jacto.trevo.controller.order.dto.OrderItemCreateDto;
 import br.com.jacto.trevo.controller.order.dto.OrderItemDto;
 import br.com.jacto.trevo.controller.order.form.OrderItemForm;
 import br.com.jacto.trevo.controller.order.form.OrderItemUpdateForm;
-import br.com.jacto.trevo.controller.product.ProductController;
-import br.com.jacto.trevo.controller.product.dto.ProductDto;
-import br.com.jacto.trevo.controller.product.form.ProductCultureDeleteForm;
 import br.com.jacto.trevo.model.client.Client;
+import br.com.jacto.trevo.model.manager.Manager;
 import br.com.jacto.trevo.model.order.OrderItem;
-import br.com.jacto.trevo.model.product.Culture;
 import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.ManagerRepository;
 import br.com.jacto.trevo.service.order.OrderItemService;
-import br.com.jacto.trevo.service.product.ProductService;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -24,8 +20,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
@@ -76,9 +70,12 @@ public class OrderItemControllerTest {
     private JacksonTester<OrderItemUpdateForm> OrderItemUpdateForm;
 
 
-
     public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14));
+
+
+    public Manager manager = new Manager("test", "12345");
+    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14), manager);
+
     public OrderItem order = new OrderItem(3, client, product);
 
     @Test
@@ -245,10 +242,9 @@ public class OrderItemControllerTest {
     }
 
 
-
     @Test
     @DisplayName("Caso campos obrigatorio nao for preenchido deve retornar bad request")
-    public void creatOrderCase3() throws Exception {;
+    public void creatOrderCase3() throws Exception {
 
         OrderItemForm form = new OrderItemForm();
 
@@ -260,7 +256,7 @@ public class OrderItemControllerTest {
                 .andReturn()
                 .getResponse();
 
-        assertEquals(HttpStatus. BAD_REQUEST.value(), response.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
     }
 
     @Test
@@ -430,7 +426,7 @@ public class OrderItemControllerTest {
         when(orderItemService.delete(orderId)).thenReturn(true);
 
         var response = mockMvc.perform(
-                        delete("/orders/" +orderId)
+                        delete("/orders/" + orderId)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andReturn()

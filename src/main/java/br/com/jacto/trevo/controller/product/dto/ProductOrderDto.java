@@ -1,10 +1,8 @@
 package br.com.jacto.trevo.controller.product.dto;
 
-import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
 
 import java.util.List;
-import java.util.UUID;
 
 public class ProductOrderDto {
 

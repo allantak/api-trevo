@@ -3,8 +3,8 @@ package br.com.jacto.trevo.model.product;
 import br.com.jacto.trevo.model.manager.Manager;
 import br.com.jacto.trevo.model.order.OrderItem;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.*;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -15,12 +15,13 @@ public class Product {
     public Product() {
     }
 
-    public Product(String productName, Boolean status, String description, Double areaSize, LocalDate createAt) {
+    public Product(String productName, Boolean status, String description, Double areaSize, LocalDate createAt, Manager manager) {
         setProductName(productName);
         setStatus(status);
         setDescription(description);
         setAreaSize(areaSize);
         setCreateAt(createAt);
+        setManager(manager);
     }
 
     @Id
@@ -123,6 +124,7 @@ public class Product {
     public void setCultures(List<Culture> cultures) {
         this.cultures = cultures;
     }
+
     public void setProductId(UUID productId) {
         this.productId = productId;
     }
@@ -130,4 +132,9 @@ public class Product {
     public void setImgs(List<Image> imgs) {
         this.imgs = imgs;
     }
+
+    public void setManager(Manager manager) {
+        this.manager = manager;
+    }
+
 }

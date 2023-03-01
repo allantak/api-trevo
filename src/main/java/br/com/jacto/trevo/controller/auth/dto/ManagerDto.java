@@ -5,7 +5,7 @@ import br.com.jacto.trevo.model.manager.Manager;
 import java.util.UUID;
 
 public class ManagerDto {
-    public ManagerDto(Manager manager){
+    public ManagerDto(Manager manager) {
         this.managerId = manager.getManagerId();
     }
 

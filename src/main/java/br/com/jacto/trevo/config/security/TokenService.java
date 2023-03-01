@@ -23,7 +23,7 @@ public class TokenService {
     public TokenDto token(Manager manager) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            String tokenJWT= JWT.create()
+            String tokenJWT = JWT.create()
                     .withIssuer("API trevo")
                     .withSubject(manager.getUsername())
                     .withExpiresAt(dateExpiration())

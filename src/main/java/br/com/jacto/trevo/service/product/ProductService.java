@@ -6,9 +6,11 @@ import br.com.jacto.trevo.controller.product.dto.ProductDto;
 import br.com.jacto.trevo.controller.product.dto.ProductOrderDto;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
 import br.com.jacto.trevo.controller.product.form.ProductUpdateForm;
+import br.com.jacto.trevo.model.manager.Manager;
 import br.com.jacto.trevo.model.product.Culture;
 import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.CultureRepository;
+import br.com.jacto.trevo.repository.ManagerRepository;
 import br.com.jacto.trevo.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,23 +30,33 @@ public class ProductService {
     @Autowired
     private CultureRepository cultureRepository;
 
+    @Autowired
+    private ManagerRepository managerRepository;
+
     public Page<ProductDto> getAll(Pageable pagination) {
         return productRepository.findAll(pagination).map(ProductDto::new);
     }
 
-    public ProductCreateDto create(ProductForm product) {
+    public Optional<ProductCreateDto> create(ProductForm product) {
+        Optional<Manager> findManager = managerRepository.findById(product.getManagerId());
+        if (findManager.isEmpty()) {
+            return Optional.empty();
+        }
         if (product.getCreateAt() == null) {
             product.setCreateAt(LocalDate.now());
         }
-        Product createProduct = productRepository.save(new Product(product.getProductName(), product.getStatus(),
-                product.getDescription(), product.getAreaSize(), product.getCreateAt()));
+
+        Product productSave = new Product(product.getProductName(), product.getStatus(),
+                product.getDescription(), product.getAreaSize(), product.getCreateAt(), findManager.get());
+
+        Product createProduct = productRepository.save(productSave);
 
         for (String culture : product.getCultures()) {
             Culture listCulture = new Culture(culture, createProduct);
             cultureRepository.save(listCulture);
         }
 
-        return new ProductCreateDto(createProduct);
+        return Optional.of(new ProductCreateDto(createProduct));
     }
 
     public Optional<ProductDetailDto> getId(UUID id) {

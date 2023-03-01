@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class ImageDto {
 
-    public ImageDto(Image img){
+    public ImageDto(Image img) {
         this.imageId = img.getImageId();
         this.img = img.getImg();
     }

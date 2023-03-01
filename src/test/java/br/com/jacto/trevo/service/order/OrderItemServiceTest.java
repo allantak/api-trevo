@@ -5,12 +5,12 @@ import br.com.jacto.trevo.controller.order.dto.OrderItemDto;
 import br.com.jacto.trevo.controller.order.form.OrderItemForm;
 import br.com.jacto.trevo.controller.order.form.OrderItemUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
+import br.com.jacto.trevo.model.manager.Manager;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.ClientRepository;
 import br.com.jacto.trevo.repository.OrderItemRepository;
 import br.com.jacto.trevo.repository.ProductRepository;
-import javax.transaction.Transactional;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -19,12 +19,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -44,7 +47,8 @@ public class OrderItemServiceTest {
     ProductRepository productRepository;
 
     public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14));
+    public Manager manager = new Manager("test", "12345");
+    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14), manager);
     public OrderItem order = new OrderItem(3, client, product);
 
     public OrderItemUpdateForm formUpdate() {

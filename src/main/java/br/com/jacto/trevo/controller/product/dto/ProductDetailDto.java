@@ -15,7 +15,6 @@ public class ProductDetailDto {
         this.createAt = product.getCreateAt();
         this.status = product.isStatus();
         this.cultures = product.getCultures().stream().map(ProductCultureDto::new).toList();
-        this.orders = product.getOrders().stream().map(ProductOrderClientDto::new).toList();
     }
 
     private final UUID productId;
@@ -28,7 +27,6 @@ public class ProductDetailDto {
 
     private final LocalDate createAt;
 
-    private final List<ProductOrderClientDto> orders;
 
     private final List<ProductCultureDto> cultures;
 
@@ -50,10 +48,6 @@ public class ProductDetailDto {
 
     public LocalDate getCreateAt() {
         return createAt;
-    }
-
-    public List<ProductOrderClientDto> getOrders() {
-        return orders;
     }
 
     public List<ProductCultureDto> getCultures() {

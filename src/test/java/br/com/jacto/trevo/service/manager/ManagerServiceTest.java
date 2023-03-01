@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
-
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -42,7 +41,7 @@ public class ManagerServiceTest {
 
     @Test
     @DisplayName("Procurar pelo gerente existente")
-    public void findByUsername(){
+    public void findByUsername() {
         UserDetails userDetails = mock(UserDetails.class);
         when(managerRepository.findByUsername(any())).thenReturn(userDetails);
 
@@ -56,8 +55,8 @@ public class ManagerServiceTest {
 
     @Test
     @DisplayName("Autenticar gerente")
-    public void auth(){
-        ManagerForm managerForm  = new ManagerForm();
+    public void auth() {
+        ManagerForm managerForm = new ManagerForm();
         managerForm.setUsername(manager.getUsername());
         managerForm.setPassword(manager.getPassword());
 
@@ -70,8 +69,8 @@ public class ManagerServiceTest {
 
     @Test
     @DisplayName("Registrar manager")
-    public void register(){
-        ManagerForm managerForm  = new ManagerForm();
+    public void register() {
+        ManagerForm managerForm = new ManagerForm();
         managerForm.setUsername(manager.getUsername());
         managerForm.setPassword(manager.getPassword());
         manager.setManagerId(UUID.randomUUID());

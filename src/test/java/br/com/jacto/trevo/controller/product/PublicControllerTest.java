@@ -10,6 +10,7 @@ import br.com.jacto.trevo.controller.product.form.ProductCultureForm;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
 import br.com.jacto.trevo.controller.product.form.ProductUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
+import br.com.jacto.trevo.model.manager.Manager;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Culture;
 import br.com.jacto.trevo.model.product.Product;
@@ -90,7 +91,10 @@ public class PublicControllerTest {
     private JacksonTester<ProductCultureDeleteForm> productCultureDeleteFormJson;
 
     public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14));
+
+    public Manager manager = new Manager("test", "12345");
+    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14), manager);
+
     public OrderItem order = new OrderItem(3, client, product);
     public Culture culture = new Culture("Cerejeiras", product);
 
@@ -280,7 +284,7 @@ public class PublicControllerTest {
         form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
         form.setCreateAt(product.getCreateAt());
 
-        when(productService.create(any())).thenReturn(productCreate);
+        when(productService.create(any())).thenReturn(Optional.of(productCreate));
 
         var response = mockMvc.perform(
                         post("/products")
@@ -299,8 +303,42 @@ public class PublicControllerTest {
     }
 
     @Test
-    @DisplayName("Cadastar um produto com falta de dados necessarios")
+    @DisplayName("Cadastra um produto sem o gerente")
     public void createProductCase2() throws Exception {
+        UUID productId = UUID.randomUUID();
+        product.setProductId(productId);
+
+        List<Culture> listClient = new ArrayList<Culture>();
+        listClient.add(culture);
+        product.setCultures(listClient);
+
+        ProductCreateDto productCreate = new ProductCreateDto(product);
+
+        ProductForm form = new ProductForm();
+        form.setManagerId(UUID.randomUUID());
+        form.setProductName(product.getProductName());
+        form.setDescription(product.getDescription());
+        form.setAreaSize(product.getAreaSize());
+        form.setStatus(product.isStatus());
+        form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
+        form.setCreateAt(product.getCreateAt());
+
+        when(productService.create(any())).thenReturn(Optional.empty());
+
+        var response = mockMvc.perform(
+                        post("/products")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(productFormJson.write(form).getJson())
+                )
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+    }
+
+    @Test
+    @DisplayName("Cadastar um produto com falta de dados necessarios")
+    public void createProductCase3() throws Exception {
 
         ProductForm form = new ProductForm();
         form.setAreaSize(product.getAreaSize());
@@ -319,7 +357,7 @@ public class PublicControllerTest {
 
     @Test
     @DisplayName("Cadastrum produto com nome de um produto ja existente deve retornar Conflict")
-    public void createProductCase3() throws Exception {
+    public void createProductCase4() throws Exception {
         UUID productId = UUID.randomUUID();
         product.setProductId(productId);
 
@@ -351,7 +389,7 @@ public class PublicControllerTest {
 
     @Test
     @DisplayName("Nao permitido fazer cadastro de produto")
-    public void createProductCase4() throws Exception {
+    public void createProductCase5() throws Exception {
         UUID productId = UUID.randomUUID();
         product.setProductId(productId);
 
@@ -640,7 +678,6 @@ public class PublicControllerTest {
 
         assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
     }
-
 
 
     @Test
