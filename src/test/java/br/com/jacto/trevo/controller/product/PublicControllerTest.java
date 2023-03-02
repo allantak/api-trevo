@@ -594,7 +594,6 @@ public class PublicControllerTest {
         ProductCultureForm form = new ProductCultureForm();
         form.setProductId(productId);
         form.setCultureId(cultureId);
-        form.setProductName(product.getProductName());
 
         when(cultureService.update(any())).thenReturn(Optional.ofNullable(culture));
 
@@ -623,7 +622,6 @@ public class PublicControllerTest {
         ProductCultureForm form = new ProductCultureForm();
         form.setProductId(productId);
         form.setCultureId(cultureId);
-        form.setProductName(product.getProductName());
 
         when(cultureService.update(any())).thenReturn(Optional.empty());
 
@@ -664,7 +662,6 @@ public class PublicControllerTest {
         ProductCultureForm form = new ProductCultureForm();
         form.setProductId(productId);
         form.setCultureId(cultureId);
-        form.setProductName(product.getProductName());
 
         when(cultureService.update(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
 

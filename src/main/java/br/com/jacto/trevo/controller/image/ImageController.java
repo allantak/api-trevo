@@ -99,7 +99,7 @@ public class ImageController {
 
     @DeleteMapping("/images")
     @Transactional
-    @Operation(summary = "Exclui a imagem")
+    @Operation(summary = "Delete a imagem")
     @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Success no-content", content = @Content(mediaType = "application/json")),

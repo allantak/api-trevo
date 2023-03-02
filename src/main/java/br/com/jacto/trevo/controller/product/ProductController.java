@@ -145,7 +145,7 @@ public class ProductController {
 
     @DeleteMapping("/cultures")
     @Transactional
-    @Operation(summary = "Excluir cultura do produto")
+    @Operation(summary = "Delete cultura do produto")
     @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Success no-content", content = @Content(mediaType = "application/json")),

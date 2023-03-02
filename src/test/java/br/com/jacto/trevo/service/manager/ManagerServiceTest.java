@@ -1,7 +1,9 @@
 package br.com.jacto.trevo.service.manager;
 
+import br.com.jacto.trevo.controller.auth.dto.ManagerCreateDto;
 import br.com.jacto.trevo.controller.auth.dto.ManagerDto;
 import br.com.jacto.trevo.controller.auth.form.ManagerForm;
+import br.com.jacto.trevo.controller.auth.form.ManagerUpdateForm;
 import br.com.jacto.trevo.model.manager.Manager;
 import br.com.jacto.trevo.repository.ManagerRepository;
 import org.junit.Test;
@@ -13,13 +15,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -82,6 +85,75 @@ public class ManagerServiceTest {
 
         assertNotNull(result);
         assertEquals(managerDto.getManagerId(), result.getManagerId());
+    }
+
+    @Test
+    @DisplayName("Atualizacao manager")
+    public void updateManager() {
+        UUID managerId = UUID.randomUUID();
+        manager.setManagerId(managerId);
+        String encode = new BCryptPasswordEncoder().encode(manager.getPassword());
+        manager.setManagerPassword(encode);
+        ManagerUpdateForm managerForm = new ManagerUpdateForm();
+        managerForm.setManagerId(managerId);
+        managerForm.setUsername(manager.getUsername());
+        managerForm.setPassword(manager.getPassword());
+        managerForm.setNewPassword("12345");
+
+
+        when(managerRepository.findById(any())).thenReturn(Optional.of(manager));
+        when(managerRepository.save(any())).thenReturn(manager);
+        Optional<ManagerCreateDto> result = managerService.updateManager(managerForm);
+
+
+        assertNotNull(result);
+        assertEquals(managerForm.getManagerId(), result.get().getManagerId());
+        assertEquals(managerForm.getUsername(), result.get().getUsername());
+    }
+
+    @Test
+    @DisplayName("Exception quando atualizar e senha nao ser compativel com ja existente")
+    public void updateManagerCase2() {
+        UUID managerId = UUID.randomUUID();
+        manager.setManagerId(managerId);
+        String encode = new BCryptPasswordEncoder().encode(manager.getPassword());
+        String encodeTest = new BCryptPasswordEncoder().encode("Comparacao");
+        manager.setManagerPassword(encode);
+
+        ManagerUpdateForm managerForm = new ManagerUpdateForm();
+        managerForm.setManagerId(managerId);
+        managerForm.setUsername(manager.getUsername());
+        managerForm.setPassword(encodeTest);
+        managerForm.setNewPassword("12345");
+
+
+        when(managerRepository.findById(any())).thenReturn(Optional.of(manager));
+        when(managerRepository.save(any())).thenReturn(manager);
+        Optional<ManagerCreateDto> result = managerService.updateManager(managerForm);
+
+
+        assertNotNull(result);
+        assertEquals(managerForm.getManagerId(), result.get().getManagerId());
+    }
+
+    @Test
+    @DisplayName("Atualizacao manager caso nao ache o id")
+    public void updateManagerCase3() {
+        UUID managerId = UUID.randomUUID();
+        manager.setManagerId(managerId);
+        ManagerUpdateForm managerForm = new ManagerUpdateForm();
+        managerForm.setManagerId(managerId);
+        managerForm.setUsername(manager.getUsername());
+        managerForm.setPassword(manager.getPassword());
+
+
+        when(managerRepository.findById(any())).thenReturn(Optional.empty());
+        when(managerRepository.save(any())).thenReturn(manager);
+        Optional<ManagerCreateDto> result = managerService.updateManager(managerForm);
+
+
+        assertNotNull(result);
+        assertEquals(Optional.empty(), result);
     }
 
 }

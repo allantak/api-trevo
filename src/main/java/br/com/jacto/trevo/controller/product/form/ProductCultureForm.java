@@ -23,10 +23,6 @@ public class ProductCultureForm {
         return cultureId;
     }
 
-    public void setProductName(String cultureName) {
-        this.cultureName = cultureName;
-    }
-
     public UUID getProductId() {
         return productId;
     }

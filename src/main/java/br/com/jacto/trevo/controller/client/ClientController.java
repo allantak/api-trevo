@@ -99,7 +99,7 @@ public class ClientController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    @Operation(summary = "Excluir cliente")
+    @Operation(summary = "Delete cliente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Success no-content", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),

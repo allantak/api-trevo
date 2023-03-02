@@ -1,9 +1,11 @@
 package br.com.jacto.trevo.controller.auth;
 
 import br.com.jacto.trevo.config.security.TokenService;
+import br.com.jacto.trevo.controller.auth.dto.ManagerCreateDto;
 import br.com.jacto.trevo.controller.auth.dto.ManagerDto;
 import br.com.jacto.trevo.controller.auth.dto.TokenDto;
 import br.com.jacto.trevo.controller.auth.form.ManagerForm;
+import br.com.jacto.trevo.controller.auth.form.ManagerUpdateForm;
 import br.com.jacto.trevo.model.manager.Manager;
 import br.com.jacto.trevo.service.manager.ManagerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,10 +21,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 @Tag(name = "Autenticar", description = "Gerenciamento de gerente")
@@ -65,5 +68,32 @@ public class AuthenticationController {
     public ResponseEntity<ManagerDto> createManager(@RequestBody @Valid ManagerForm user) {
         ManagerDto managerDto = managerService.createManager(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(managerDto);
+    }
+
+    @PutMapping("/managers")
+    @SecurityRequirement(name = "bearer-key")
+    @Operation(summary = "Atualizar gerente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ManagerDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Conflict", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
+    public ResponseEntity<ManagerCreateDto> updateManager(@RequestBody @Valid ManagerUpdateForm user) {
+        Optional<ManagerCreateDto> manager = managerService.updateManager(user);
+        return manager.map(value -> ResponseEntity.status(HttpStatus.OK).body(value)).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/managers/{id}")
+    @SecurityRequirement(name = "bearer-key")
+    @Operation(summary = "Delete gerente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ManagerDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
+    public ResponseEntity<Void> deleteManager(@PathVariable UUID id) {
+        boolean managerDelete = managerService.delete(id);
+        return managerDelete ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }
