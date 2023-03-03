@@ -77,6 +77,7 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ManagerDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
             @ApiResponse(responseCode = "409", description = "Conflict", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
     public ResponseEntity<ManagerCreateDto> updateManager(@RequestBody @Valid ManagerUpdateForm user) {
@@ -88,9 +89,10 @@ public class AuthenticationController {
     @SecurityRequirement(name = "bearer-key")
     @Operation(summary = "Delete gerente")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ManagerDto.class))),
+            @ApiResponse(responseCode = "204", description = "Success no-content", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ManagerDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
     public ResponseEntity<Void> deleteManager(@PathVariable UUID id) {
         boolean managerDelete = managerService.delete(id);

@@ -1,9 +1,11 @@
 package br.com.jacto.trevo.controller.auth;
 
 import br.com.jacto.trevo.config.security.TokenService;
+import br.com.jacto.trevo.controller.auth.dto.ManagerCreateDto;
 import br.com.jacto.trevo.controller.auth.dto.ManagerDto;
 import br.com.jacto.trevo.controller.auth.dto.TokenDto;
 import br.com.jacto.trevo.controller.auth.form.ManagerForm;
+import br.com.jacto.trevo.controller.auth.form.ManagerUpdateForm;
 import br.com.jacto.trevo.model.manager.Manager;
 import br.com.jacto.trevo.repository.ManagerRepository;
 import br.com.jacto.trevo.service.manager.ManagerService;
@@ -16,8 +18,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.TestPropertySource;
@@ -25,13 +28,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AuthenticationController.class)
@@ -39,6 +45,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureJsonTesters
 @TestPropertySource(properties = "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration")
 public class AuthenticationControllerTest {
+
+    @MockBean
+    private TestRestTemplate restTemplate;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -61,6 +71,13 @@ public class AuthenticationControllerTest {
     private JacksonTester<TokenDto> tokenDtoJson;
     @Autowired
     private JacksonTester<ManagerDto> managerDtoJson;
+    @Autowired
+    private JacksonTester<ManagerUpdateForm> managerUpdateFormJson;
+    @Autowired
+    private JacksonTester<ManagerCreateDto> managerCreateDtoJson;
+
+
+
 
 
     public Manager manager = new Manager("test", "12345");
@@ -225,6 +242,154 @@ public class AuthenticationControllerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
     }
+
+    @Test
+    @DisplayName("fazer atualizcao")
+    public void updateManager() throws Exception{
+        UUID managerId = UUID.randomUUID();
+        ManagerUpdateForm updateForm = new ManagerUpdateForm();
+        updateForm.setManagerId(managerId);
+        updateForm.setUsername("newUsername");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
+
+        ManagerCreateDto managerDto = new ManagerCreateDto(manager);
+
+        when(managerService.updateManager(any())).thenReturn(Optional.of(managerDto));
+
+        var response = mockMvc.perform(
+                        put("/managers")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(managerUpdateFormJson.write(updateForm).getJson())
+                )
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+
+        var jsonExpect = managerCreateDtoJson.write(managerDto).getJson();
+        assertEquals(jsonExpect, response.getContentAsString());
+    }
+
+
+    @Test
+    @DisplayName("atualizacao com id incorreto do gerente ou senha incorreta")
+    public void updateManagerCase2() throws Exception{
+        UUID managerId = UUID.randomUUID();
+        ManagerUpdateForm updateForm = new ManagerUpdateForm();
+        updateForm.setManagerId(managerId);
+        updateForm.setUsername("newUsername");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
+
+
+        when(managerService.updateManager(any())).thenReturn(Optional.empty());
+
+        var response = mockMvc.perform(
+                        put("/managers")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(managerUpdateFormJson.write(updateForm).getJson())
+                )
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+
+    }
+
+    @Test
+    @DisplayName("atualizacao com em formato errado ou campo faltante")
+    public void updateManagerCase3() throws Exception{
+        ManagerUpdateForm updateForm = new ManagerUpdateForm();
+        updateForm.setUsername("newUsername");
+
+        ManagerCreateDto managerDto = new ManagerCreateDto(manager);
+
+        when(managerService.updateManager(any())).thenReturn(Optional.empty());
+
+        var response = mockMvc.perform(
+                        put("/managers")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(managerUpdateFormJson.write(updateForm).getJson())
+                )
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+    }
+
+    @Test
+    @DisplayName("atualizacao com em formato errado ou campo faltante")
+    public void updateManagerCase4() throws Exception{
+        UUID managerId = UUID.randomUUID();
+        ManagerUpdateForm updateForm = new ManagerUpdateForm();
+        updateForm.setManagerId(managerId);
+        updateForm.setUsername("newUsername");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
+
+        ManagerCreateDto managerDto = new ManagerCreateDto(manager);
+
+        when(managerService.updateManager(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        var response = mockMvc.perform(
+                        put("/managers")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(managerUpdateFormJson.write(updateForm).getJson())
+                )
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
+    }
+
+    @Test
+    @DisplayName("Deletar gerente")
+    public void deleteManager() throws Exception {
+        UUID orderId = UUID.randomUUID();
+
+        when(managerService.delete(orderId)).thenReturn(true);
+
+        var response = mockMvc.perform(
+                        delete("/managers/" + orderId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
+    }
+
+    @Test
+    @DisplayName("Gerente nao cadastrado para deletar retorne not found")
+    public void deleteManagerCase2() throws Exception {
+        UUID orderId = UUID.randomUUID();
+
+        when(managerService.delete(orderId)).thenReturn(false);
+
+        var response = mockMvc.perform(
+                        delete("/orders/" + orderId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+    }
+
+    @Test
+    @DisplayName("id do gerente em formato incorreto ao deletar")
+    public void deleteManagerCase3() throws Exception {
+        var response = mockMvc.perform(
+                        delete("/managers/" + 1)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+    }
+
 
 
 }

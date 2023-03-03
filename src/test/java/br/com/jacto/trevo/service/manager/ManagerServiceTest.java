@@ -94,21 +94,23 @@ public class ManagerServiceTest {
         manager.setManagerId(managerId);
         String encode = new BCryptPasswordEncoder().encode(manager.getPassword());
         manager.setManagerPassword(encode);
-        ManagerUpdateForm managerForm = new ManagerUpdateForm();
-        managerForm.setManagerId(managerId);
-        managerForm.setUsername(manager.getUsername());
-        managerForm.setPassword(manager.getPassword());
-        managerForm.setNewPassword("12345");
 
+        ManagerUpdateForm updateForm = new ManagerUpdateForm();
+        updateForm.setManagerId(managerId);
+        updateForm.setUsername("newTest");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
 
-        when(managerRepository.findById(any())).thenReturn(Optional.of(manager));
+        when(managerRepository.findById(managerId)).thenReturn(Optional.of(manager));
         when(managerRepository.save(any())).thenReturn(manager);
-        Optional<ManagerCreateDto> result = managerService.updateManager(managerForm);
+
+        Optional<ManagerCreateDto> result = managerService.updateManager(updateForm);
 
 
-        assertNotNull(result);
-        assertEquals(managerForm.getManagerId(), result.get().getManagerId());
-        assertEquals(managerForm.getUsername(), result.get().getUsername());
+        assertTrue(result.isPresent());
+        assertEquals(updateForm.getUsername(), result.get().getUsername());
+
+        assertTrue(new BCryptPasswordEncoder().matches(updateForm.getNewPassword(), manager.getPassword()));
     }
 
     @Test
@@ -117,23 +119,21 @@ public class ManagerServiceTest {
         UUID managerId = UUID.randomUUID();
         manager.setManagerId(managerId);
         String encode = new BCryptPasswordEncoder().encode(manager.getPassword());
-        String encodeTest = new BCryptPasswordEncoder().encode("Comparacao");
         manager.setManagerPassword(encode);
 
-        ManagerUpdateForm managerForm = new ManagerUpdateForm();
-        managerForm.setManagerId(managerId);
-        managerForm.setUsername(manager.getUsername());
-        managerForm.setPassword(encodeTest);
-        managerForm.setNewPassword("12345");
+        ManagerUpdateForm updateForm = new ManagerUpdateForm();
+        updateForm.setManagerId(managerId);
+        updateForm.setUsername("newTest");
+        updateForm.setPassword("123456");
+        updateForm.setNewPassword("newPassword");
 
-
-        when(managerRepository.findById(any())).thenReturn(Optional.of(manager));
+        when(managerRepository.findById(managerId)).thenReturn(Optional.empty());
         when(managerRepository.save(any())).thenReturn(manager);
-        Optional<ManagerCreateDto> result = managerService.updateManager(managerForm);
+
+        Optional<ManagerCreateDto> result = managerService.updateManager(updateForm);
 
 
-        assertNotNull(result);
-        assertEquals(managerForm.getManagerId(), result.get().getManagerId());
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -141,19 +141,74 @@ public class ManagerServiceTest {
     public void updateManagerCase3() {
         UUID managerId = UUID.randomUUID();
         manager.setManagerId(managerId);
-        ManagerUpdateForm managerForm = new ManagerUpdateForm();
-        managerForm.setManagerId(managerId);
-        managerForm.setUsername(manager.getUsername());
-        managerForm.setPassword(manager.getPassword());
+        String encode = new BCryptPasswordEncoder().encode(manager.getPassword());
+        manager.setManagerPassword(encode);
 
+        ManagerUpdateForm updateForm = new ManagerUpdateForm();
+        updateForm.setManagerId(managerId);
+        updateForm.setUsername("newTest");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
+
+        when(managerRepository.findById(managerId)).thenReturn(Optional.empty());
+        when(managerRepository.save(any())).thenReturn(manager);
+
+        Optional<ManagerCreateDto> result = managerService.updateManager(updateForm);
+
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Atualizacao sem o campo ou vazio do username deve retornar o antigo")
+    public void updateManagerCase4() {
+        UUID managerId = UUID.randomUUID();
+        manager.setManagerId(managerId);
+        String encode = new BCryptPasswordEncoder().encode(manager.getPassword());
+        manager.setManagerPassword(encode);
+
+        ManagerUpdateForm updateForm = new ManagerUpdateForm();
+        updateForm.setManagerId(managerId);
+        updateForm.setUsername("");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
+
+        when(managerRepository.findById(managerId)).thenReturn(Optional.of(manager));
+        when(managerRepository.save(any())).thenReturn(manager);
+
+        Optional<ManagerCreateDto> result = managerService.updateManager(updateForm);
+
+
+        assertTrue(result.isPresent());
+        assertEquals(manager.getUsername(), result.get().getUsername());
+
+        assertTrue(new BCryptPasswordEncoder().matches(updateForm.getNewPassword(), manager.getPassword()));
+    }
+
+    @Test
+    @DisplayName("Deletar o gerente pelo id")
+    public void deleteOrder() {
+        UUID managerId = UUID.randomUUID();
+
+        when(managerRepository.findById(any())).thenReturn(Optional.ofNullable(manager));
+
+        Boolean update = managerService.delete(managerId);
+
+        assertTrue(update);
+    }
+
+
+    @Test
+    @DisplayName("Caso ao delete nao encontre o gerente")
+    public void deleteOrderCase2() {
+        UUID managerId = UUID.randomUUID();
 
         when(managerRepository.findById(any())).thenReturn(Optional.empty());
-        when(managerRepository.save(any())).thenReturn(manager);
-        Optional<ManagerCreateDto> result = managerService.updateManager(managerForm);
 
+        Boolean update = managerService.delete(managerId);
 
-        assertNotNull(result);
-        assertEquals(Optional.empty(), result);
+        assertFalse(update);
     }
+
 
 }
