@@ -71,7 +71,7 @@ public class ClientController {
 
     @PostMapping
     @Transactional
-    @Operation(summary = "Registra o cliente")
+    @Operation(summary = "Registra o cliente", description = "Email e telefone são unicos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClientDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
