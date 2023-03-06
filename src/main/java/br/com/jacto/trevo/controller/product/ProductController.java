@@ -81,7 +81,7 @@ public class ProductController {
 
     @PostMapping
     @Transactional
-    @Operation(summary = "Registro de produto", description = "Não colocar o creatAt pegará a data atual por padrão")
+    @Operation(summary = "Registro de produto", description = "Não colocar o creatAt pegará a data atual por padrão; Nome do produto é unico")
     @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductCreateDto.class))),

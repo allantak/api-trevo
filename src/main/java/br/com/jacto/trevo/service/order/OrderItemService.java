@@ -13,12 +13,13 @@ import br.com.jacto.trevo.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class OrderItemService {
+public class OrderItemService{
     @Autowired
     private OrderItemRepository orderItemRepository;
     @Autowired
@@ -43,6 +44,10 @@ public class OrderItemService {
             return Optional.empty();
         }
 
+        if(orderItem.getQuantity() <= 0 ){
+            throw new RuntimeException("Quantidade deve ser maior que 0");
+        }
+
         OrderItem order = new OrderItem(orderItem.getQuantity(), findClient.get(), findProduct.get());
         order.setClient(findClient.get());
         order.setProduct(findProduct.get());
@@ -65,6 +70,10 @@ public class OrderItemService {
 
         if (findOrder.isEmpty() || findClient.isEmpty()) {
             return Optional.empty();
+        }
+
+        if(orderItem.getQuantity() <= 0 ){
+            throw new RuntimeException("Quantidade deve ser maior que 0");
         }
 
         if (orderItem.getProductName() != null && !orderItem.getProductName().trim().isEmpty()) {
