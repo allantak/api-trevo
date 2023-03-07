@@ -54,7 +54,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (3/3)
+    (5/5)
   </span>
 </td>
 <td class="coverageStat">
@@ -62,7 +62,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (7/7)
+    (11/11)
   </span>
 </td>
 </tr>
@@ -77,9 +77,11 @@ Current scope:     <a href="../../index.html">all classes</a>
 <code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.controller.auth;
 &nbsp;
 &nbsp;import br.com.jacto.trevo.config.security.TokenService;
+&nbsp;import br.com.jacto.trevo.controller.auth.dto.ManagerCreateDto;
 &nbsp;import br.com.jacto.trevo.controller.auth.dto.ManagerDto;
 &nbsp;import br.com.jacto.trevo.controller.auth.dto.TokenDto;
 &nbsp;import br.com.jacto.trevo.controller.auth.form.ManagerForm;
+&nbsp;import br.com.jacto.trevo.controller.auth.form.ManagerUpdateForm;
 &nbsp;import br.com.jacto.trevo.model.manager.Manager;
 &nbsp;import br.com.jacto.trevo.service.manager.ManagerService;
 &nbsp;import io.swagger.v3.oas.annotations.Operation;
@@ -95,10 +97,11 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import org.springframework.security.authentication.AuthenticationManager;
 &nbsp;import org.springframework.security.core.Authentication;
 &nbsp;import org.springframework.stereotype.Controller;
-&nbsp;import org.springframework.web.bind.annotation.PostMapping;
-&nbsp;import org.springframework.web.bind.annotation.RequestBody;
+&nbsp;import org.springframework.web.bind.annotation.*;
 &nbsp;
 &nbsp;import javax.validation.Valid;
+&nbsp;import java.util.Optional;
+&nbsp;import java.util.UUID;
 &nbsp;
 &nbsp;@Controller
 &nbsp;@Tag(name = &quot;Autenticar&quot;, description = &quot;Gerenciamento de gerente&quot;)
@@ -142,6 +145,35 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        ManagerDto managerDto = managerService.createManager(user);</b>
 <b class="fc">&nbsp;        return ResponseEntity.status(HttpStatus.CREATED).body(managerDto);</b>
 &nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/managers&quot;)
+&nbsp;    @SecurityRequirement(name = &quot;bearer-key&quot;)
+&nbsp;    @Operation(summary = &quot;Atualizar gerente&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ManagerDto.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Conflict&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;ManagerCreateDto&gt; updateManager(@RequestBody @Valid ManagerUpdateForm user) {
+<b class="fc">&nbsp;        Optional&lt;ManagerCreateDto&gt; manager = managerService.updateManager(user);</b>
+<b class="fc">&nbsp;        return manager.map(value -&gt; ResponseEntity.status(HttpStatus.OK).body(value)).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/managers/{id}&quot;)
+&nbsp;    @SecurityRequirement(name = &quot;bearer-key&quot;)
+&nbsp;    @Operation(summary = &quot;Delete gerente&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Success no-content&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ManagerDto.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
+&nbsp;    public ResponseEntity&lt;Void&gt; deleteManager(@PathVariable UUID id) {
+<b class="fc">&nbsp;        boolean managerDelete = managerService.delete(id);</b>
+<b class="fc">&nbsp;        return managerDelete ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();</b>
+&nbsp;    }
 &nbsp;}
 </code>
 </pre>
@@ -166,7 +198,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-03-01 08:45</div>
+    <div style="float:right;">generated on 2023-03-07 08:56</div>
 </div>
 </body>
 </html>

@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > ClientOrderDto</title>
+  <title>Coverage Report > TokenDto</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -18,10 +18,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">br.com.jacto.trevo.controller.client.dto</a>
+    <a href="../index.html">br.com.jacto.trevo.controller.auth.dto</a>
 </div>
 
-<h1>Coverage Summary for Class: ClientOrderDto (br.com.jacto.trevo.controller.client.dto)</h1>
+<h1>Coverage Summary for Class: TokenDto (br.com.jacto.trevo.controller.auth.dto)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -40,7 +40,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">ClientOrderDto</td>
+  <td class="name">TokenDto</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -54,7 +54,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (5/5)
+    (3/3)
   </span>
 </td>
 <td class="coverageStat">
@@ -62,7 +62,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (9/9)
+    (5/5)
   </span>
 </td>
 </tr>
@@ -74,45 +74,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.controller.client.dto;
+<code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.controller.auth.dto;
 &nbsp;
-&nbsp;import br.com.jacto.trevo.model.client.Client;
+&nbsp;import java.util.UUID;
 &nbsp;
-&nbsp;import java.util.List;
-&nbsp;
-&nbsp;public class ClientOrderDto {
-<b class="fc">&nbsp;    public ClientOrderDto(Client client) {</b>
-<b class="fc">&nbsp;        this.clientName = client.getClientName();</b>
-<b class="fc">&nbsp;        this.email = client.getEmail();</b>
-<b class="fc">&nbsp;        this.phone = client.getPhone();</b>
-<b class="fc">&nbsp;        this.orders = client.getOrders().stream().map(ClientOrderProductDto::new).toList();</b>
+&nbsp;public class TokenDto {
+<b class="fc">&nbsp;    public TokenDto(UUID managerId, String token) {</b>
+<b class="fc">&nbsp;        this.managerId = managerId;</b>
+<b class="fc">&nbsp;        this.token = token;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    private final String clientName;
+&nbsp;    private final UUID managerId;
+&nbsp;    private final String token;
 &nbsp;
-&nbsp;    private final String email;
-&nbsp;
-&nbsp;    private final String phone;
-&nbsp;
-&nbsp;    private final List&lt;ClientOrderProductDto&gt; orders;
-&nbsp;
-&nbsp;    public String getClientName() {
-<b class="fc">&nbsp;        return clientName;</b>
+&nbsp;    public String getToken() {
+<b class="fc">&nbsp;        return token;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public String getEmail() {
-<b class="fc">&nbsp;        return email;</b>
+&nbsp;    public UUID getManagerId() {
+<b class="fc">&nbsp;        return managerId;</b>
 &nbsp;    }
-&nbsp;
-&nbsp;
-&nbsp;    public String getPhone() {
-<b class="fc">&nbsp;        return phone;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public List&lt;ClientOrderProductDto&gt; getOrders() {
-<b class="fc">&nbsp;        return orders;</b>
-&nbsp;    }
-&nbsp;
 &nbsp;}
 </code>
 </pre>

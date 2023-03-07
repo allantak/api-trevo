@@ -167,9 +167,6 @@ public class OrderItemServiceTest {
     @DisplayName("update Se Os Valores Estiverem Null DeveUtilizar Os Dados Ja Existente")
     public void updateCase5() {
         OrderItemUpdateForm form = formUpdate();
-        form.setProductName(null);
-        form.setProductName(null);
-        form.setQuantity(null);
 
         when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
         when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
@@ -207,6 +204,22 @@ public class OrderItemServiceTest {
         assertEquals(form.getOrderItemId(), update.get().getOrderItemId());
         assertEquals(order.getQuantity(), update.get().getQuantity());
         assertEquals(client.getEmail(), update.get().getEmail());
+    }
+
+    @Test
+    @DisplayName("Atualizacao de pedido")
+    public void updateOrderItemCase7() {
+        OrderItemUpdateForm form = formUpdate();
+        form.setQuantity(0);
+
+        when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
+        when(orderItemRepository.save(any())).thenReturn(order);
+
+
+        assertThrows(RuntimeException.class, () -> orderItemService.update(form));
+
     }
 
 
@@ -264,6 +277,22 @@ public class OrderItemServiceTest {
         Optional<OrderItemCreateDto> update = orderItemService.create(form);
 
         assertEquals(Optional.empty(), update);
+    }
+
+    @Test
+    @DisplayName("ao criar quantidade de pedido menor que 0")
+    public void createOrderCase4() {
+
+        OrderItemForm form = new OrderItemForm();
+        form.setClientId(client.getId());
+        form.setProductName(product.getProductName());
+        form.setQuantity(0);
+
+        when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
+        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(orderItemRepository.save(any())).thenReturn(order);
+
+        assertThrows(RuntimeException.class, () -> orderItemService.create(form));
     }
 
     @Test

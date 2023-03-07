@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > ManagerDto</title>
+  <title>Coverage Report > ManagerCreateDto</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -21,7 +21,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">br.com.jacto.trevo.controller.auth.dto</a>
 </div>
 
-<h1>Coverage Summary for Class: ManagerDto (br.com.jacto.trevo.controller.auth.dto)</h1>
+<h1>Coverage Summary for Class: ManagerCreateDto (br.com.jacto.trevo.controller.auth.dto)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -40,7 +40,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">ManagerDto</td>
+  <td class="name">ManagerCreateDto</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -51,18 +51,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    60%
   </span>
   <span class="absValue">
-    (2/2)
+    (3/5)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    71,4%
   </span>
   <span class="absValue">
-    (3/3)
+    (5/7)
   </span>
 </td>
 </tr>
@@ -80,15 +80,30 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;import java.util.UUID;
 &nbsp;
-&nbsp;public class ManagerDto {
-<b class="fc">&nbsp;    public ManagerDto(Manager manager) {</b>
+&nbsp;public class ManagerCreateDto {
+&nbsp;
+<b class="fc">&nbsp;    public ManagerCreateDto(Manager manager) {</b>
 <b class="fc">&nbsp;        this.managerId = manager.getManagerId();</b>
+<b class="fc">&nbsp;        this.username = manager.getUsername();</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    private final UUID managerId;
+&nbsp;    private UUID managerId;
+&nbsp;    private String username;
 &nbsp;
 &nbsp;    public UUID getManagerId() {
 <b class="fc">&nbsp;        return managerId;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setManagerId(UUID managerId) {
+<b class="nc">&nbsp;        this.managerId = managerId;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getUsername() {
+<b class="fc">&nbsp;        return username;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUsername(String username) {
+<b class="nc">&nbsp;        this.username = username;</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -114,7 +129,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-03-01 08:45</div>
+    <div style="float:right;">generated on 2023-03-07 08:56</div>
 </div>
 </body>
 </html>

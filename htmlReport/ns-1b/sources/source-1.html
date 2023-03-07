@@ -51,33 +51,33 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (27/27)
+    (31/31)
   </span>
 </td>
 </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$1178377660</td>
+    <td class="name">OrderItemService$MockitoMock$328296782</td>
   </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$1178377660$auxiliary$CCJyZv5c</td>
+    <td class="name">OrderItemService$MockitoMock$328296782$auxiliary$7vpJQIXW</td>
   </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$1178377660$auxiliary$dDkc0Xg2</td>
+    <td class="name">OrderItemService$MockitoMock$328296782$auxiliary$dpyEBVWI</td>
   </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$1178377660$auxiliary$G2yGZUhz</td>
+    <td class="name">OrderItemService$MockitoMock$328296782$auxiliary$KJ9XAVyc</td>
   </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$1178377660$auxiliary$o3Uz1LBw</td>
+    <td class="name">OrderItemService$MockitoMock$328296782$auxiliary$mwoF06Rc</td>
   </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$1178377660$auxiliary$RtP4uLHq</td>
+    <td class="name">OrderItemService$MockitoMock$328296782$auxiliary$sRls3cOu</td>
   </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$1178377660$auxiliary$Se365aJD</td>
+    <td class="name">OrderItemService$MockitoMock$328296782$auxiliary$z7jdpwcV</td>
   </tr>
   <tr>
-    <td class="name">OrderItemService$MockitoMock$1178377660$auxiliary$UskQFgcY</td>
+    <td class="name">OrderItemService$MockitoMock$328296782$auxiliary$Z8sYBAib</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -94,7 +94,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (27/27)
+    (31/31)
   </span>
 </td>
 </tr>
@@ -150,6 +150,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;            return Optional.empty();</b>
 &nbsp;        }
 &nbsp;
+<b class="fc">&nbsp;        if (orderItem.getQuantity() &lt;= 0) {</b>
+<b class="fc">&nbsp;            throw new RuntimeException(&quot;Quantidade deve ser maior que 0&quot;);</b>
+&nbsp;        }
+&nbsp;
 <b class="fc">&nbsp;        OrderItem order = new OrderItem(orderItem.getQuantity(), findClient.get(), findProduct.get());</b>
 <b class="fc">&nbsp;        order.setClient(findClient.get());</b>
 <b class="fc">&nbsp;        order.setProduct(findProduct.get());</b>
@@ -172,6 +176,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 <b class="fc">&nbsp;        if (findOrder.isEmpty() || findClient.isEmpty()) {</b>
 <b class="fc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (orderItem.getQuantity() &lt;= 0) {</b>
+<b class="fc">&nbsp;            throw new RuntimeException(&quot;Quantidade deve ser maior que 0&quot;);</b>
 &nbsp;        }
 &nbsp;
 <b class="fc">&nbsp;        if (orderItem.getProductName() != null &amp;&amp; !orderItem.getProductName().trim().isEmpty()) {</b>
@@ -212,7 +220,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-03-01 08:45</div>
+    <div style="float:right;">generated on 2023-03-07 08:56</div>
 </div>
 </body>
 </html>

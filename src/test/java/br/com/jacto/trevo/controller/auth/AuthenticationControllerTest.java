@@ -19,8 +19,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.TestPropertySource;
@@ -32,12 +32,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AuthenticationController.class)
@@ -75,9 +73,6 @@ public class AuthenticationControllerTest {
     private JacksonTester<ManagerUpdateForm> managerUpdateFormJson;
     @Autowired
     private JacksonTester<ManagerCreateDto> managerCreateDtoJson;
-
-
-
 
 
     public Manager manager = new Manager("test", "12345");
@@ -245,7 +240,7 @@ public class AuthenticationControllerTest {
 
     @Test
     @DisplayName("fazer atualizcao")
-    public void updateManager() throws Exception{
+    public void updateManager() throws Exception {
         UUID managerId = UUID.randomUUID();
         ManagerUpdateForm updateForm = new ManagerUpdateForm();
         updateForm.setManagerId(managerId);
@@ -274,7 +269,7 @@ public class AuthenticationControllerTest {
 
     @Test
     @DisplayName("atualizacao com id incorreto do gerente ou senha incorreta")
-    public void updateManagerCase2() throws Exception{
+    public void updateManagerCase2() throws Exception {
         UUID managerId = UUID.randomUUID();
         ManagerUpdateForm updateForm = new ManagerUpdateForm();
         updateForm.setManagerId(managerId);
@@ -299,7 +294,7 @@ public class AuthenticationControllerTest {
 
     @Test
     @DisplayName("atualizacao com em formato errado ou campo faltante")
-    public void updateManagerCase3() throws Exception{
+    public void updateManagerCase3() throws Exception {
         ManagerUpdateForm updateForm = new ManagerUpdateForm();
         updateForm.setUsername("newUsername");
 
@@ -320,7 +315,7 @@ public class AuthenticationControllerTest {
 
     @Test
     @DisplayName("atualizacao com em formato errado ou campo faltante")
-    public void updateManagerCase4() throws Exception{
+    public void updateManagerCase4() throws Exception {
         UUID managerId = UUID.randomUUID();
         ManagerUpdateForm updateForm = new ManagerUpdateForm();
         updateForm.setManagerId(managerId);
@@ -389,7 +384,6 @@ public class AuthenticationControllerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
     }
-
 
 
 }
