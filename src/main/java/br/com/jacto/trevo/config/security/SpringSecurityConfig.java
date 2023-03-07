@@ -32,7 +32,7 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.GET, "/clients/**", "/products/**", "/images/**", "/orders/{id}").permitAll()
                 .antMatchers(HttpMethod.POST, "/clients", "/orders", "/login", "/register").permitAll()
                 .antMatchers(HttpMethod.PUT, "/clients", "/orders").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/clients/{id}", "/orders").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/clients/{id}", "/orders/{id}").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
