@@ -59,7 +59,7 @@ public class OrderItemController {
 
     @PostMapping
     @Transactional
-    @Operation(summary = "Registro de pedidos", description = "Para registrar um pedido é obrigatorio os id de produto e cliente")
+    @Operation(summary = "Registro de pedidos", description = "Para registrar um pedido é obrigatorio os id de produto e cliente. Caso quantidade for 0 vai retornar Exception")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemCreateDto.class))),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
@@ -77,7 +77,7 @@ public class OrderItemController {
 
     @PutMapping
     @Transactional
-    @Operation(summary = "Atualização do pedido")
+    @Operation(summary = "Atualização do pedido", description = "Caso quantidade for 0 vai retornar Exception")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemDto.class))),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),

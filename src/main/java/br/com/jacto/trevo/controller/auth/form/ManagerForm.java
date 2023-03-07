@@ -4,10 +4,10 @@ import javax.validation.constraints.NotBlank;
 
 public class ManagerForm {
 
-    @NotBlank
+    @NotBlank(message = "Obrigatório o username")
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "Obrigatório o password")
     private String password;
 
     public String getUsername() {
