@@ -55,7 +55,7 @@ public class ImageService {
         return Optional.of(new ProductImageCreateDto(uploadImage));
     }
 
-    public Optional<ImageDto> updateImage(ImageUpdateForm img) throws IOException {
+    public Optional<ProductImageCreateDto> updateImage(ImageUpdateForm img) throws IOException {
         Optional<Image> findImage = imageRepository.findById(img.getImageId());
         if (findImage.isEmpty()) {
             return Optional.empty();
@@ -69,7 +69,7 @@ public class ImageService {
         findImage.get().setImg(imageBytes);
 
         Image update = imageRepository.save(findImage.get());
-        return Optional.of(new ImageDto(update));
+        return Optional.of(new ProductImageCreateDto(update));
     }
 
     public Boolean deleteImage(ImageDeleteForm img) {

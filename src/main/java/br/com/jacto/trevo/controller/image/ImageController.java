@@ -87,13 +87,13 @@ public class ImageController {
     @Operation(summary = "Atualiza a imagem do produto")
     @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ImageDto.class))),
+            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductImageCreateDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
-    public ResponseEntity<ImageDto> updateImage(@ModelAttribute @Valid ImageUpdateForm img) throws IOException {
-        Optional<ImageDto> updateImage = imageService.updateImage(img);
+    public ResponseEntity<ProductImageCreateDto> updateImage(@ModelAttribute @Valid ImageUpdateForm img) throws IOException {
+        Optional<ProductImageCreateDto> updateImage = imageService.updateImage(img);
         return updateImage.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

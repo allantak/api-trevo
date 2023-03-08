@@ -30,7 +30,7 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.GET, "/clients").authenticated()
                 .antMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/clients/**", "/products/**", "/images/**", "/orders/{id}").permitAll()
-                .antMatchers(HttpMethod.POST, "/clients", "/orders", "/login", "/register").permitAll()
+                .antMatchers(HttpMethod.POST, "/clients", "/orders", "/login").permitAll()
                 .antMatchers(HttpMethod.PUT, "/clients", "/orders").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/clients/{id}", "/orders/{id}").permitAll()
                 .anyRequest().authenticated()

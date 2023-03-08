@@ -169,11 +169,10 @@ public class ImageServiceTest {
         when(imageRepository.findById(any())).thenReturn(Optional.of(image));
         when(imageRepository.save(any())).thenReturn(image);
 
-        Optional<ImageDto> upload = imageService.updateImage(form);
+        Optional<ProductImageCreateDto> upload = imageService.updateImage(form);
 
         assertNotNull(upload);
         assertEquals(image.getImageId(), upload.get().getImageId());
-        assertEquals(file.getBytes(), upload.get().getImg());
     }
 
 
@@ -193,7 +192,7 @@ public class ImageServiceTest {
         when(imageRepository.findById(any())).thenReturn(Optional.of(image));
         when(imageRepository.save(any())).thenReturn(image);
 
-        Optional<ImageDto> upload = imageService.updateImage(form);
+        Optional<ProductImageCreateDto> upload = imageService.updateImage(form);
 
         assertEquals(Optional.empty(), upload);
     }
@@ -214,7 +213,7 @@ public class ImageServiceTest {
         when(imageRepository.findById(any())).thenReturn(Optional.empty());
         when(imageRepository.save(any())).thenReturn(image);
 
-        Optional<ImageDto> upload = imageService.updateImage(form);
+        Optional<ProductImageCreateDto> upload = imageService.updateImage(form);
 
         assertEquals(Optional.empty(), upload);
     }

@@ -310,7 +310,7 @@ public class ImageControllerTest {
         Files.write(tempFile, "Teste".getBytes());
         MockMultipartFile imageFile = new MockMultipartFile("img", "test.jpg", "image/jpeg", Files.newInputStream(tempFile));
 
-        ImageDto imgDto = new ImageDto(image);
+        ProductImageCreateDto imgDto = new ProductImageCreateDto(image);
 
         when(imageService.updateImage(any())).thenReturn(Optional.of(imgDto));
 
@@ -330,7 +330,7 @@ public class ImageControllerTest {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
 
-        var jsonExpect = imageDtoJson.write(imgDto).getJson();
+        var jsonExpect = productImageCreateDtoJson.write(imgDto).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
 
