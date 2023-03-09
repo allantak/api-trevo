@@ -177,10 +177,10 @@ public class ClientControllerTest {
 
         ClientDetailDto orderDto = new ClientDetailDto(client);
 
-        when(clientService.getId(clientId)).thenReturn(Optional.of(orderDto));
+        when(clientService.getEmail(client.getEmail())).thenReturn(Optional.of(orderDto));
 
         var response = mockMvc.perform(
-                get("/clients/" + clientId)
+                get("/clients/" + client.getEmail())
                         .contentType(MediaType.APPLICATION_JSON)
 
         ).andReturn().getResponse();
@@ -199,35 +199,15 @@ public class ClientControllerTest {
 
         ClientDetailDto orderDto = new ClientDetailDto(client);
 
-        when(clientService.getId(clientId)).thenReturn(Optional.empty());
+        when(clientService.getEmail(client.getEmail())).thenReturn(Optional.empty());
 
         var response = mockMvc.perform(
-                get("/clients/" + clientId)
+                get("/clients/" + client.getEmail())
                         .contentType(MediaType.APPLICATION_JSON)
 
         ).andReturn().getResponse();
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
-    }
-
-
-    @Test
-    @DisplayName("ao procurar o cliente nao sendo no formato UUID deve retornar Bad Request")
-    public void clientIdCase3() throws Exception {
-        UUID clientId = UUID.randomUUID();
-        client.setClientId(clientId);
-
-        ClientDetailDto orderDto = new ClientDetailDto(client);
-
-        when(clientService.getId(clientId)).thenReturn(Optional.of(orderDto));
-
-        var response = mockMvc.perform(
-                get("/clients/" + 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-
-        ).andReturn().getResponse();
-
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
     }
 
 

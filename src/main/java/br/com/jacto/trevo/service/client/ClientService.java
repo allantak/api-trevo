@@ -30,8 +30,8 @@ public class ClientService {
         return new ClientDto(convert);
     }
 
-    public Optional<ClientDetailDto> getId(UUID id) {
-        return clientRepository.findById(id).map(ClientDetailDto::new);
+    public Optional<ClientDetailDto> getEmail(String email) {
+        return clientRepository.findByEmail(email).map(ClientDetailDto::new);
     }
 
     public Boolean delete(UUID id) {

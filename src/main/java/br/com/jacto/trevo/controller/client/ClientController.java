@@ -57,15 +57,14 @@ public class ClientController {
         return clientOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{email}")
     @Operation(summary = "Mostra os detalhes do cliente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClientDetailDto.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
-    public ResponseEntity<ClientDetailDto> getClientId(@PathVariable UUID id) {
-        Optional<ClientDetailDto> client = clientService.getId(id);
+    public ResponseEntity<ClientDetailDto> getClientEmail(@PathVariable String email) {
+        Optional<ClientDetailDto> client = clientService.getEmail(email);
         return client.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -79,7 +78,7 @@ public class ClientController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
     public ResponseEntity<ClientDto> createClient(@RequestBody @Valid ClientForm client, UriComponentsBuilder uriBuilder) {
         ClientDto save = clientService.create(client);
-        URI uri = uriBuilder.path("/clients/{id}").buildAndExpand(save.getClientId()).toUri();
+        URI uri = uriBuilder.path("/clients/{email}").buildAndExpand(save.getEmail()).toUri();
         return ResponseEntity.created(uri).body(save);
     }
 

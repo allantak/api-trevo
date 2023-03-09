@@ -71,9 +71,9 @@ public class ClientServiceTest {
 
         client.setClientId(UUID.randomUUID());
 
-        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(clientRepository.findByEmail(any())).thenReturn(Optional.ofNullable(client));
 
-        Optional<ClientDetailDto> clientDetail = clientService.getId(client.getId());
+        Optional<ClientDetailDto> clientDetail = clientService.getEmail(client.getEmail());
 
         assertEquals(client.getId(), clientDetail.get().getClientId());
         assertEquals(client.getEmail(), clientDetail.get().getEmail());
@@ -86,9 +86,9 @@ public class ClientServiceTest {
     public void clientDetailCase2() {
         UUID clientId = UUID.fromString("ce896c60-05a8-465b-a7ad-706e1cc17169");
 
-        when(clientRepository.findById(any())).thenReturn(Optional.empty());
+        when(clientRepository.findByEmail(any())).thenReturn(Optional.empty());
 
-        Optional<ClientDetailDto> clientDetail = clientService.getId(clientId);
+        Optional<ClientDetailDto> clientDetail = clientService.getEmail(client.getEmail());
 
         assertEquals(Optional.empty(), clientDetail);
     }
