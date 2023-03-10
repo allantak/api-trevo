@@ -15,7 +15,7 @@ public class SpringDocConfig {
                 .info(new Info()
                         .title("API Trevo")
                         .description("API que gerencia os pulverizadores de fertilizantes da indústria trevo." +
-                                " Algumas funcionalidade presente nessa API, gerenciamento de cliente, produtos e pedidos." +
+                                " Algumas funcionalidade presente nessa API, gerenciamento de cliente, produtos, pedidos e gerente." +
                                 " Objetivo é divulgar um novo portfólio de produtos para os clientes da Indústria Trevo, bem\n" +
                                 "como captar as propostas de interesse nesses produtos.")
                         .version("1.0.0"))
