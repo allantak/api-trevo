@@ -41,7 +41,6 @@ public class ImageService {
     }
 
     public Optional<ProductImageCreateDto> upload(ProductImageForm image) throws IOException {
-
         Optional<Product> product = productRepository.findById(image.getProductId());
         if (product.isEmpty()) {
             return Optional.empty();
