@@ -1,6 +1,5 @@
 package br.com.jacto.trevo.controller.image;
 
-import br.com.jacto.trevo.controller.image.dto.ImageDto;
 import br.com.jacto.trevo.controller.image.dto.ProductImageCreateDto;
 import br.com.jacto.trevo.controller.image.dto.ProductImageDto;
 import br.com.jacto.trevo.controller.image.form.ImageDeleteForm;
