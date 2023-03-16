@@ -56,7 +56,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 </tr>
   <tr>
-    <td class="name">ClientController$$EnhancerBySpringCGLIB$$2a1dc862</td>
+    <td class="name">ClientController$$EnhancerBySpringCGLIB$$b2d76082</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -143,15 +143,14 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        return clientOrder.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    @GetMapping(&quot;/{email}&quot;)
 &nbsp;    @Operation(summary = &quot;Mostra os detalhes do cliente&quot;)
 &nbsp;    @ApiResponses(value = {
 &nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ClientDetailDto.class))),
-&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
 &nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
 &nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
-&nbsp;    public ResponseEntity&lt;ClientDetailDto&gt; getClientId(@PathVariable UUID id) {
-<b class="fc">&nbsp;        Optional&lt;ClientDetailDto&gt; client = clientService.getId(id);</b>
+&nbsp;    public ResponseEntity&lt;ClientDetailDto&gt; getClientEmail(@PathVariable String email) {
+<b class="fc">&nbsp;        Optional&lt;ClientDetailDto&gt; client = clientService.getEmail(email);</b>
 <b class="fc">&nbsp;        return client.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
@@ -165,7 +164,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
 &nbsp;    public ResponseEntity&lt;ClientDto&gt; createClient(@RequestBody @Valid ClientForm client, UriComponentsBuilder uriBuilder) {
 <b class="fc">&nbsp;        ClientDto save = clientService.create(client);</b>
-<b class="fc">&nbsp;        URI uri = uriBuilder.path(&quot;/clients/{id}&quot;).buildAndExpand(save.getClientId()).toUri();</b>
+<b class="fc">&nbsp;        URI uri = uriBuilder.path(&quot;/clients/{email}&quot;).buildAndExpand(save.getEmail()).toUri();</b>
 <b class="fc">&nbsp;        return ResponseEntity.created(uri).body(save);</b>
 &nbsp;    }
 &nbsp;
@@ -220,7 +219,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-03-07 08:56</div>
+    <div style="float:right;">generated on 2023-03-15 22:17</div>
 </div>
 </body>
 </html>

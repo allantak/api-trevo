@@ -56,7 +56,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 </tr>
   <tr>
-    <td class="name">OrderItemController$$EnhancerBySpringCGLIB$$29550a7b</td>
+    <td class="name">OrderItemController$$EnhancerBySpringCGLIB$$b20ea29b</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -145,7 +145,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @PostMapping
 &nbsp;    @Transactional
-&nbsp;    @Operation(summary = &quot;Registro de pedidos&quot;, description = &quot;Para registrar um pedido é obrigatorio os id de produto e cliente&quot;)
+&nbsp;    @Operation(summary = &quot;Registro de pedidos&quot;, description = &quot;Para registrar um pedido é obrigatorio os id de produto e cliente. Caso quantidade for 0 vai retornar Exception&quot;)
 &nbsp;    @ApiResponses(value = {
 &nbsp;            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = OrderItemCreateDto.class))),
 &nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
@@ -163,7 +163,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @PutMapping
 &nbsp;    @Transactional
-&nbsp;    @Operation(summary = &quot;Atualização do pedido&quot;)
+&nbsp;    @Operation(summary = &quot;Atualização do pedido&quot;, description = &quot;Caso quantidade for 0 vai retornar Exception&quot;)
 &nbsp;    @ApiResponses(value = {
 &nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = OrderItemDto.class))),
 &nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
@@ -210,7 +210,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-03-07 08:56</div>
+    <div style="float:right;">generated on 2023-03-15 22:17</div>
 </div>
 </body>
 </html>

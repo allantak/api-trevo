@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > OrderItemRepository</title>
+  <title>Coverage Report > ClientRepository</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -21,7 +21,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">br.com.jacto.trevo.repository</a>
 </div>
 
-<h1>Coverage Summary for Class: OrderItemRepository (br.com.jacto.trevo.repository)</h1>
+<h1>Coverage Summary for Class: ClientRepository (br.com.jacto.trevo.repository)</h1>
 
 <table class="coverageStats">
 
@@ -29,16 +29,16 @@ Current scope:     <a href="../../index.html">all classes</a>
   <th class="name">Class</th>
 </tr>
   <tr>
-    <td class="name">OrderItemRepository$MockitoMock$1415275469</td>
+    <td class="name">ClientRepository$MockitoMock$1501541359</td>
   </tr>
   <tr>
-    <td class="name">OrderItemRepository$MockitoMock$1415275469$auxiliary$IwxSbb2Y</td>
+    <td class="name">ClientRepository$MockitoMock$1501541359$auxiliary$GwXVTIak</td>
   </tr>
   <tr>
-    <td class="name">OrderItemRepository$MockitoMock$1415275469$auxiliary$Mg9tzyPt</td>
+    <td class="name">ClientRepository$MockitoMock$1501541359$auxiliary$oyzXWlbI</td>
   </tr>
   <tr>
-    <td class="name">OrderItemRepository$MockitoMock$1415275469$auxiliary$uefJ1tN1</td>
+    <td class="name">ClientRepository$MockitoMock$1501541359$auxiliary$SP1VXYMF</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -52,14 +52,16 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.repository;
 &nbsp;
-&nbsp;import br.com.jacto.trevo.model.order.OrderItem;
+&nbsp;import br.com.jacto.trevo.model.client.Client;
 &nbsp;import org.springframework.data.jpa.repository.JpaRepository;
 &nbsp;import org.springframework.stereotype.Repository;
 &nbsp;
+&nbsp;import java.util.Optional;
 &nbsp;import java.util.UUID;
 &nbsp;
 &nbsp;@Repository
-&nbsp;public interface OrderItemRepository extends JpaRepository&lt;OrderItem, UUID&gt; {
+&nbsp;public interface ClientRepository extends JpaRepository&lt;Client, UUID&gt; {
+&nbsp;    Optional&lt;Client&gt; findByEmail(String email);
 &nbsp;}
 </code>
 </pre>
@@ -84,7 +86,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-03-07 08:56</div>
+    <div style="float:right;">generated on 2023-03-15 22:17</div>
 </div>
 </body>
 </html>

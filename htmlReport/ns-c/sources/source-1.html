@@ -56,7 +56,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 </tr>
   <tr>
-    <td class="name">ImageController$$EnhancerBySpringCGLIB$$2da8f410</td>
+    <td class="name">ImageController$$EnhancerBySpringCGLIB$$b6628c30</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -86,7 +86,6 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.controller.image;
 &nbsp;
-&nbsp;import br.com.jacto.trevo.controller.image.dto.ImageDto;
 &nbsp;import br.com.jacto.trevo.controller.image.dto.ProductImageCreateDto;
 &nbsp;import br.com.jacto.trevo.controller.image.dto.ProductImageDto;
 &nbsp;import br.com.jacto.trevo.controller.image.form.ImageDeleteForm;
@@ -173,13 +172,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @Operation(summary = &quot;Atualiza a imagem do produto&quot;)
 &nbsp;    @SecurityRequirement(name = &quot;bearer-key&quot;)
 &nbsp;    @ApiResponses(value = {
-&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ImageDto.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Success&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ProductImageCreateDto.class))),
 &nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request&quot;, content = @Content),
 &nbsp;            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden&quot;, content = @Content),
 &nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Not found&quot;, content = @Content),
 &nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)})
-&nbsp;    public ResponseEntity&lt;ImageDto&gt; updateImage(@ModelAttribute @Valid ImageUpdateForm img) throws IOException {
-<b class="fc">&nbsp;        Optional&lt;ImageDto&gt; updateImage = imageService.updateImage(img);</b>
+&nbsp;    public ResponseEntity&lt;ProductImageCreateDto&gt; updateImage(@ModelAttribute @Valid ImageUpdateForm img) throws IOException {
+<b class="fc">&nbsp;        Optional&lt;ProductImageCreateDto&gt; updateImage = imageService.updateImage(img);</b>
 <b class="fc">&nbsp;        return updateImage.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
 &nbsp;    }
 &nbsp;
@@ -222,7 +221,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-03-07 08:56</div>
+    <div style="float:right;">generated on 2023-03-15 22:17</div>
 </div>
 </body>
 </html>

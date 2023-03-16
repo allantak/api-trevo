@@ -56,28 +56,28 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$1149609944</td>
+    <td class="name">ImageService$MockitoMock$1836102210</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$1149609944$auxiliary$1y8PAi1B</td>
+    <td class="name">ImageService$MockitoMock$1836102210$auxiliary$38XPzqrm</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$1149609944$auxiliary$43QnYDKU</td>
+    <td class="name">ImageService$MockitoMock$1836102210$auxiliary$arcKRiAb</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$1149609944$auxiliary$8ph3A0F1</td>
+    <td class="name">ImageService$MockitoMock$1836102210$auxiliary$CKgq4SqX</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$1149609944$auxiliary$d4FuyuNT</td>
+    <td class="name">ImageService$MockitoMock$1836102210$auxiliary$GMxyORBF</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$1149609944$auxiliary$vFC0w6lp</td>
+    <td class="name">ImageService$MockitoMock$1836102210$auxiliary$gxQgqSYq</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$1149609944$auxiliary$ZTmqXOiD</td>
+    <td class="name">ImageService$MockitoMock$1836102210$auxiliary$OhpSuxmH</td>
   </tr>
   <tr>
-    <td class="name">ImageService$MockitoMock$1149609944$auxiliary$zUi38zIq</td>
+    <td class="name">ImageService$MockitoMock$1836102210$auxiliary$TkHqKsdQ</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -107,7 +107,6 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.service.product;
 &nbsp;
-&nbsp;import br.com.jacto.trevo.controller.image.dto.ImageDto;
 &nbsp;import br.com.jacto.trevo.controller.image.dto.ProductImageCreateDto;
 &nbsp;import br.com.jacto.trevo.controller.image.dto.ProductImageDto;
 &nbsp;import br.com.jacto.trevo.controller.image.form.ImageDeleteForm;
@@ -148,7 +147,6 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Optional&lt;ProductImageCreateDto&gt; upload(ProductImageForm image) throws IOException {
-&nbsp;
 <b class="fc">&nbsp;        Optional&lt;Product&gt; product = productRepository.findById(image.getProductId());</b>
 <b class="fc">&nbsp;        if (product.isEmpty()) {</b>
 <b class="fc">&nbsp;            return Optional.empty();</b>
@@ -162,7 +160,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        return Optional.of(new ProductImageCreateDto(uploadImage));</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public Optional&lt;ImageDto&gt; updateImage(ImageUpdateForm img) throws IOException {
+&nbsp;    public Optional&lt;ProductImageCreateDto&gt; updateImage(ImageUpdateForm img) throws IOException {
 <b class="fc">&nbsp;        Optional&lt;Image&gt; findImage = imageRepository.findById(img.getImageId());</b>
 <b class="fc">&nbsp;        if (findImage.isEmpty()) {</b>
 <b class="fc">&nbsp;            return Optional.empty();</b>
@@ -176,7 +174,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        findImage.get().setImg(imageBytes);</b>
 &nbsp;
 <b class="fc">&nbsp;        Image update = imageRepository.save(findImage.get());</b>
-<b class="fc">&nbsp;        return Optional.of(new ImageDto(update));</b>
+<b class="fc">&nbsp;        return Optional.of(new ProductImageCreateDto(update));</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Boolean deleteImage(ImageDeleteForm img) {
@@ -217,7 +215,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-03-07 08:56</div>
+    <div style="float:right;">generated on 2023-03-15 22:17</div>
 </div>
 </body>
 </html>
