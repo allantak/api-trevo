@@ -1,11 +1,11 @@
 package br.com.jacto.trevo.model.product;
 
-import br.com.jacto.trevo.model.manager.Manager;
+import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.model.order.OrderItem;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,13 +15,25 @@ public class Product {
     public Product() {
     }
 
-    public Product(String productName, Boolean status, String description, Double areaSize, LocalDate createAt, Manager manager) {
+    public Product(String productName, Status status, String description, Double areaSize, LocalDateTime createAt, Account manager) {
         setProductName(productName);
         setStatus(status);
         setDescription(description);
         setAreaSize(areaSize);
         setCreateAt(createAt);
         setManager(manager);
+    }
+
+    public enum Status {
+        DISPONIVEL,
+        INDISPONIVEL,
+        FORA_DE_LINHA
+
+    }
+    public enum Category{
+        MANUAL,
+        ELETRICO,
+        COMBUSTIVEL
     }
 
     @Id
@@ -34,14 +46,22 @@ public class Product {
     @Column
     private Double areaSize;
 
+    @Column
+    private Double price;
+
     @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)
-    private LocalDate createAt;
+    private LocalDateTime createAt;
 
     @Column(nullable = false)
-    private Boolean status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -57,8 +77,8 @@ public class Product {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "managerId", referencedColumnName = "managerId")
-    private Manager manager;
+    @JoinColumn(name = "accountId", referencedColumnName = "accountId")
+    private Account account;
 
 
     public void setOrders(List<OrderItem> orders) {
@@ -93,19 +113,19 @@ public class Product {
         this.description = description;
     }
 
-    public LocalDate getCreateAt() {
+    public LocalDateTime getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(LocalDate createAt) {
+    public void setCreateAt(LocalDateTime createAt) {
         this.createAt = createAt;
     }
 
-    public boolean isStatus() {
+    public Status isStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -133,8 +153,31 @@ public class Product {
         this.imgs = imgs;
     }
 
-    public void setManager(Manager manager) {
-        this.manager = manager;
+    public void setManager(Account account) {
+        this.account = account;
     }
 
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
 }

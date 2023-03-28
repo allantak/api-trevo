@@ -6,11 +6,11 @@ import br.com.jacto.trevo.controller.product.dto.ProductOrderDto;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
 import br.com.jacto.trevo.controller.product.form.ProductUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
-import br.com.jacto.trevo.model.manager.Manager;
+import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Culture;
 import br.com.jacto.trevo.model.product.Product;
-import br.com.jacto.trevo.repository.ManagerRepository;
+import br.com.jacto.trevo.repository.AccountRepository;
 import br.com.jacto.trevo.repository.ProductRepository;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -44,12 +44,13 @@ public class ProductServiceTest {
     ProductRepository productRepository;
 
     @MockBean
-    ManagerRepository managerRepository;
+    AccountRepository managerRepository;
 
 
     public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
-    public Manager manager = new Manager("test", "12345");
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14), manager);
+    public Account account = new Account("test", "12345");
+    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
+
     public OrderItem order = new OrderItem(3, client, product);
     public Culture culture = new Culture("Cerejeiras", product);
 
@@ -100,11 +101,10 @@ public class ProductServiceTest {
         form.setStatus(product.isStatus());
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
-        form.setCreateAt(product.getCreateAt());
         product.setProductId(UUID.randomUUID());
 
         when(productRepository.save(any())).thenReturn(product);
-        when(managerRepository.findById(any())).thenReturn(Optional.ofNullable(manager));
+        when(managerRepository.findById(any())).thenReturn(Optional.ofNullable(account));
 
         Optional<ProductCreateDto> product = productService.create(form);
         assertNotNull(product);
@@ -124,7 +124,6 @@ public class ProductServiceTest {
         form.setStatus(product.isStatus());
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
-        form.setCreateAt(product.getCreateAt());
         product.setProductId(UUID.randomUUID());
 
         when(productRepository.save(any())).thenReturn(product);
@@ -144,7 +143,6 @@ public class ProductServiceTest {
         form.setDescription("update");
         form.setAreaSize(123.0);
         form.setStatus(false);
-        form.setCreateAt(LocalDate.parse("2023-02-14"));
 
         when(productRepository.findById(any())).thenReturn(Optional.ofNullable(product));
         when(productRepository.save(any())).thenReturn(product);
@@ -152,7 +150,6 @@ public class ProductServiceTest {
         Optional<Product> update = productService.update(form);
 
         assertNotNull(update);
-        assertEquals(LocalDate.parse("2023-02-14"), update.get().getCreateAt());
         assertEquals("update", update.get().getProductName());
         assertFalse(update.get().isStatus());
         assertEquals(Optional.of(123.0), Optional.ofNullable(update.get().getAreaSize()));
@@ -168,7 +165,6 @@ public class ProductServiceTest {
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
         form.setStatus(product.isStatus());
-        form.setCreateAt(product.getCreateAt());
 
         when(productRepository.findById(any())).thenReturn(Optional.empty());
         when(productRepository.save(any())).thenReturn(product);

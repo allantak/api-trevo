@@ -1,7 +1,7 @@
 package br.com.jacto.trevo.config.security;
 
 import br.com.jacto.trevo.controller.auth.dto.TokenDto;
-import br.com.jacto.trevo.model.manager.Manager;
+import br.com.jacto.trevo.model.account.Account;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -20,7 +20,7 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    public TokenDto token(Manager manager) {
+    public TokenDto token(Account manager) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String tokenJWT = JWT.create()
@@ -28,7 +28,7 @@ public class TokenService {
                     .withSubject(manager.getUsername())
                     .withExpiresAt(dateExpiration())
                     .sign(algorithm);
-            return new TokenDto(manager.getManagerId(), tokenJWT);
+            return new TokenDto(manager.getAccountId(), tokenJWT);
         } catch (JWTCreationException exception) {
             throw new RuntimeException("Error ao gerar token", exception);
         }

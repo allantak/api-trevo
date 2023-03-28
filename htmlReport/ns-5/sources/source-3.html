@@ -99,7 +99,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <code class="sourceCode" id="sourceCode">&nbsp;package br.com.jacto.trevo.config.security;
 &nbsp;
 &nbsp;import br.com.jacto.trevo.controller.auth.dto.TokenDto;
-&nbsp;import br.com.jacto.trevo.model.manager.Manager;
+&nbsp;import br.com.jacto.trevo.model.account.Account;
 &nbsp;import com.auth0.jwt.JWT;
 &nbsp;import com.auth0.jwt.algorithms.Algorithm;
 &nbsp;import com.auth0.jwt.exceptions.JWTCreationException;
@@ -141,7 +141,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="nc">&nbsp;                    .verify(tokenJWT)</b>
 <b class="nc">&nbsp;                    .getSubject();</b>
 <b class="nc">&nbsp;        } catch (JWTVerificationException exception) {</b>
-<b class="nc">&nbsp;            throw new RuntimeException(&quot;Token JWT inválido ou expirado!&quot;);</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Token JWT invï¿½lido ou expirado!&quot;);</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;

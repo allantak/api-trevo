@@ -7,10 +7,10 @@ import br.com.jacto.trevo.controller.client.dto.ClientOrderDto;
 import br.com.jacto.trevo.controller.client.form.ClientForm;
 import br.com.jacto.trevo.controller.client.form.ClientUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
-import br.com.jacto.trevo.model.manager.Manager;
+import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
-import br.com.jacto.trevo.repository.ManagerRepository;
+import br.com.jacto.trevo.repository.AccountRepository;
 import br.com.jacto.trevo.service.client.ClientService;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +59,7 @@ public class ClientControllerTest {
     private TokenService tokenService;
 
     @MockBean
-    private ManagerRepository managerRepository;
+    private AccountRepository managerRepository;
 
     @Autowired
     private JacksonTester<ClientOrderDto> clientOrderDtoJson;
@@ -76,8 +76,8 @@ public class ClientControllerTest {
     public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
 
 
-    public Manager manager = new Manager("test", "12345");
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14), manager);
+    public Account account = new Account("test", "12345");
+    public Product product = new Product("Trator Jacto", Product.Status.DISPONIVEL, "Trator jacto para agricultura", 120.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
 
     public OrderItem order = new OrderItem(3, client, product);
 

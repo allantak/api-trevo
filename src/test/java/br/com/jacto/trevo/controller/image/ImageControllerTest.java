@@ -6,10 +6,10 @@ import br.com.jacto.trevo.controller.image.dto.ProductImageCreateDto;
 import br.com.jacto.trevo.controller.image.dto.ProductImageDto;
 import br.com.jacto.trevo.controller.image.form.ImageDeleteForm;
 import br.com.jacto.trevo.controller.image.form.ProductImageForm;
-import br.com.jacto.trevo.model.manager.Manager;
+import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.model.product.Image;
 import br.com.jacto.trevo.model.product.Product;
-import br.com.jacto.trevo.repository.ManagerRepository;
+import br.com.jacto.trevo.repository.AccountRepository;
 import br.com.jacto.trevo.service.product.ImageService;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,7 +62,7 @@ public class ImageControllerTest {
     private TokenService tokenService;
 
     @MockBean
-    private ManagerRepository managerRepository;
+    private AccountRepository managerRepository;
 
     @Autowired
     private JacksonTester<ImageDto> imageDtoJson;
@@ -76,8 +76,9 @@ public class ImageControllerTest {
     private JacksonTester<ImageDeleteForm> imageDeleteFormJson;
 
 
-    public Manager manager = new Manager("test", "12345");
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14), manager);
+    public Account account = new Account("test", "12345");
+    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
+
     byte[] testBytes = new byte[]{0x01, 0x02, 0x03, 0x04, 0x05};
     public Image image = new Image(testBytes, product);
 

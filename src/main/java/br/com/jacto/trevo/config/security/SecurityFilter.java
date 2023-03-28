@@ -1,6 +1,6 @@
 package br.com.jacto.trevo.config.security;
 
-import br.com.jacto.trevo.repository.ManagerRepository;
+import br.com.jacto.trevo.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +21,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     TokenService tokenService;
 
     @Autowired
-    ManagerRepository managerRepository;
+    AccountRepository managerRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -29,7 +29,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if (tokenJWT != null) {
             String subject = tokenService.getSubject(tokenJWT);
-            UserDetails findManager = managerRepository.findByUsername(subject);
+            UserDetails findManager = managerRepository.findByEmail(subject);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(findManager, null, findManager.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

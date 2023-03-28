@@ -1,7 +1,10 @@
 package br.com.jacto.trevo.controller.product.form;
 
+import br.com.jacto.trevo.model.product.Product;
+
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class ProductUpdateForm {
@@ -10,13 +13,12 @@ public class ProductUpdateForm {
 
     private String productName;
 
-    private Boolean status;
+    private Product.Status status;
 
     private Double areaSize;
 
     private String description;
 
-    private LocalDate createAt;
 
     public UUID getProductId() {
         return productId;
@@ -26,7 +28,7 @@ public class ProductUpdateForm {
         return productName;
     }
 
-    public Boolean getStatus() {
+    public Product.Status getStatus() {
         return status;
     }
 
@@ -38,9 +40,6 @@ public class ProductUpdateForm {
         return description;
     }
 
-    public LocalDate getCreateAt() {
-        return createAt;
-    }
 
     public void setProductId(UUID productId) {
         this.productId = productId;
@@ -50,7 +49,7 @@ public class ProductUpdateForm {
         this.productName = productName;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(Product.Status status) {
         this.status = status;
     }
 
@@ -60,9 +59,5 @@ public class ProductUpdateForm {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setCreateAt(LocalDate createAt) {
-        this.createAt = createAt;
     }
 }

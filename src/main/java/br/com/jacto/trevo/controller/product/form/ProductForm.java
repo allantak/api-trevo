@@ -1,22 +1,25 @@
 package br.com.jacto.trevo.controller.product.form;
 
+import br.com.jacto.trevo.model.product.Product;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 public class ProductForm {
 
-    @NotNull(message = "Obrigatório id do gerente")
-    private UUID managerId;
+    @NotNull(message = "Obrigatório id do Usuario")
+    private UUID accountId;
 
     @NotBlank(message = "Obrigatório o nome do produto")
     private String productName;
 
     @NotNull(message = "Obrigatório o status do produto")
-    private Boolean status;
+    private Product.Status status;
 
     @NotBlank(message = "Obrigatório a descricao do produto")
     private String description;
@@ -27,25 +30,19 @@ public class ProductForm {
 
     private Double areaSize;
 
-    private LocalDate createAt;
-
-    public UUID getManagerId() {
-        return managerId;
+    public UUID getAccountId() {
+        return accountId;
     }
 
     public List<String> getCultures() {
         return cultures;
     }
 
-    public LocalDate getCreateAt() {
-        return createAt;
-    }
-
     public String getProductName() {
         return productName;
     }
 
-    public Boolean getStatus() {
+    public Product.Status getStatus() {
         return status;
     }
 
@@ -57,19 +54,15 @@ public class ProductForm {
         return description;
     }
 
-    public void setManagerId(UUID managerId) {
-        this.managerId = managerId;
-    }
-
-    public void setCreateAt(LocalDate createAt) {
-        this.createAt = createAt;
+    public void setAccountId(UUID accountId) {
+        this.accountId = accountId;
     }
 
     public void setProductName(String productName) {
         this.productName = productName;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(Product.Status status) {
         this.status = status;
     }
 

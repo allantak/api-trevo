@@ -4,11 +4,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-public class ManagerUpdateForm {
+public class AccountUpdateForm {
     @NotNull(message = "Obrigatório o ID do gerente")
-    private UUID managerId;
+    private UUID accountId;
 
-    private String username;
+    private String email;
 
     @NotBlank(message = "Obrigatório a senha cadastrada")
     private String password;
@@ -16,20 +16,20 @@ public class ManagerUpdateForm {
     @NotBlank(message = "Obrigatório a senha atualizada")
     private String newPassword;
 
-    public UUID getManagerId() {
-        return managerId;
+    public UUID getAccountId() {
+        return accountId;
     }
 
-    public void setManagerId(UUID managerId) {
-        this.managerId = managerId;
+    public void setAccountId(UUID accountId) {
+        this.accountId = accountId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String email) {
-        this.username = email;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

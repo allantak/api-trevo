@@ -1,12 +1,11 @@
 package br.com.jacto.trevo.service.product;
 
-import br.com.jacto.trevo.controller.image.dto.ImageDto;
 import br.com.jacto.trevo.controller.image.dto.ProductImageCreateDto;
 import br.com.jacto.trevo.controller.image.dto.ProductImageDto;
 import br.com.jacto.trevo.controller.image.form.ImageDeleteForm;
 import br.com.jacto.trevo.controller.image.form.ImageUpdateForm;
 import br.com.jacto.trevo.controller.image.form.ProductImageForm;
-import br.com.jacto.trevo.model.manager.Manager;
+import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.model.product.Image;
 import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.ImageRepository;
@@ -25,7 +24,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -48,9 +47,9 @@ public class ImageServiceTest {
     @MockBean
     private ProductRepository productRepository;
 
+    public Account account = new Account("test", "12345");
+    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
 
-    public Manager manager = new Manager("test", "12345");
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14), manager);
     byte[] testBytes = new byte[]{0x01, 0x02, 0x03, 0x04, 0x05};
     public Image image = new Image(testBytes, product);
 

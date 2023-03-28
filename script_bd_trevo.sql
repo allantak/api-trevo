@@ -35,7 +35,6 @@ CREATE TABLE PRODUCT (
 );
 
 
-
 CREATE TABLE ORDER_ITEM (
 	order_item_id uuid DEFAULT uuid_generate_v4 (),
 	product_id uuid NOT NULL,

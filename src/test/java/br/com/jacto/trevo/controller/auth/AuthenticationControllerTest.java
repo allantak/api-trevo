@@ -1,14 +1,14 @@
 package br.com.jacto.trevo.controller.auth;
 
 import br.com.jacto.trevo.config.security.TokenService;
-import br.com.jacto.trevo.controller.auth.dto.ManagerCreateDto;
-import br.com.jacto.trevo.controller.auth.dto.ManagerDto;
+import br.com.jacto.trevo.controller.auth.dto.AccountCreateDto;
+import br.com.jacto.trevo.controller.auth.dto.AccountDto;
 import br.com.jacto.trevo.controller.auth.dto.TokenDto;
-import br.com.jacto.trevo.controller.auth.form.ManagerForm;
-import br.com.jacto.trevo.controller.auth.form.ManagerUpdateForm;
-import br.com.jacto.trevo.model.manager.Manager;
-import br.com.jacto.trevo.repository.ManagerRepository;
-import br.com.jacto.trevo.service.manager.ManagerService;
+import br.com.jacto.trevo.controller.auth.form.AccountForm;
+import br.com.jacto.trevo.controller.auth.form.AccountUpdateForm;
+import br.com.jacto.trevo.model.account.Account;
+import br.com.jacto.trevo.repository.AccountRepository;
+import br.com.jacto.trevo.service.manager.AccountService;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -51,37 +51,37 @@ public class AuthenticationControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ManagerService managerService;
+    private AccountService managerService;
 
     @MockBean
     private TokenService tokenService;
 
     @MockBean
-    private ManagerRepository managerRepository;
+    private AccountRepository managerRepository;
 
     @MockBean
     private AuthenticationManager authenticationManager;
 
 
     @Autowired
-    private JacksonTester<ManagerForm> managerFormJson;
+    private JacksonTester<AccountForm> managerFormJson;
     @Autowired
     private JacksonTester<TokenDto> tokenDtoJson;
     @Autowired
-    private JacksonTester<ManagerDto> managerDtoJson;
+    private JacksonTester<AccountDto> managerDtoJson;
     @Autowired
-    private JacksonTester<ManagerUpdateForm> managerUpdateFormJson;
+    private JacksonTester<AccountUpdateForm> managerUpdateFormJson;
     @Autowired
-    private JacksonTester<ManagerCreateDto> managerCreateDtoJson;
+    private JacksonTester<AccountCreateDto> managerCreateDtoJson;
 
 
-    public Manager manager = new Manager("test", "12345");
+    public Account manager = new Account("test", "12345");
 
     @Test
     @DisplayName("Login com a conta de gerente")
     public void login() throws Exception {
-        ManagerForm form = new ManagerForm();
-        form.setUsername(manager.getUsername());
+        AccountForm form = new AccountForm();
+        form.setEmail(manager.getUsername());
         form.setPassword(manager.getPassword());
         TokenDto token = new TokenDto(UUID.randomUUID(), "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0YW5kbzIiLCJpc3MiOiJBUEkgdHJldm8iLCJleHAiOjE2Nzc1MTQzNzR9.qJgioyfQPvUO0Dbo50JsMkF43wFRac-t1Dz9y-p6NSI");
         Authentication authenticationMock = mock(Authentication.class);
@@ -108,8 +108,8 @@ public class AuthenticationControllerTest {
     @Test
     @DisplayName("Nao encontre gerente cadastrado")
     public void loginCase2() throws Exception {
-        ManagerForm form = new ManagerForm();
-        form.setUsername(manager.getUsername());
+        AccountForm form = new AccountForm();
+        form.setEmail(manager.getUsername());
         form.setPassword(manager.getPassword());
         Authentication authenticationMock = mock(Authentication.class);
 
@@ -133,7 +133,7 @@ public class AuthenticationControllerTest {
     @Test
     @DisplayName("Nao encontre gerente cadastrado")
     public void loginCase3() throws Exception {
-        ManagerForm form = new ManagerForm();
+        AccountForm form = new AccountForm();
 
         var response = mockMvc.perform(
                         post("/login")
@@ -150,12 +150,12 @@ public class AuthenticationControllerTest {
     @Test
     @DisplayName("Login com a conta de gerente")
     public void register() throws Exception {
-        ManagerForm form = new ManagerForm();
-        form.setUsername(manager.getUsername());
+        AccountForm form = new AccountForm();
+        form.setEmail(manager.getUsername());
         form.setPassword(manager.getPassword());
-        ManagerDto managerDto = new ManagerDto(manager);
+        AccountDto managerDto = new AccountDto(manager);
 
-        when(managerService.createManager(any())).thenReturn(managerDto);
+        when(managerService.createAccount(any())).thenReturn(managerDto);
 
         var response = mockMvc.perform(
                         post("/register")
@@ -175,12 +175,12 @@ public class AuthenticationControllerTest {
     @Test
     @DisplayName("Registar com username ja registrado")
     public void registerCase2() throws Exception {
-        ManagerForm form = new ManagerForm();
-        form.setUsername(manager.getUsername());
+        AccountForm form = new AccountForm();
+        form.setEmail(manager.getUsername());
         form.setPassword(manager.getPassword());
-        ManagerDto managerDto = new ManagerDto(manager);
+        AccountDto managerDto = new AccountDto(manager);
 
-        when(managerService.createManager(any())).thenThrow(new ResponseStatusException(HttpStatus.CONFLICT));
+        when(managerService.createAccount(any())).thenThrow(new ResponseStatusException(HttpStatus.CONFLICT));
 
         var response = mockMvc.perform(
                         post("/register")
@@ -197,12 +197,12 @@ public class AuthenticationControllerTest {
     @Test
     @DisplayName("Registar sem permissao")
     public void registerCase3() throws Exception {
-        ManagerForm form = new ManagerForm();
-        form.setUsername(manager.getUsername());
+        AccountForm form = new AccountForm();
+        form.setEmail(manager.getUsername());
         form.setPassword(manager.getPassword());
-        ManagerDto managerDto = new ManagerDto(manager);
+        AccountDto managerDto = new AccountDto(manager);
 
-        when(managerService.createManager(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+        when(managerService.createAccount(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
 
         var response = mockMvc.perform(
                         post("/register")
@@ -219,12 +219,12 @@ public class AuthenticationControllerTest {
     @Test
     @DisplayName("Registar de forma incorreta")
     public void registerCase4() throws Exception {
-        ManagerForm form = new ManagerForm();
-        form.setUsername(manager.getUsername());
+        AccountForm form = new AccountForm();
+        form.setEmail(manager.getUsername());
         form.setPassword(manager.getPassword());
-        ManagerDto managerDto = new ManagerDto(manager);
+        AccountDto managerDto = new AccountDto(manager);
 
-        when(managerService.createManager(any())).thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+        when(managerService.createAccount(any())).thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
         var response = mockMvc.perform(
                         post("/register")
@@ -242,15 +242,15 @@ public class AuthenticationControllerTest {
     @DisplayName("fazer atualizcao")
     public void updateManager() throws Exception {
         UUID managerId = UUID.randomUUID();
-        ManagerUpdateForm updateForm = new ManagerUpdateForm();
-        updateForm.setManagerId(managerId);
-        updateForm.setUsername("newUsername");
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(managerId);
+        updateForm.setEmail("newUsername");
         updateForm.setPassword("12345");
         updateForm.setNewPassword("newPassword");
 
-        ManagerCreateDto managerDto = new ManagerCreateDto(manager);
+        AccountCreateDto managerDto = new AccountCreateDto(manager);
 
-        when(managerService.updateManager(any())).thenReturn(Optional.of(managerDto));
+        when(managerService.updateAccount(any())).thenReturn(Optional.of(managerDto));
 
         var response = mockMvc.perform(
                         put("/managers")
@@ -271,14 +271,14 @@ public class AuthenticationControllerTest {
     @DisplayName("atualizacao com id incorreto do gerente ou senha incorreta")
     public void updateManagerCase2() throws Exception {
         UUID managerId = UUID.randomUUID();
-        ManagerUpdateForm updateForm = new ManagerUpdateForm();
-        updateForm.setManagerId(managerId);
-        updateForm.setUsername("newUsername");
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(managerId);
+        updateForm.setEmail("newUsername");
         updateForm.setPassword("12345");
         updateForm.setNewPassword("newPassword");
 
 
-        when(managerService.updateManager(any())).thenReturn(Optional.empty());
+        when(managerService.updateAccount(any())).thenReturn(Optional.empty());
 
         var response = mockMvc.perform(
                         put("/managers")
@@ -295,12 +295,12 @@ public class AuthenticationControllerTest {
     @Test
     @DisplayName("atualizacao com em formato errado ou campo faltante")
     public void updateManagerCase3() throws Exception {
-        ManagerUpdateForm updateForm = new ManagerUpdateForm();
-        updateForm.setUsername("newUsername");
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setEmail("newUsername");
 
-        ManagerCreateDto managerDto = new ManagerCreateDto(manager);
+        AccountCreateDto managerDto = new AccountCreateDto(manager);
 
-        when(managerService.updateManager(any())).thenReturn(Optional.empty());
+        when(managerService.updateAccount(any())).thenReturn(Optional.empty());
 
         var response = mockMvc.perform(
                         put("/managers")
@@ -317,15 +317,15 @@ public class AuthenticationControllerTest {
     @DisplayName("atualizacao com em formato errado ou campo faltante")
     public void updateManagerCase4() throws Exception {
         UUID managerId = UUID.randomUUID();
-        ManagerUpdateForm updateForm = new ManagerUpdateForm();
-        updateForm.setManagerId(managerId);
-        updateForm.setUsername("newUsername");
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(managerId);
+        updateForm.setEmail("newUsername");
         updateForm.setPassword("12345");
         updateForm.setNewPassword("newPassword");
 
-        ManagerCreateDto managerDto = new ManagerCreateDto(manager);
+        AccountCreateDto managerDto = new AccountCreateDto(manager);
 
-        when(managerService.updateManager(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+        when(managerService.updateAccount(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
 
         var response = mockMvc.perform(
                         put("/managers")

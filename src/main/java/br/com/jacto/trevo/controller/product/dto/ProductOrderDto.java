@@ -15,7 +15,7 @@ public class ProductOrderDto {
     }
 
     private final String productName;
-    private final Boolean status;
+    private final Product.Status status;
     private final String description;
 
     private final List<ProductOrderClientDto> orders;
@@ -24,7 +24,7 @@ public class ProductOrderDto {
         return productName;
     }
 
-    public Boolean getStatus() {
+    public Product.Status getStatus() {
         return status;
     }
 

@@ -10,11 +10,11 @@ import br.com.jacto.trevo.controller.product.form.ProductCultureForm;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
 import br.com.jacto.trevo.controller.product.form.ProductUpdateForm;
 import br.com.jacto.trevo.model.client.Client;
-import br.com.jacto.trevo.model.manager.Manager;
+import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Culture;
 import br.com.jacto.trevo.model.product.Product;
-import br.com.jacto.trevo.repository.ManagerRepository;
+import br.com.jacto.trevo.repository.AccountRepository;
 import br.com.jacto.trevo.service.product.CultureService;
 import br.com.jacto.trevo.service.product.ProductService;
 import org.junit.Test;
@@ -35,7 +35,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +67,7 @@ public class PublicControllerTest {
     private TokenService tokenService;
 
     @MockBean
-    private ManagerRepository managerRepository;
+    private AccountRepository managerRepository;
 
     @Autowired
     private JacksonTester<PageImpl<ProductDto>> productDtoJson;
@@ -92,8 +92,9 @@ public class PublicControllerTest {
 
     public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
 
-    public Manager manager = new Manager("test", "12345");
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDate.ofEpochDay(2023 - 02 - 14), manager);
+    public Account account = new Account("test", "12345");
+
+    public Product product = new Product("Trator Jacto", Product.Status.DISPONIVEL, "Trator jacto para agricultura", 120.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
 
     public OrderItem order = new OrderItem(3, client, product);
     public Culture culture = new Culture("Cerejeiras", product);
@@ -276,13 +277,12 @@ public class PublicControllerTest {
         ProductCreateDto productCreate = new ProductCreateDto(product);
 
         ProductForm form = new ProductForm();
-        form.setManagerId(UUID.randomUUID());
+        form.setAccountId(UUID.randomUUID());
         form.setProductName(product.getProductName());
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
         form.setStatus(product.isStatus());
         form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
-        form.setCreateAt(product.getCreateAt());
 
         when(productService.create(any())).thenReturn(Optional.of(productCreate));
 
@@ -315,13 +315,12 @@ public class PublicControllerTest {
         ProductCreateDto productCreate = new ProductCreateDto(product);
 
         ProductForm form = new ProductForm();
-        form.setManagerId(UUID.randomUUID());
+        form.setAccountId(UUID.randomUUID());
         form.setProductName(product.getProductName());
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
         form.setStatus(product.isStatus());
         form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
-        form.setCreateAt(product.getCreateAt());
 
         when(productService.create(any())).thenReturn(Optional.empty());
 
@@ -342,7 +341,6 @@ public class PublicControllerTest {
 
         ProductForm form = new ProductForm();
         form.setAreaSize(product.getAreaSize());
-        form.setCreateAt(product.getCreateAt());
 
         var response = mockMvc.perform(
                         post("/products")
@@ -366,13 +364,12 @@ public class PublicControllerTest {
         product.setCultures(listClient);
 
         ProductForm form = new ProductForm();
-        form.setManagerId(UUID.randomUUID());
+        form.setAccountId(UUID.randomUUID());
         form.setProductName(product.getProductName());
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
         form.setStatus(product.isStatus());
         form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
-        form.setCreateAt(product.getCreateAt());
 
         when(productService.create(any())).thenThrow(new ResponseStatusException(HttpStatus.CONFLICT));
 
@@ -398,13 +395,12 @@ public class PublicControllerTest {
         product.setCultures(listClient);
 
         ProductForm form = new ProductForm();
-        form.setManagerId(UUID.randomUUID());
+        form.setAccountId(UUID.randomUUID());
         form.setProductName(product.getProductName());
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
         form.setStatus(product.isStatus());
         form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
-        form.setCreateAt(product.getCreateAt());
 
         when(productService.create(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
 
@@ -431,7 +427,6 @@ public class PublicControllerTest {
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
         form.setStatus(product.isStatus());
-        form.setCreateAt(product.getCreateAt());
 
         when(productService.update(any())).thenReturn(Optional.ofNullable(product));
 
@@ -461,7 +456,6 @@ public class PublicControllerTest {
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
         form.setStatus(product.isStatus());
-        form.setCreateAt(product.getCreateAt());
 
         when(productService.update(any())).thenReturn(Optional.empty());
 
@@ -485,7 +479,6 @@ public class PublicControllerTest {
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
         form.setStatus(product.isStatus());
-        form.setCreateAt(product.getCreateAt());
 
         var response = mockMvc.perform(
                         put("/products")
@@ -539,7 +532,6 @@ public class PublicControllerTest {
         form.setDescription("");
         form.setAreaSize(product.getAreaSize());
         form.setStatus(product.isStatus());
-        form.setCreateAt(product.getCreateAt());
 
         when(productService.update(any())).thenReturn(Optional.ofNullable(product));
 
@@ -569,7 +561,6 @@ public class PublicControllerTest {
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
         form.setStatus(product.isStatus());
-        form.setCreateAt(product.getCreateAt());
 
         when(productService.update(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
 

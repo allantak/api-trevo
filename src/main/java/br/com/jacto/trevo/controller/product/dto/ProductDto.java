@@ -18,7 +18,7 @@ public class ProductDto {
 
     private final String productName;
 
-    private final Boolean status;
+    private final Product.Status status;
 
     private final List<ProductCultureDto> cultures;
 
@@ -26,7 +26,7 @@ public class ProductDto {
         return productName;
     }
 
-    public Boolean getStatus() {
+    public Product.Status getStatus() {
         return status;
     }
 

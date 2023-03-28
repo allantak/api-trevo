@@ -3,19 +3,19 @@ package br.com.jacto.trevo.controller.auth.dto;
 import java.util.UUID;
 
 public class TokenDto {
-    public TokenDto(UUID managerId, String token) {
-        this.managerId = managerId;
+    public TokenDto(UUID accountId, String token) {
+        this.accountId = accountId;
         this.token = token;
     }
 
-    private final UUID managerId;
+    private final UUID accountId;
     private final String token;
 
     public String getToken() {
         return token;
     }
 
-    public UUID getManagerId() {
-        return managerId;
+    public UUID getAccountId() {
+        return accountId;
     }
 }

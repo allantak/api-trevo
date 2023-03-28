@@ -1,11 +1,11 @@
 package br.com.jacto.trevo.service.manager;
 
-import br.com.jacto.trevo.controller.auth.dto.ManagerCreateDto;
-import br.com.jacto.trevo.controller.auth.dto.ManagerDto;
-import br.com.jacto.trevo.controller.auth.form.ManagerForm;
-import br.com.jacto.trevo.controller.auth.form.ManagerUpdateForm;
-import br.com.jacto.trevo.model.manager.Manager;
-import br.com.jacto.trevo.repository.ManagerRepository;
+import br.com.jacto.trevo.controller.auth.dto.AccountCreateDto;
+import br.com.jacto.trevo.controller.auth.dto.AccountDto;
+import br.com.jacto.trevo.controller.auth.form.AccountForm;
+import br.com.jacto.trevo.controller.auth.form.AccountUpdateForm;
+import br.com.jacto.trevo.model.account.Account;
+import br.com.jacto.trevo.repository.AccountRepository;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -33,20 +33,20 @@ import static org.mockito.Mockito.when;
 public class ManagerServiceTest {
 
     @Autowired
-    private ManagerService managerService;
+    private AccountService managerService;
 
     @MockBean
-    private ManagerRepository managerRepository;
+    private AccountRepository managerRepository;
 
 
-    public Manager manager = new Manager("test", "12345");
+    public Account account = new Account("test", "12345");
 
 
     @Test
     @DisplayName("Procurar pelo gerente existente")
     public void findByUsername() {
         UserDetails userDetails = mock(UserDetails.class);
-        when(managerRepository.findByUsername(any())).thenReturn(userDetails);
+        when(managerRepository.findByEmail(any())).thenReturn(userDetails);
 
         UserDetails result = managerService.loadUserByUsername("teste");
 
@@ -59,9 +59,9 @@ public class ManagerServiceTest {
     @Test
     @DisplayName("Autenticar gerente")
     public void auth() {
-        ManagerForm managerForm = new ManagerForm();
-        managerForm.setUsername(manager.getUsername());
-        managerForm.setPassword(manager.getPassword());
+        AccountForm managerForm = new AccountForm();
+        managerForm.setEmail(account.getUsername());
+        managerForm.setPassword(account.getPassword());
 
         Authentication result = managerService.auth(managerForm);
 
@@ -73,64 +73,64 @@ public class ManagerServiceTest {
     @Test
     @DisplayName("Registrar manager")
     public void register() {
-        ManagerForm managerForm = new ManagerForm();
-        managerForm.setUsername(manager.getUsername());
-        managerForm.setPassword(manager.getPassword());
-        manager.setManagerId(UUID.randomUUID());
+        AccountForm managerForm = new AccountForm();
+        managerForm.setEmail(account.getUsername());
+        managerForm.setPassword(account.getPassword());
+        account.setAccountId(UUID.randomUUID());
 
-        ManagerDto managerDto = new ManagerDto(manager);
-        when(managerRepository.save(any())).thenReturn(manager);
-        ManagerDto result = managerService.createManager(managerForm);
+        AccountDto managerDto = new AccountDto(account);
+        when(managerRepository.save(any())).thenReturn(account);
+        AccountDto result = managerService.createAccount(managerForm);
 
 
         assertNotNull(result);
-        assertEquals(managerDto.getManagerId(), result.getManagerId());
+        assertEquals(managerDto.getAccountId(), result.getAccountId());
     }
 
     @Test
     @DisplayName("Atualizacao manager")
     public void updateManager() {
         UUID managerId = UUID.randomUUID();
-        manager.setManagerId(managerId);
-        String encode = new BCryptPasswordEncoder().encode(manager.getPassword());
-        manager.setManagerPassword(encode);
+        account.setAccountId(managerId);
+        String encode = new BCryptPasswordEncoder().encode(account.getPassword());
+        account.setAccountPassword(encode);
 
-        ManagerUpdateForm updateForm = new ManagerUpdateForm();
-        updateForm.setManagerId(managerId);
-        updateForm.setUsername("newTest");
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(managerId);
+        updateForm.setEmail("newTest");
         updateForm.setPassword("12345");
         updateForm.setNewPassword("newPassword");
 
-        when(managerRepository.findById(managerId)).thenReturn(Optional.of(manager));
-        when(managerRepository.save(any())).thenReturn(manager);
+        when(managerRepository.findById(managerId)).thenReturn(Optional.of(account));
+        when(managerRepository.save(any())).thenReturn(account);
 
-        Optional<ManagerCreateDto> result = managerService.updateManager(updateForm);
+        Optional<AccountCreateDto> result = managerService.updateAccount(updateForm);
 
 
         assertTrue(result.isPresent());
-        assertEquals(updateForm.getUsername(), result.get().getUsername());
+        assertEquals(updateForm.getEmail(), result.get().getEmail());
 
-        assertTrue(new BCryptPasswordEncoder().matches(updateForm.getNewPassword(), manager.getPassword()));
+        assertTrue(new BCryptPasswordEncoder().matches(updateForm.getNewPassword(), account.getPassword()));
     }
 
     @Test
     @DisplayName("Exception quando atualizar e senha nao ser compativel com ja existente")
     public void updateManagerCase2() {
-        UUID managerId = UUID.randomUUID();
-        manager.setManagerId(managerId);
-        String encode = new BCryptPasswordEncoder().encode(manager.getPassword());
-        manager.setManagerPassword(encode);
+        UUID accountId = UUID.randomUUID();
+        account.setAccountId(accountId);
+        String encode = new BCryptPasswordEncoder().encode(account.getPassword());
+        account.setAccountPassword(encode);
 
-        ManagerUpdateForm updateForm = new ManagerUpdateForm();
-        updateForm.setManagerId(managerId);
-        updateForm.setUsername("newTest");
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(accountId);
+        updateForm.setEmail("newTest");
         updateForm.setPassword("123456");
         updateForm.setNewPassword("newPassword");
 
-        when(managerRepository.findById(managerId)).thenReturn(Optional.empty());
-        when(managerRepository.save(any())).thenReturn(manager);
+        when(managerRepository.findById(accountId)).thenReturn(Optional.empty());
+        when(managerRepository.save(any())).thenReturn(account);
 
-        Optional<ManagerCreateDto> result = managerService.updateManager(updateForm);
+        Optional<AccountCreateDto> result = managerService.updateAccount(updateForm);
 
 
         assertTrue(result.isEmpty());
@@ -139,21 +139,21 @@ public class ManagerServiceTest {
     @Test
     @DisplayName("Atualizacao manager caso nao ache o id")
     public void updateManagerCase3() {
-        UUID managerId = UUID.randomUUID();
-        manager.setManagerId(managerId);
-        String encode = new BCryptPasswordEncoder().encode(manager.getPassword());
-        manager.setManagerPassword(encode);
+        UUID accountId = UUID.randomUUID();
+        account.setAccountId(accountId);
+        String encode = new BCryptPasswordEncoder().encode(account.getPassword());
+        account.setAccountPassword(encode);
 
-        ManagerUpdateForm updateForm = new ManagerUpdateForm();
-        updateForm.setManagerId(managerId);
-        updateForm.setUsername("newTest");
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(accountId);
+        updateForm.setEmail("newTest");
         updateForm.setPassword("12345");
         updateForm.setNewPassword("newPassword");
 
-        when(managerRepository.findById(managerId)).thenReturn(Optional.empty());
-        when(managerRepository.save(any())).thenReturn(manager);
+        when(managerRepository.findById(accountId)).thenReturn(Optional.empty());
+        when(managerRepository.save(any())).thenReturn(account);
 
-        Optional<ManagerCreateDto> result = managerService.updateManager(updateForm);
+        Optional<AccountCreateDto> result = managerService.updateAccount(updateForm);
 
 
         assertTrue(result.isEmpty());
@@ -162,27 +162,27 @@ public class ManagerServiceTest {
     @Test
     @DisplayName("Atualizacao sem o campo ou vazio do username deve retornar o antigo")
     public void updateManagerCase4() {
-        UUID managerId = UUID.randomUUID();
-        manager.setManagerId(managerId);
-        String encode = new BCryptPasswordEncoder().encode(manager.getPassword());
-        manager.setManagerPassword(encode);
+        UUID accountId = UUID.randomUUID();
+        account.setAccountId(accountId);
+        String encode = new BCryptPasswordEncoder().encode(account.getPassword());
+        account.setAccountPassword(encode);
 
-        ManagerUpdateForm updateForm = new ManagerUpdateForm();
-        updateForm.setManagerId(managerId);
-        updateForm.setUsername("");
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(accountId);
+        updateForm.setEmail("");
         updateForm.setPassword("12345");
         updateForm.setNewPassword("newPassword");
 
-        when(managerRepository.findById(managerId)).thenReturn(Optional.of(manager));
-        when(managerRepository.save(any())).thenReturn(manager);
+        when(managerRepository.findById(accountId)).thenReturn(Optional.of(account));
+        when(managerRepository.save(any())).thenReturn(account);
 
-        Optional<ManagerCreateDto> result = managerService.updateManager(updateForm);
+        Optional<AccountCreateDto> result = managerService.updateAccount(updateForm);
 
 
         assertTrue(result.isPresent());
-        assertEquals(manager.getUsername(), result.get().getUsername());
+        assertEquals(account.getUsername(), result.get().getEmail());
 
-        assertTrue(new BCryptPasswordEncoder().matches(updateForm.getNewPassword(), manager.getPassword()));
+        assertTrue(new BCryptPasswordEncoder().matches(updateForm.getNewPassword(), account.getPassword()));
     }
 
     @Test
@@ -190,7 +190,7 @@ public class ManagerServiceTest {
     public void deleteOrder() {
         UUID managerId = UUID.randomUUID();
 
-        when(managerRepository.findById(any())).thenReturn(Optional.ofNullable(manager));
+        when(managerRepository.findById(any())).thenReturn(Optional.ofNullable(account));
 
         Boolean update = managerService.delete(managerId);
 

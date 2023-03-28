@@ -3,6 +3,7 @@ package br.com.jacto.trevo.controller.product.dto;
 import br.com.jacto.trevo.model.product.Product;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,9 +24,9 @@ public class ProductDetailDto {
 
     private final String description;
 
-    private final Boolean status;
+    private final Product.Status status;
 
-    private final LocalDate createAt;
+    private final LocalDateTime createAt;
 
 
     private final List<ProductCultureDto> cultures;
@@ -42,11 +43,11 @@ public class ProductDetailDto {
         return description;
     }
 
-    public Boolean getStatus() {
+    public Product.Status getStatus() {
         return status;
     }
 
-    public LocalDate getCreateAt() {
+    public LocalDateTime getCreateAt() {
         return createAt;
     }
 

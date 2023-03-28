@@ -6,18 +6,18 @@ import br.com.jacto.trevo.controller.product.dto.ProductDto;
 import br.com.jacto.trevo.controller.product.dto.ProductOrderDto;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
 import br.com.jacto.trevo.controller.product.form.ProductUpdateForm;
-import br.com.jacto.trevo.model.manager.Manager;
+import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.model.product.Culture;
 import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.CultureRepository;
-import br.com.jacto.trevo.repository.ManagerRepository;
+import br.com.jacto.trevo.repository.AccountRepository;
 import br.com.jacto.trevo.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,23 +31,20 @@ public class ProductService {
     private CultureRepository cultureRepository;
 
     @Autowired
-    private ManagerRepository managerRepository;
+    private AccountRepository managerRepository;
 
     public Page<ProductDto> getAll(Pageable pagination) {
         return productRepository.findAll(pagination).map(ProductDto::new);
     }
 
     public Optional<ProductCreateDto> create(ProductForm product) {
-        Optional<Manager> findManager = managerRepository.findById(product.getManagerId());
+        Optional<Account> findManager = managerRepository.findById(product.getAccountId());
         if (findManager.isEmpty()) {
             return Optional.empty();
         }
-        if (product.getCreateAt() == null) {
-            product.setCreateAt(LocalDate.now());
-        }
 
         Product productSave = new Product(product.getProductName(), product.getStatus(),
-                product.getDescription(), product.getAreaSize(), product.getCreateAt(), findManager.get());
+                product.getDescription(), product.getAreaSize(), LocalDateTime.now(), findManager.get());
 
         Product createProduct = productRepository.save(productSave);
 
@@ -94,9 +91,7 @@ public class ProductService {
             findProduct.get().setStatus(product.getStatus());
         }
 
-        if (product.getCreateAt() != null) {
-            findProduct.get().setCreateAt(product.getCreateAt());
-        }
+        findProduct.get().setCreateAt(LocalDateTime.now());
 
         return Optional.of(productRepository.save(findProduct.get()));
 
