@@ -31,20 +31,20 @@ public class ProductService {
     private CultureRepository cultureRepository;
 
     @Autowired
-    private AccountRepository managerRepository;
+    private AccountRepository accountRepository;
 
     public Page<ProductDto> getAll(Pageable pagination) {
         return productRepository.findAll(pagination).map(ProductDto::new);
     }
 
     public Optional<ProductCreateDto> create(ProductForm product) {
-        Optional<Account> findManager = managerRepository.findById(product.getAccountId());
+        Optional<Account> findManager = accountRepository.findById(product.getAccountId());
         if (findManager.isEmpty()) {
             return Optional.empty();
         }
 
-        Product productSave = new Product(product.getProductName(), product.getStatus(),
-                product.getDescription(), product.getAreaSize(), LocalDateTime.now(), findManager.get());
+        Product productSave = new Product(product.getProductName(), product.getStatus(), product.getCategory(),
+                product.getDescription(), product.getAreaSize(), product.getPrice(), LocalDateTime.now(), findManager.get());
 
         Product createProduct = productRepository.save(productSave);
 
@@ -69,7 +69,7 @@ public class ProductService {
         return true;
     }
 
-    public Optional<Product> update(ProductUpdateForm product) {
+    public Optional<ProductCreateDto> update(ProductUpdateForm product) {
 
         Optional<Product> findProduct = productRepository.findById(product.getProductId());
 
@@ -93,7 +93,7 @@ public class ProductService {
 
         findProduct.get().setCreateAt(LocalDateTime.now());
 
-        return Optional.of(productRepository.save(findProduct.get()));
+        return Optional.of(productRepository.save(findProduct.get())).map(ProductCreateDto::new);
 
     }
 

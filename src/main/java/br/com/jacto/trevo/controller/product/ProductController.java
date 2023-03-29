@@ -1,9 +1,6 @@
 package br.com.jacto.trevo.controller.product;
 
-import br.com.jacto.trevo.controller.product.dto.ProductCreateDto;
-import br.com.jacto.trevo.controller.product.dto.ProductDetailDto;
-import br.com.jacto.trevo.controller.product.dto.ProductDto;
-import br.com.jacto.trevo.controller.product.dto.ProductOrderDto;
+import br.com.jacto.trevo.controller.product.dto.*;
 import br.com.jacto.trevo.controller.product.form.ProductCultureDeleteForm;
 import br.com.jacto.trevo.controller.product.form.ProductCultureForm;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
@@ -103,13 +100,13 @@ public class ProductController {
     @Operation(summary = "Atualização do produto")
     @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))),
+            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductCreateDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
-    public ResponseEntity<Product> updateProduct(@RequestBody @Valid ProductUpdateForm product) {
-        Optional<Product> updateProduct = productService.update(product);
+    public ResponseEntity<ProductCreateDto> updateProduct(@RequestBody @Valid ProductUpdateForm product) {
+        Optional<ProductCreateDto> updateProduct = productService.update(product);
         return updateProduct.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -118,13 +115,13 @@ public class ProductController {
     @Operation(summary = "Atualização da cultura do produto")
     @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Culture.class))),
+            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductCultureDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
-    public ResponseEntity<Culture> updateCulture(@RequestBody @Valid ProductCultureForm culture) {
-        Optional<Culture> updateCulture = cultureService.update(culture);
+    public ResponseEntity<ProductCultureDto> updateCulture(@RequestBody @Valid ProductCultureForm culture) {
+        Optional<ProductCultureDto> updateCulture = cultureService.update(culture);
         return updateCulture.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

@@ -2,32 +2,23 @@ package br.com.jacto.trevo.controller.auth.form;
 
 import br.com.jacto.trevo.model.account.Account;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.UUID;
 
-public class AccountUpdateForm {
-    @NotNull(message = "Obrigatório o ID do gerente")
-    private UUID accountId;
-
-    private String email;
-
-    @NotBlank(message = "Obrigatório a senha cadastrada")
-    private String password;
-
-    private String newPassword;
-
+public class AccountRegisterForm {
+    @NotBlank(message = "Obrigatório o nome")
     private String accountName;
 
+    @NotBlank(message = "Obrigatório o email")
+    @Email(message = "Formato do email é inválido")
+    private String email;
+
+    @NotBlank(message = "Obrigatório o password")
+    private String password;
+
+    @NotNull(message = "Obrigatório a permissão")
     private Account.Role accountRole;
-
-    public UUID getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(UUID accountId) {
-        this.accountId = accountId;
-    }
 
     public String getEmail() {
         return email;
@@ -43,14 +34,6 @@ public class AccountUpdateForm {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
     }
 
     public String getAccountName() {

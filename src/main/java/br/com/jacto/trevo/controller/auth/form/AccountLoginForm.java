@@ -1,10 +1,11 @@
 package br.com.jacto.trevo.controller.auth.form;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-public class AccountForm {
-
+public class AccountLoginForm {
     @NotBlank(message = "Obrigatório o email")
+    @Email(message = "Formato do email é inválido")
     private String email;
 
     @NotBlank(message = "Obrigatório o password")

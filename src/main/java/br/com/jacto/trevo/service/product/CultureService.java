@@ -1,5 +1,6 @@
 package br.com.jacto.trevo.service.product;
 
+import br.com.jacto.trevo.controller.product.dto.ProductCultureDto;
 import br.com.jacto.trevo.controller.product.form.ProductCultureDeleteForm;
 import br.com.jacto.trevo.controller.product.form.ProductCultureForm;
 import br.com.jacto.trevo.model.product.Culture;
@@ -24,12 +25,12 @@ public class CultureService {
         return cultureRepository.findById(id);
     }
 
-    public Optional<Culture> update(ProductCultureForm culture) {
+    public Optional<ProductCultureDto> update(ProductCultureForm culture) {
 
         Optional<Culture> findCulture = cultureRepository.findById(culture.getCultureId());
 
         if (findCulture.isEmpty()) {
-            return findCulture;
+            return Optional.empty();
         }
 
         if (!findCulture.get().getProduct().getProductId().equals(culture.getProductId())) {
@@ -38,7 +39,7 @@ public class CultureService {
 
         findCulture.get().setCultureName(culture.getCultureName());
 
-        return Optional.of(cultureRepository.save(findCulture.get()));
+        return Optional.of(cultureRepository.save(findCulture.get())).map(ProductCultureDto::new);
     }
 
     public Boolean delete(ProductCultureDeleteForm culture) {

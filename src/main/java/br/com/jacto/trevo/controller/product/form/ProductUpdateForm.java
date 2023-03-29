@@ -15,7 +15,11 @@ public class ProductUpdateForm {
 
     private Product.Status status;
 
+    private Product.Category categoy;
+
     private Double areaSize;
+
+    private Double price;
 
     private String description;
 
@@ -59,5 +63,21 @@ public class ProductUpdateForm {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Product.Category getCategoy() {
+        return categoy;
+    }
+
+    public void setCategoy(Product.Category categoy) {
+        this.categoy = categoy;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }

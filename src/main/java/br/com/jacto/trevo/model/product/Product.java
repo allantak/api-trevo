@@ -15,11 +15,13 @@ public class Product {
     public Product() {
     }
 
-    public Product(String productName, Status status, String description, Double areaSize, LocalDateTime createAt, Account manager) {
+    public Product(String productName, Status status, Category category, String description, Double areaSize, Double price, LocalDateTime createAt, Account manager) {
         setProductName(productName);
         setStatus(status);
+        setCategory(category);
         setDescription(description);
         setAreaSize(areaSize);
+        setPrice(price);
         setCreateAt(createAt);
         setManager(manager);
     }

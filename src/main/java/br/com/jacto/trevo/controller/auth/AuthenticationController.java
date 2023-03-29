@@ -2,13 +2,17 @@ package br.com.jacto.trevo.controller.auth;
 
 import br.com.jacto.trevo.config.security.TokenService;
 import br.com.jacto.trevo.controller.auth.dto.AccountCreateDto;
+import br.com.jacto.trevo.controller.auth.dto.AccountDetailDto;
 import br.com.jacto.trevo.controller.auth.dto.AccountDto;
 import br.com.jacto.trevo.controller.auth.dto.TokenDto;
-import br.com.jacto.trevo.controller.auth.form.AccountForm;
+import br.com.jacto.trevo.controller.auth.form.AccountLoginForm;
+import br.com.jacto.trevo.controller.auth.form.AccountRegisterForm;
 import br.com.jacto.trevo.controller.auth.form.AccountUpdateForm;
+import br.com.jacto.trevo.controller.client.dto.ClientDto;
 import br.com.jacto.trevo.model.account.Account;
-import br.com.jacto.trevo.service.manager.AccountService;
+import br.com.jacto.trevo.service.account.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,10 +28,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Controller
+@RestController
 @Tag(name = "Autenticar", description = "Gerenciamento de usuário")
 public class AuthenticationController {
 
@@ -40,6 +45,34 @@ public class AuthenticationController {
     @Autowired
     private TokenService tokenService;
 
+    @GetMapping("/accounts")
+    @SecurityRequirement(name = "bearer-key")
+    @Operation(summary = "Lista de usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClientDto.class)))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
+    public List<AccountDto> getAccount() {
+        System.out.println("Entrou");
+        List<AccountDto> list =accountService.getAll();
+        System.out.println("Entrou2");
+        return list ;
+    }
+
+    @GetMapping("/accounts/{id}")
+    @SecurityRequirement(name = "bearer-key")
+    @Operation(summary = "Mostrar detalhes do usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AccountDetailDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
+    public ResponseEntity<AccountDetailDto> getIdAccount(@PathVariable UUID id) {
+        Optional<AccountDetailDto> findAccount = accountService.findAccount(id);
+        return findAccount.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 
     @PostMapping("/login")
     @Operation(summary = "Autenticar o usuário", description = "login da conta do usuário")
@@ -48,7 +81,7 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
-    public ResponseEntity<TokenDto> authAccount(@RequestBody @Valid AccountForm user) {
+    public ResponseEntity<TokenDto> authAccount(@RequestBody @Valid AccountLoginForm user) {
         Authentication verify = accountService.auth(user);
         Authentication authentication = account.authenticate(verify);
         TokenDto token = tokenService.token((Account) authentication.getPrincipal());
@@ -60,17 +93,17 @@ public class AuthenticationController {
     @SecurityRequirement(name = "bearer-key")
     @Operation(summary = "Registrar usuário")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AccountDto.class))),
+            @ApiResponse(responseCode = "201", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AccountDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "409", description = "Conflict", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
-    public ResponseEntity<AccountDto> createAccount(@RequestBody @Valid AccountForm user) {
+    public ResponseEntity<AccountDto> createAccount(@RequestBody @Valid AccountRegisterForm user) {
         AccountDto accountDto = accountService.createAccount(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(accountDto);
     }
 
-    @PutMapping("/account")
+    @PutMapping("/accounts")
     @SecurityRequirement(name = "bearer-key")
     @Operation(summary = "Atualizar usuário")
     @ApiResponses(value = {
@@ -85,7 +118,7 @@ public class AuthenticationController {
         return account.map(value -> ResponseEntity.status(HttpStatus.OK).body(value)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/account/{id}")
+    @DeleteMapping("/accounts/{id}")
     @SecurityRequirement(name = "bearer-key")
     @Operation(summary = "Delete usuário")
     @ApiResponses(value = {

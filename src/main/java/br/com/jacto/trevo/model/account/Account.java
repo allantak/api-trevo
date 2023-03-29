@@ -16,9 +16,11 @@ public class Account implements UserDetails {
     public Account() {
     }
 
-    public Account(String email, String password) {
+    public Account(String email, String password, String accountName, Role accountRole) {
         this.email = email;
         this.accountPassword = password;
+        this.accountName = accountName;
+        this.accountRole = accountRole;
     }
 
     public enum Role {

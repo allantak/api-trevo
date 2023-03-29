@@ -10,6 +10,7 @@ public class ProductOrderDto {
         this.productName = product.getProductName();
         this.description = product.getDescription();
         this.status = product.isStatus();
+        this.category = product.getCategory();
         this.orders = product.getOrders().stream().map(ProductOrderClientDto::new).toList();
 
     }
@@ -17,7 +18,7 @@ public class ProductOrderDto {
     private final String productName;
     private final Product.Status status;
     private final String description;
-
+    private final Product.Category category;
     private final List<ProductOrderClientDto> orders;
 
     public String getProductName() {
@@ -36,4 +37,7 @@ public class ProductOrderDto {
         return orders;
     }
 
+    public Product.Category getCategory() {
+        return category;
+    }
 }

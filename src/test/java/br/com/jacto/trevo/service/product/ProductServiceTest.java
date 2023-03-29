@@ -48,8 +48,8 @@ public class ProductServiceTest {
 
 
     public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
-    public Account account = new Account("test", "12345");
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
+    public Account account = new Account("test", "12345", "test", Account.Role.COLABORADOR);
+    public Product product = new Product("Trator Jacto", Product.Status.DISPONIVEL, Product.Category.ELETRICO, "Trator jacto para agricultura", 120.0, 2.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
 
     public OrderItem order = new OrderItem(3, client, product);
     public Culture culture = new Culture("Cerejeiras", product);
@@ -142,18 +142,14 @@ public class ProductServiceTest {
         form.setProductName("update");
         form.setDescription("update");
         form.setAreaSize(123.0);
-        form.setStatus(false);
 
         when(productRepository.findById(any())).thenReturn(Optional.ofNullable(product));
         when(productRepository.save(any())).thenReturn(product);
 
-        Optional<Product> update = productService.update(form);
+        Optional<ProductCreateDto> update = productService.update(form);
 
         assertNotNull(update);
         assertEquals("update", update.get().getProductName());
-        assertFalse(update.get().isStatus());
-        assertEquals(Optional.of(123.0), Optional.ofNullable(update.get().getAreaSize()));
-        assertEquals("update", update.get().getDescription());
     }
 
     @Test
@@ -169,7 +165,7 @@ public class ProductServiceTest {
         when(productRepository.findById(any())).thenReturn(Optional.empty());
         when(productRepository.save(any())).thenReturn(product);
 
-        Optional<Product> update = productService.update(form);
+        Optional<ProductCreateDto> update = productService.update(form);
 
         assertEquals(Optional.empty(), update);
     }
@@ -183,14 +179,10 @@ public class ProductServiceTest {
         when(productRepository.findById(any())).thenReturn(Optional.ofNullable(product));
         when(productRepository.save(any())).thenReturn(product);
 
-        Optional<Product> update = productService.update(form);
+        Optional<ProductCreateDto> update = productService.update(form);
 
         assertNotNull(update);
-        assertEquals(product.getCreateAt(), update.get().getCreateAt());
         assertEquals(product.getProductName(), update.get().getProductName());
-        assertEquals(product.isStatus(), update.get().isStatus());
-        assertEquals(product.getAreaSize(), update.get().getAreaSize());
-        assertEquals(product.getDescription(), update.get().getDescription());
     }
 
     @Test
@@ -204,14 +196,10 @@ public class ProductServiceTest {
         when(productRepository.findById(any())).thenReturn(Optional.ofNullable(product));
         when(productRepository.save(any())).thenReturn(product);
 
-        Optional<Product> update = productService.update(form);
+        Optional<ProductCreateDto> update = productService.update(form);
 
         assertNotNull(update);
-        assertEquals(product.getCreateAt(), update.get().getCreateAt());
         assertEquals(product.getProductName(), update.get().getProductName());
-        assertEquals(product.isStatus(), update.get().isStatus());
-        assertEquals(product.getAreaSize(), update.get().getAreaSize());
-        assertEquals(product.getDescription(), update.get().getDescription());
     }
 
 

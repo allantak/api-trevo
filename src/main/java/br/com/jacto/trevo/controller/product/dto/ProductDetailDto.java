@@ -13,8 +13,11 @@ public class ProductDetailDto {
         this.productId = product.getProductId();
         this.productName = product.getProductName();
         this.description = product.getDescription();
+        this.areaSize = product.getAreaSize();
+        this.price = product.getPrice();
         this.createAt = product.getCreateAt();
         this.status = product.isStatus();
+        this.category = product.getCategory();
         this.cultures = product.getCultures().stream().map(ProductCultureDto::new).toList();
     }
 
@@ -26,8 +29,13 @@ public class ProductDetailDto {
 
     private final Product.Status status;
 
+    private final Product.Category category;
+
     private final LocalDateTime createAt;
 
+    private final Double areaSize;
+
+    private final Double price;
 
     private final List<ProductCultureDto> cultures;
 
@@ -53,5 +61,17 @@ public class ProductDetailDto {
 
     public List<ProductCultureDto> getCultures() {
         return cultures;
+    }
+
+    public Product.Category getCategory() {
+        return category;
+    }
+
+    public Double getAreaSize() {
+        return areaSize;
+    }
+
+    public Double getPrice() {
+        return price;
     }
 }

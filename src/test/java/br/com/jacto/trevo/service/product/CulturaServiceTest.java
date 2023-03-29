@@ -1,5 +1,6 @@
 package br.com.jacto.trevo.service.product;
 
+import br.com.jacto.trevo.controller.product.dto.ProductCultureDto;
 import br.com.jacto.trevo.controller.product.form.ProductCultureDeleteForm;
 import br.com.jacto.trevo.controller.product.form.ProductCultureForm;
 import br.com.jacto.trevo.model.account.Account;
@@ -34,8 +35,8 @@ public class CulturaServiceTest {
     @MockBean
     private CultureRepository cultureRepository;
 
-    public Account account = new Account("test", "12345");
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
+    public Account account = new Account("test", "12345", "test", Account.Role.COLABORADOR);
+    public Product product = new Product("Trator Jacto", Product.Status.DISPONIVEL, Product.Category.ELETRICO, "Trator jacto para agricultura", 120.0, 2.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
 
     public Culture culture = new Culture("Cerejeiras", product);
 
@@ -79,12 +80,11 @@ public class CulturaServiceTest {
         when(cultureRepository.findById(any())).thenReturn(Optional.ofNullable(culture));
         when(cultureRepository.save(any())).thenReturn(culture);
 
-        Optional<Culture> update = cultureService.update(form);
+        Optional<ProductCultureDto> update = cultureService.update(form);
 
         assertNotNull(update);
         assertEquals(form.getCultureName(), update.get().getCultureName());
         assertEquals(form.getCultureId(), update.get().getCultureId());
-        assertEquals(form.getProductId(), update.get().getProduct().getProductId());
     }
 
 
@@ -102,7 +102,7 @@ public class CulturaServiceTest {
         when(cultureRepository.findById(any())).thenReturn(Optional.ofNullable(culture));
         when(cultureRepository.save(any())).thenReturn(culture);
 
-        Optional<Culture> update = cultureService.update(form);
+        Optional<ProductCultureDto> update = cultureService.update(form);
 
         assertEquals(Optional.empty(), update);
     }
@@ -121,7 +121,7 @@ public class CulturaServiceTest {
         when(cultureRepository.findById(any())).thenReturn(Optional.empty());
         when(cultureRepository.save(any())).thenReturn(culture);
 
-        Optional<Culture> update = cultureService.update(form);
+        Optional<ProductCultureDto> update = cultureService.update(form);
 
         assertEquals(Optional.empty(), update);
     }

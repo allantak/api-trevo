@@ -7,7 +7,7 @@ import java.util.UUID;
 public class AccountDto {
     public AccountDto(Account account) {
         this.accountId = account.getAccountId();
-        this.email = account.getUsername();
+        this.email = account.getEmail();
     }
 
     private final UUID accountId;

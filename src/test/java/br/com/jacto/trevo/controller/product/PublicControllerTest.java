@@ -1,10 +1,7 @@
 package br.com.jacto.trevo.controller.product;
 
 import br.com.jacto.trevo.config.security.TokenService;
-import br.com.jacto.trevo.controller.product.dto.ProductCreateDto;
-import br.com.jacto.trevo.controller.product.dto.ProductDetailDto;
-import br.com.jacto.trevo.controller.product.dto.ProductDto;
-import br.com.jacto.trevo.controller.product.dto.ProductOrderDto;
+import br.com.jacto.trevo.controller.product.dto.*;
 import br.com.jacto.trevo.controller.product.form.ProductCultureDeleteForm;
 import br.com.jacto.trevo.controller.product.form.ProductCultureForm;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
@@ -90,11 +87,13 @@ public class PublicControllerTest {
     @Autowired
     private JacksonTester<ProductCultureDeleteForm> productCultureDeleteFormJson;
 
+    @Autowired
+    private JacksonTester<ProductCultureDto> productCultureDtoJson;
+
     public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
 
-    public Account account = new Account("test", "12345");
-
-    public Product product = new Product("Trator Jacto", Product.Status.DISPONIVEL, "Trator jacto para agricultura", 120.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
+    public Account account = new Account("test", "12345", "test", Account.Role.COLABORADOR);
+    public Product product = new Product("Trator Jacto", Product.Status.DISPONIVEL, Product.Category.ELETRICO, "Trator jacto para agricultura", 120.0, 2.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
 
     public OrderItem order = new OrderItem(3, client, product);
     public Culture culture = new Culture("Cerejeiras", product);
@@ -281,7 +280,9 @@ public class PublicControllerTest {
         form.setProductName(product.getProductName());
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
+        form.setPrice(product.getPrice());
         form.setStatus(product.isStatus());
+        form.setCategory(product.getCategory());
         form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
 
         when(productService.create(any())).thenReturn(Optional.of(productCreate));
@@ -319,7 +320,9 @@ public class PublicControllerTest {
         form.setProductName(product.getProductName());
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
+        form.setPrice(product.getPrice());
         form.setStatus(product.isStatus());
+        form.setCategory(product.getCategory());
         form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
 
         when(productService.create(any())).thenReturn(Optional.empty());
@@ -368,7 +371,9 @@ public class PublicControllerTest {
         form.setProductName(product.getProductName());
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
+        form.setPrice(product.getPrice());
         form.setStatus(product.isStatus());
+        form.setCategory(product.getCategory());
         form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
 
         when(productService.create(any())).thenThrow(new ResponseStatusException(HttpStatus.CONFLICT));
@@ -399,7 +404,9 @@ public class PublicControllerTest {
         form.setProductName(product.getProductName());
         form.setDescription(product.getDescription());
         form.setAreaSize(product.getAreaSize());
+        form.setPrice(product.getPrice());
         form.setStatus(product.isStatus());
+        form.setCategory(product.getCategory());
         form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
 
         when(productService.create(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
@@ -428,7 +435,7 @@ public class PublicControllerTest {
         form.setAreaSize(product.getAreaSize());
         form.setStatus(product.isStatus());
 
-        when(productService.update(any())).thenReturn(Optional.ofNullable(product));
+        when(productService.update(any())).thenReturn(Optional.of(new ProductCreateDto(product)));
 
         var response = mockMvc.perform(
                         put("/products")
@@ -440,7 +447,7 @@ public class PublicControllerTest {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
 
-        var jsonExpect = productJson.write(product).getJson();
+        var jsonExpect = productCreateDtoJson.write(new ProductCreateDto(product)).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
     }
@@ -502,7 +509,7 @@ public class PublicControllerTest {
         ProductUpdateForm form = new ProductUpdateForm();
         form.setProductId(productId);
 
-        when(productService.update(any())).thenReturn(Optional.ofNullable(product));
+        when(productService.update(any())).thenReturn(Optional.of(new ProductCreateDto(product)));
 
         var response = mockMvc.perform(
                         put("/products")
@@ -514,7 +521,7 @@ public class PublicControllerTest {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
 
-        var jsonExpect = productJson.write(product).getJson();
+        var jsonExpect = productCreateDtoJson.write(new ProductCreateDto(product)).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
     }
@@ -533,7 +540,7 @@ public class PublicControllerTest {
         form.setAreaSize(product.getAreaSize());
         form.setStatus(product.isStatus());
 
-        when(productService.update(any())).thenReturn(Optional.ofNullable(product));
+        when(productService.update(any())).thenReturn(Optional.of(new ProductCreateDto(product)));
 
         var response = mockMvc.perform(
                         put("/products")
@@ -545,7 +552,7 @@ public class PublicControllerTest {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
 
-        var jsonExpect = productJson.write(product).getJson();
+        var jsonExpect = productCreateDtoJson.write(new ProductCreateDto(product)).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
     }
@@ -587,7 +594,7 @@ public class PublicControllerTest {
         form.setCultureId(cultureId);
         form.setCultureName("cultureNew");
 
-        when(cultureService.update(any())).thenReturn(Optional.ofNullable(culture));
+        when(cultureService.update(any())).thenReturn(Optional.of(new ProductCultureDto(culture)));
 
         var response = mockMvc.perform(
                         put("/products/cultures")
@@ -599,7 +606,7 @@ public class PublicControllerTest {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
 
-        var jsonExpect = cultureJson.write(culture).getJson();
+        var jsonExpect = productCultureDtoJson.write(new ProductCultureDto(culture)).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
 

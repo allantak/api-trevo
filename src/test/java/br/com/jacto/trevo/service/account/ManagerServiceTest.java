@@ -1,10 +1,12 @@
-package br.com.jacto.trevo.service.manager;
+package br.com.jacto.trevo.service.account;
 
 import br.com.jacto.trevo.controller.auth.dto.AccountCreateDto;
 import br.com.jacto.trevo.controller.auth.dto.AccountDto;
-import br.com.jacto.trevo.controller.auth.form.AccountForm;
+import br.com.jacto.trevo.controller.auth.form.AccountLoginForm;
+import br.com.jacto.trevo.controller.auth.form.AccountRegisterForm;
 import br.com.jacto.trevo.controller.auth.form.AccountUpdateForm;
 import br.com.jacto.trevo.model.account.Account;
+import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.AccountRepository;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,8 +42,7 @@ public class ManagerServiceTest {
     private AccountRepository managerRepository;
 
 
-    public Account account = new Account("test", "12345");
-
+    public Account account = new Account("test", "12345", "test", Account.Role.COLABORADOR);
 
     @Test
     @DisplayName("Procurar pelo gerente existente")
@@ -59,7 +61,7 @@ public class ManagerServiceTest {
     @Test
     @DisplayName("Autenticar gerente")
     public void auth() {
-        AccountForm managerForm = new AccountForm();
+        AccountLoginForm managerForm = new AccountLoginForm();
         managerForm.setEmail(account.getUsername());
         managerForm.setPassword(account.getPassword());
 
@@ -73,7 +75,7 @@ public class ManagerServiceTest {
     @Test
     @DisplayName("Registrar manager")
     public void register() {
-        AccountForm managerForm = new AccountForm();
+        AccountRegisterForm managerForm = new AccountRegisterForm();
         managerForm.setEmail(account.getUsername());
         managerForm.setPassword(account.getPassword());
         account.setAccountId(UUID.randomUUID());

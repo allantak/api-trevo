@@ -21,6 +21,9 @@ public class ProductForm {
     @NotNull(message = "Obrigatório o status do produto")
     private Product.Status status;
 
+    @NotNull(message = "Obrigatório a categoria do produto")
+    private Product.Category category;
+
     @NotBlank(message = "Obrigatório a descricao do produto")
     private String description;
 
@@ -29,6 +32,8 @@ public class ProductForm {
     private List<String> cultures;
 
     private Double areaSize;
+
+    private Double price;
 
     public UUID getAccountId() {
         return accountId;
@@ -78,5 +83,19 @@ public class ProductForm {
         this.areaSize = areaSize;
     }
 
+    public Product.Category getCategory() {
+        return category;
+    }
 
+    public void setCategory(Product.Category category) {
+        this.category = category;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
 }

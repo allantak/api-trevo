@@ -47,8 +47,8 @@ public class ImageServiceTest {
     @MockBean
     private ProductRepository productRepository;
 
-    public Account account = new Account("test", "12345");
-    public Product product = new Product("Trator Jacto", true, "Trator jacto para agricultura", 120.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
+    public Account account = new Account("test", "12345", "test", Account.Role.COLABORADOR);
+    public Product product = new Product("Trator Jacto", Product.Status.DISPONIVEL, Product.Category.ELETRICO, "Trator jacto para agricultura", 120.0, 2.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
 
     byte[] testBytes = new byte[]{0x01, 0x02, 0x03, 0x04, 0x05};
     public Image image = new Image(testBytes, product);
