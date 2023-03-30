@@ -33,10 +33,7 @@ public class AccountService implements UserDetailsService {
     }
 
     public List<AccountDto> getAll() {
-        List<AccountDto> test = accountRepository.findAll().stream().map(AccountDto::new).toList();
-        System.out.println(test.size());
-        System.out.println(test.get(0).getAccountId());
-        return test;
+        return accountRepository.findAll().stream().map(AccountDto::new).toList();
     }
 
     public Optional<AccountDetailDto> findAccount(UUID userId) {

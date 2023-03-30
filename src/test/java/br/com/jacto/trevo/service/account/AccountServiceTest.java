@@ -1,12 +1,12 @@
 package br.com.jacto.trevo.service.account;
 
 import br.com.jacto.trevo.controller.auth.dto.AccountCreateDto;
+import br.com.jacto.trevo.controller.auth.dto.AccountDetailDto;
 import br.com.jacto.trevo.controller.auth.dto.AccountDto;
 import br.com.jacto.trevo.controller.auth.form.AccountLoginForm;
 import br.com.jacto.trevo.controller.auth.form.AccountRegisterForm;
 import br.com.jacto.trevo.controller.auth.form.AccountUpdateForm;
 import br.com.jacto.trevo.model.account.Account;
-import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.AccountRepository;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +21,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,13 +34,13 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @Transactional
 @SpringBootTest
-public class ManagerServiceTest {
+public class AccountServiceTest {
 
     @Autowired
-    private AccountService managerService;
+    private AccountService accountService;
 
     @MockBean
-    private AccountRepository managerRepository;
+    private AccountRepository accountRepository;
 
 
     public Account account = new Account("test", "12345", "test", Account.Role.COLABORADOR);
@@ -48,14 +49,55 @@ public class ManagerServiceTest {
     @DisplayName("Procurar pelo gerente existente")
     public void findByUsername() {
         UserDetails userDetails = mock(UserDetails.class);
-        when(managerRepository.findByEmail(any())).thenReturn(userDetails);
+        when(accountRepository.findByEmail(any())).thenReturn(userDetails);
 
-        UserDetails result = managerService.loadUserByUsername("teste");
+        UserDetails result = accountService.loadUserByUsername("teste");
 
 
         assertNotNull(result);
         assertEquals(userDetails, result);
     }
+
+    @Test
+    @DisplayName("Listagem de usuarios registrados")
+    public void getAll(){
+        account.setAccountId(UUID.randomUUID());
+        List<Account> listAccount = new ArrayList<Account>();
+        listAccount.add(account);
+
+        when(accountRepository.findAll()).thenReturn(listAccount);
+
+        List<AccountDto> result = accountService.getAll();
+
+        assertNotNull(listAccount);
+        assertEquals(account.getAccountId(), result.get(0).getAccountId());
+        assertEquals(account.getEmail(), result.get(0).getEmail());
+    }
+
+    @Test
+    @DisplayName("Achar pelo ID do usuario")
+    public void getId(){
+        UUID id = UUID.randomUUID();
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
+        Optional<AccountDetailDto> result = accountService.findAccount(id);
+
+        assertNotNull(result);
+        assertEquals(account.getEmail(), result.get().getEmail());
+        assertEquals(account.getAccountName(), result.get().getName());
+        assertEquals(account.getCreateAt(), result.get().getCreate_at());
+        assertEquals(account.getAccountRole(), result.get().getRole());
+    }
+
+    @Test
+    @DisplayName("Achar pelo ID do usuario")
+    public void getIdCase2(){
+        UUID id = UUID.randomUUID();
+        when(accountRepository.findById(any())).thenReturn(Optional.empty());
+        Optional<AccountDetailDto> result = accountService.findAccount(id);
+
+        assertEquals(Optional.empty(), result);
+    }
+
 
 
     @Test
@@ -65,7 +107,7 @@ public class ManagerServiceTest {
         managerForm.setEmail(account.getUsername());
         managerForm.setPassword(account.getPassword());
 
-        Authentication result = managerService.auth(managerForm);
+        Authentication result = accountService.auth(managerForm);
 
 
         assertNotNull(result);
@@ -81,8 +123,8 @@ public class ManagerServiceTest {
         account.setAccountId(UUID.randomUUID());
 
         AccountDto managerDto = new AccountDto(account);
-        when(managerRepository.save(any())).thenReturn(account);
-        AccountDto result = managerService.createAccount(managerForm);
+        when(accountRepository.save(any())).thenReturn(account);
+        AccountDto result = accountService.createAccount(managerForm);
 
 
         assertNotNull(result);
@@ -103,10 +145,10 @@ public class ManagerServiceTest {
         updateForm.setPassword("12345");
         updateForm.setNewPassword("newPassword");
 
-        when(managerRepository.findById(managerId)).thenReturn(Optional.of(account));
-        when(managerRepository.save(any())).thenReturn(account);
+        when(accountRepository.findById(managerId)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any())).thenReturn(account);
 
-        Optional<AccountCreateDto> result = managerService.updateAccount(updateForm);
+        Optional<AccountCreateDto> result = accountService.updateAccount(updateForm);
 
 
         assertTrue(result.isPresent());
@@ -129,10 +171,10 @@ public class ManagerServiceTest {
         updateForm.setPassword("123456");
         updateForm.setNewPassword("newPassword");
 
-        when(managerRepository.findById(accountId)).thenReturn(Optional.empty());
-        when(managerRepository.save(any())).thenReturn(account);
+        when(accountRepository.findById(accountId)).thenReturn(Optional.empty());
+        when(accountRepository.save(any())).thenReturn(account);
 
-        Optional<AccountCreateDto> result = managerService.updateAccount(updateForm);
+        Optional<AccountCreateDto> result = accountService.updateAccount(updateForm);
 
 
         assertTrue(result.isEmpty());
@@ -152,10 +194,10 @@ public class ManagerServiceTest {
         updateForm.setPassword("12345");
         updateForm.setNewPassword("newPassword");
 
-        when(managerRepository.findById(accountId)).thenReturn(Optional.empty());
-        when(managerRepository.save(any())).thenReturn(account);
+        when(accountRepository.findById(accountId)).thenReturn(Optional.empty());
+        when(accountRepository.save(any())).thenReturn(account);
 
-        Optional<AccountCreateDto> result = managerService.updateAccount(updateForm);
+        Optional<AccountCreateDto> result = accountService.updateAccount(updateForm);
 
 
         assertTrue(result.isEmpty());
@@ -175,10 +217,10 @@ public class ManagerServiceTest {
         updateForm.setPassword("12345");
         updateForm.setNewPassword("newPassword");
 
-        when(managerRepository.findById(accountId)).thenReturn(Optional.of(account));
-        when(managerRepository.save(any())).thenReturn(account);
+        when(accountRepository.findById(accountId)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any())).thenReturn(account);
 
-        Optional<AccountCreateDto> result = managerService.updateAccount(updateForm);
+        Optional<AccountCreateDto> result = accountService.updateAccount(updateForm);
 
 
         assertTrue(result.isPresent());
@@ -192,9 +234,9 @@ public class ManagerServiceTest {
     public void deleteOrder() {
         UUID managerId = UUID.randomUUID();
 
-        when(managerRepository.findById(any())).thenReturn(Optional.ofNullable(account));
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
 
-        Boolean update = managerService.delete(managerId);
+        Boolean update = accountService.delete(managerId);
 
         assertTrue(update);
     }
@@ -205,9 +247,9 @@ public class ManagerServiceTest {
     public void deleteOrderCase2() {
         UUID managerId = UUID.randomUUID();
 
-        when(managerRepository.findById(any())).thenReturn(Optional.empty());
+        when(accountRepository.findById(any())).thenReturn(Optional.empty());
 
-        Boolean update = managerService.delete(managerId);
+        Boolean update = accountService.delete(managerId);
 
         assertFalse(update);
     }

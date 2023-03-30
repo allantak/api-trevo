@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -46,6 +47,7 @@ public class AuthenticationController {
     private TokenService tokenService;
 
     @GetMapping("/accounts")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @SecurityRequirement(name = "bearer-key")
     @Operation(summary = "Lista de usuário")
     @ApiResponses(value = {
@@ -53,13 +55,11 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
     public List<AccountDto> getAccount() {
-        System.out.println("Entrou");
-        List<AccountDto> list =accountService.getAll();
-        System.out.println("Entrou2");
-        return list ;
+        return accountService.getAll();
     }
 
     @GetMapping("/accounts/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @SecurityRequirement(name = "bearer-key")
     @Operation(summary = "Mostrar detalhes do usuário")
     @ApiResponses(value = {
@@ -90,6 +90,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @SecurityRequirement(name = "bearer-key")
     @Operation(summary = "Registrar usuário")
     @ApiResponses(value = {
@@ -119,6 +120,7 @@ public class AuthenticationController {
     }
 
     @DeleteMapping("/accounts/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @SecurityRequirement(name = "bearer-key")
     @Operation(summary = "Delete usuário")
     @ApiResponses(value = {

@@ -2,10 +2,12 @@ package br.com.jacto.trevo.controller.auth;
 
 import br.com.jacto.trevo.config.security.TokenService;
 import br.com.jacto.trevo.controller.auth.dto.AccountCreateDto;
+import br.com.jacto.trevo.controller.auth.dto.AccountDetailDto;
 import br.com.jacto.trevo.controller.auth.dto.AccountDto;
 import br.com.jacto.trevo.controller.auth.dto.TokenDto;
 import br.com.jacto.trevo.controller.auth.form.AccountRegisterForm;
 import br.com.jacto.trevo.controller.auth.form.AccountUpdateForm;
+import br.com.jacto.trevo.controller.product.dto.ProductCreateDto;
 import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.repository.AccountRepository;
 import br.com.jacto.trevo.service.account.AccountService;
@@ -28,6 +30,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,13 +55,13 @@ public class AuthenticationControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private AccountService managerService;
+    private AccountService accountService;
 
     @MockBean
     private TokenService tokenService;
 
     @MockBean
-    private AccountRepository managerRepository;
+    private AccountRepository accountRepository;
 
     @MockBean
     private AuthenticationManager authenticationManager;
@@ -73,9 +77,116 @@ public class AuthenticationControllerTest {
     private JacksonTester<AccountUpdateForm> managerUpdateFormJson;
     @Autowired
     private JacksonTester<AccountCreateDto> managerCreateDtoJson;
+    @Autowired
+    private JacksonTester<List<AccountDto>> listJson;
+    @Autowired
+    private JacksonTester<AccountDetailDto> accountDetailDtoJson;
 
 
     public Account account = new Account("test@gmail.com", "12345", "test", Account.Role.COLABORADOR);
+
+
+    @Test
+    @DisplayName("Listagem de usuario")
+    public void getAll() throws Exception {
+        account.setAccountId(UUID.randomUUID());
+        List<AccountDto> listAccount = new ArrayList<AccountDto>();
+        listAccount.add(new AccountDto(account));
+
+        when(accountService.getAll()).thenReturn(listAccount);
+
+        var response = mockMvc.perform(
+                        get("/accounts")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andReturn()
+                .getResponse();
+
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+
+        var jsonExpect = listJson.write(listAccount).getJson();
+
+        assertEquals(jsonExpect, response.getContentAsString());
+    }
+
+    @Test
+    @DisplayName("Listagem de usuario nao permitida")
+    public void getAllCase2() throws Exception {
+        account.setAccountId(UUID.randomUUID());
+        List<AccountDto> listAccount = new ArrayList<AccountDto>();
+        listAccount.add(new AccountDto(account));
+
+        when(accountService.getAll()).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        var response = mockMvc.perform(
+                        get("/accounts")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andReturn()
+                .getResponse();
+
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
+    }
+
+
+
+    @Test
+    @DisplayName("detalhes do usuario pelo Id")
+    public void getId() throws Exception {
+        UUID id =UUID.randomUUID();
+        AccountDetailDto mockAccount = new AccountDetailDto(account);
+        when(accountService.findAccount(any())).thenReturn(Optional.of(mockAccount));
+
+        var response = mockMvc.perform(
+                        get("/accounts/" + id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andReturn()
+                .getResponse();
+
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        var jsonExpect = accountDetailDtoJson.write(mockAccount).getJson();
+        assertEquals(jsonExpect, response.getContentAsString());
+
+    }
+
+    @Test
+    @DisplayName("Nao achar usuario pelo ID")
+    public void getIdCase2() throws Exception {
+        UUID id =UUID.randomUUID();
+        when(accountService.findAccount(any())).thenReturn(Optional.empty());
+
+        var response = mockMvc.perform(
+                        get("/accounts/" + id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andReturn()
+                .getResponse();
+
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+    }
+
+
+    @Test
+    @DisplayName("Nao autenticado para procurar pelo ID")
+    public void getIdCase3() throws Exception {
+        UUID id =UUID.randomUUID();
+        when(accountService.findAccount(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        var response = mockMvc.perform(
+                        get("/accounts/" + id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andReturn()
+                .getResponse();
+
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
+    }
 
     @Test
     @DisplayName("Login com a conta de gerente")
@@ -86,7 +197,7 @@ public class AuthenticationControllerTest {
         TokenDto token = new TokenDto(UUID.randomUUID(), "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0YW5kbzIiLCJpc3MiOiJBUEkgdHJldm8iLCJleHAiOjE2Nzc1MTQzNzR9.qJgioyfQPvUO0Dbo50JsMkF43wFRac-t1Dz9y-p6NSI");
         Authentication authenticationMock = mock(Authentication.class);
 
-        when(managerService.auth(any())).thenReturn(authenticationMock);
+        when(accountService.auth(any())).thenReturn(authenticationMock);
         when(authenticationManager.authenticate(any())).thenReturn(authenticationMock);
         when(tokenService.token(any())).thenReturn(token);
 
@@ -113,7 +224,7 @@ public class AuthenticationControllerTest {
         form.setPassword(account.getPassword());
         Authentication authenticationMock = mock(Authentication.class);
 
-        when(managerService.auth(any())).thenReturn(authenticationMock);
+        when(accountService.auth(any())).thenReturn(authenticationMock);
         when(authenticationManager.authenticate(any())).thenReturn(authenticationMock);
         when(tokenService.token(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
 
@@ -157,7 +268,7 @@ public class AuthenticationControllerTest {
         form.setAccountRole(account.getAccountRole());
         AccountDto managerDto = new AccountDto(account);
 
-        when(managerService.createAccount(any())).thenReturn(managerDto);
+        when(accountService.createAccount(any())).thenReturn(managerDto);
 
         var response = mockMvc.perform(
                         post("/register")
@@ -183,7 +294,7 @@ public class AuthenticationControllerTest {
         form.setAccountName(account.getAccountName());
         form.setAccountRole(account.getAccountRole());
 
-        when(managerService.createAccount(any())).thenThrow(new ResponseStatusException(HttpStatus.CONFLICT));
+        when(accountService.createAccount(any())).thenThrow(new ResponseStatusException(HttpStatus.CONFLICT));
 
         var response = mockMvc.perform(
                         post("/register")
@@ -206,7 +317,7 @@ public class AuthenticationControllerTest {
         form.setAccountName(account.getAccountName());
         form.setAccountRole(account.getAccountRole());
 
-        when(managerService.createAccount(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+        when(accountService.createAccount(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
 
         var response = mockMvc.perform(
                         post("/register")
@@ -227,7 +338,7 @@ public class AuthenticationControllerTest {
         form.setEmail(account.getUsername());
         form.setPassword(account.getPassword());
 
-        when(managerService.createAccount(any())).thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+        when(accountService.createAccount(any())).thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
         var response = mockMvc.perform(
                         post("/register")
@@ -253,7 +364,7 @@ public class AuthenticationControllerTest {
 
         AccountCreateDto managerDto = new AccountCreateDto(account);
 
-        when(managerService.updateAccount(any())).thenReturn(Optional.of(managerDto));
+        when(accountService.updateAccount(any())).thenReturn(Optional.of(managerDto));
 
         var response = mockMvc.perform(
                         put("/accounts")
@@ -281,7 +392,7 @@ public class AuthenticationControllerTest {
         updateForm.setNewPassword("newPassword");
 
 
-        when(managerService.updateAccount(any())).thenReturn(Optional.empty());
+        when(accountService.updateAccount(any())).thenReturn(Optional.empty());
 
         var response = mockMvc.perform(
                         put("/accounts")
@@ -301,7 +412,7 @@ public class AuthenticationControllerTest {
         AccountUpdateForm updateForm = new AccountUpdateForm();
         updateForm.setEmail("newUsername");
 
-        when(managerService.updateAccount(any())).thenReturn(Optional.empty());
+        when(accountService.updateAccount(any())).thenReturn(Optional.empty());
 
         var response = mockMvc.perform(
                         put("/accounts")
@@ -324,7 +435,7 @@ public class AuthenticationControllerTest {
         updateForm.setPassword("12345");
         updateForm.setNewPassword("newPassword");
 
-        when(managerService.updateAccount(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+        when(accountService.updateAccount(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
 
         var response = mockMvc.perform(
                         put("/accounts")
@@ -342,7 +453,7 @@ public class AuthenticationControllerTest {
     public void deleteManager() throws Exception {
         UUID orderId = UUID.randomUUID();
 
-        when(managerService.delete(orderId)).thenReturn(true);
+        when(accountService.delete(orderId)).thenReturn(true);
 
         var response = mockMvc.perform(
                         delete("/accounts/" + orderId)
@@ -359,7 +470,7 @@ public class AuthenticationControllerTest {
     public void deleteManagerCase2() throws Exception {
         UUID orderId = UUID.randomUUID();
 
-        when(managerService.delete(orderId)).thenReturn(false);
+        when(accountService.delete(orderId)).thenReturn(false);
 
         var response = mockMvc.perform(
                         delete("/orders/" + orderId)
