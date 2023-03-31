@@ -11,16 +11,23 @@ import br.com.jacto.trevo.repository.AccountRepository;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +35,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @Transactional
@@ -41,6 +47,9 @@ public class AccountServiceTest {
 
     @MockBean
     private AccountRepository accountRepository;
+
+    @MockBean
+    private SecurityContext securityContext;
 
 
     public Account account = new Account("test", "12345", "test", Account.Role.COLABORADOR);
@@ -115,20 +124,201 @@ public class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("Registrar manager")
-    public void register() {
-        AccountRegisterForm managerForm = new AccountRegisterForm();
-        managerForm.setEmail(account.getUsername());
-        managerForm.setPassword(account.getPassword());
+    @DisplayName("Registrar usuario com nivel admin cadastrando outro admin")
+    public void register() throws AccessDeniedException {
+        AccountRegisterForm accountRegisterForm = new AccountRegisterForm();
+        accountRegisterForm.setAccountName(account.getAccountName());
+        accountRegisterForm.setEmail(account.getUsername());
+        accountRegisterForm.setPassword(account.getPassword());
+        accountRegisterForm.setAccountRole(Account.Role.ADMINISTRADOR);
         account.setAccountId(UUID.randomUUID());
 
-        AccountDto managerDto = new AccountDto(account);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
         when(accountRepository.save(any())).thenReturn(account);
-        AccountDto result = accountService.createAccount(managerForm);
+        AccountDto result = accountService.createAccount(accountRegisterForm);
 
 
-        assertNotNull(result);
-        assertEquals(managerDto.getAccountId(), result.getAccountId());
+        assertEquals(result.getEmail(), account.getEmail());
+        assertEquals(result.getAccountId(), account.getAccountId());
+    }
+
+    @Test
+    @DisplayName("Registrar admin sendo colaborador")
+    public void registerCase2() throws AccessDeniedException {
+        AccountRegisterForm accountRegisterForm = new AccountRegisterForm();
+        accountRegisterForm.setAccountName(account.getAccountName());
+        accountRegisterForm.setEmail(account.getUsername());
+        accountRegisterForm.setPassword(account.getPassword());
+        accountRegisterForm.setAccountRole(Account.Role.ADMINISTRADOR);
+        account.setAccountId(UUID.randomUUID());
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_COLABORADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.save(any())).thenReturn(account);
+
+        assertThrows(AccessDeniedException.class, () -> accountService.createAccount(accountRegisterForm));
+    }
+
+    @Test
+    @DisplayName("Registrar admin sendo cliente")
+    public void registerCase3() throws AccessDeniedException {
+        AccountRegisterForm accountRegisterForm = new AccountRegisterForm();
+        accountRegisterForm.setAccountName(account.getAccountName());
+        accountRegisterForm.setEmail(account.getUsername());
+        accountRegisterForm.setPassword(account.getPassword());
+        accountRegisterForm.setAccountRole(Account.Role.ADMINISTRADOR);
+        account.setAccountId(UUID.randomUUID());
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.save(any())).thenReturn(account);
+
+        assertThrows(AccessDeniedException.class, () -> accountService.createAccount(accountRegisterForm));
+    }
+
+    @Test
+    @DisplayName("Registrar Colaborador sendo admin")
+    public void registerCase4() throws AccessDeniedException {
+        AccountRegisterForm accountRegisterForm = new AccountRegisterForm();
+        accountRegisterForm.setAccountName(account.getAccountName());
+        accountRegisterForm.setEmail(account.getUsername());
+        accountRegisterForm.setPassword(account.getPassword());
+        accountRegisterForm.setAccountRole(Account.Role.COLABORADOR);
+        account.setAccountId(UUID.randomUUID());
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.save(any())).thenReturn(account);
+        AccountDto result = accountService.createAccount(accountRegisterForm);
+
+
+        assertEquals(result.getEmail(), account.getEmail());
+        assertEquals(result.getAccountId(), account.getAccountId());
+    }
+
+    @Test
+    @DisplayName("Registrar Colaborador sendo colaborador")
+    public void registerCase5() throws AccessDeniedException {
+        AccountRegisterForm accountRegisterForm = new AccountRegisterForm();
+        accountRegisterForm.setAccountName(account.getAccountName());
+        accountRegisterForm.setEmail(account.getUsername());
+        accountRegisterForm.setPassword(account.getPassword());
+        accountRegisterForm.setAccountRole(Account.Role.COLABORADOR);
+        account.setAccountId(UUID.randomUUID());
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_COLABORADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.save(any())).thenReturn(account);
+        AccountDto result = accountService.createAccount(accountRegisterForm);
+
+
+        assertEquals(result.getEmail(), account.getEmail());
+        assertEquals(result.getAccountId(), account.getAccountId());
+    }
+
+    @Test
+    @DisplayName("Registrar Colaborador sendo cliente")
+    public void registerCase6() throws AccessDeniedException {
+        AccountRegisterForm accountRegisterForm = new AccountRegisterForm();
+        accountRegisterForm.setAccountName(account.getAccountName());
+        accountRegisterForm.setEmail(account.getUsername());
+        accountRegisterForm.setPassword(account.getPassword());
+        accountRegisterForm.setAccountRole(Account.Role.COLABORADOR);
+        account.setAccountId(UUID.randomUUID());
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.save(any())).thenReturn(account);
+
+        assertThrows(AccessDeniedException.class, () -> accountService.createAccount(accountRegisterForm));
+    }
+
+    @Test
+    @DisplayName("Registrar Cliente sendo admin")
+    public void registerCase7() throws AccessDeniedException {
+        AccountRegisterForm accountRegisterForm = new AccountRegisterForm();
+        accountRegisterForm.setAccountName(account.getAccountName());
+        accountRegisterForm.setEmail(account.getUsername());
+        accountRegisterForm.setPassword(account.getPassword());
+        accountRegisterForm.setAccountRole(Account.Role.CLIENTE);
+        account.setAccountId(UUID.randomUUID());
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.save(any())).thenReturn(account);
+        AccountDto result = accountService.createAccount(accountRegisterForm);
+
+
+        assertEquals(result.getEmail(), account.getEmail());
+        assertEquals(result.getAccountId(), account.getAccountId());
+    }
+
+    @Test
+    @DisplayName("Registrar Cliente sendo colaborador")
+    public void registerCase8() throws AccessDeniedException {
+        AccountRegisterForm accountRegisterForm = new AccountRegisterForm();
+        accountRegisterForm.setAccountName(account.getAccountName());
+        accountRegisterForm.setEmail(account.getUsername());
+        accountRegisterForm.setPassword(account.getPassword());
+        accountRegisterForm.setAccountRole(Account.Role.CLIENTE);
+        account.setAccountId(UUID.randomUUID());
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_COLABORADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.save(any())).thenReturn(account);
+        AccountDto result = accountService.createAccount(accountRegisterForm);
+
+
+        assertEquals(result.getEmail(), account.getEmail());
+        assertEquals(result.getAccountId(), account.getAccountId());
+    }
+
+    @Test
+    @DisplayName("Registrar Cliente sendo cliente")
+    public void registerCase9() throws AccessDeniedException {
+        AccountRegisterForm accountRegisterForm = new AccountRegisterForm();
+        accountRegisterForm.setAccountName(account.getAccountName());
+        accountRegisterForm.setEmail(account.getUsername());
+        accountRegisterForm.setPassword(account.getPassword());
+        accountRegisterForm.setAccountRole(Account.Role.CLIENTE);
+        account.setAccountId(UUID.randomUUID());
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.save(any())).thenReturn(account);
+        AccountDto result = accountService.createAccount(accountRegisterForm);
+
+
+        assertEquals(result.getEmail(), account.getEmail());
+        assertEquals(result.getAccountId(), account.getAccountId());
     }
 
     @Test
