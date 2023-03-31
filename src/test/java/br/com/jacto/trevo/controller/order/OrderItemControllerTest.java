@@ -5,7 +5,6 @@ import br.com.jacto.trevo.controller.order.dto.OrderItemCreateDto;
 import br.com.jacto.trevo.controller.order.dto.OrderItemDto;
 import br.com.jacto.trevo.controller.order.form.OrderItemForm;
 import br.com.jacto.trevo.controller.order.form.OrderItemUpdateForm;
-import br.com.jacto.trevo.model.client.Client;
 import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
@@ -70,14 +69,10 @@ public class OrderItemControllerTest {
     private JacksonTester<OrderItemUpdateForm> OrderItemUpdateForm;
 
 
-
-    public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
-
-
     public Account account = new Account("test", "12345", "test", Account.Role.COLABORADOR);
     public Product product = new Product("Trator Jacto", Product.Status.DISPONIVEL, Product.Category.ELETRICO, "Trator jacto para agricultura", 120.0, 2.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
 
-    public OrderItem order = new OrderItem(3, client, product);
+    public OrderItem order = new OrderItem(3, account, product);
 
     @Test
     @DisplayName("Listando pedidos existente em formato correto")
@@ -191,10 +186,10 @@ public class OrderItemControllerTest {
     @Test
     @DisplayName("Pesquisar pelo id do pedido")
     public void creatOrder() throws Exception {
-        UUID clientId = UUID.randomUUID();
+        UUID accountId = UUID.randomUUID();
 
         OrderItemForm form = new OrderItemForm();
-        form.setClientId(clientId);
+        form.setAccountId(accountId);
         form.setProductName(product.getProductName());
         form.setQuantity(3);
         order.setOrderItemId(UUID.randomUUID());
@@ -221,10 +216,10 @@ public class OrderItemControllerTest {
     @Test
     @DisplayName("Caso o id do cliente nao for cadastrado deve retornar not found")
     public void creatOrderCase2() throws Exception {
-        UUID clientId = UUID.randomUUID();
+        UUID accountId = UUID.randomUUID();
 
         OrderItemForm form = new OrderItemForm();
-        form.setClientId(clientId);
+        form.setAccountId(accountId);
         form.setProductName(product.getProductName());
         form.setQuantity(3);
         order.setOrderItemId(UUID.randomUUID());
@@ -267,7 +262,7 @@ public class OrderItemControllerTest {
 
         OrderItemUpdateForm form = new OrderItemUpdateForm();
         form.setOrderItemId(UUID.randomUUID());
-        form.setClientId(clientId);
+        form.setAccountId(clientId);
         form.setProductName(product.getProductName());
         form.setQuantity(3);
 
@@ -297,7 +292,7 @@ public class OrderItemControllerTest {
 
         OrderItemUpdateForm form = new OrderItemUpdateForm();
         form.setOrderItemId(UUID.randomUUID());
-        form.setClientId(clientId);
+        form.setAccountId(clientId);
         form.setProductName(product.getProductName());
         form.setQuantity(3);
 
@@ -341,7 +336,7 @@ public class OrderItemControllerTest {
 
         OrderItemUpdateForm form = new OrderItemUpdateForm();
         form.setOrderItemId(UUID.randomUUID());
-        form.setClientId(clientId);
+        form.setAccountId(clientId);
 
         OrderItemDto orderItemCreateDto = new OrderItemDto(order);
 
@@ -369,7 +364,7 @@ public class OrderItemControllerTest {
 
         OrderItemUpdateForm form = new OrderItemUpdateForm();
         form.setOrderItemId(UUID.randomUUID());
-        form.setClientId(clientId);
+        form.setAccountId(clientId);
         form.setProductName("");
         form.setQuantity(3);
 
@@ -400,7 +395,7 @@ public class OrderItemControllerTest {
 
         OrderItemUpdateForm form = new OrderItemUpdateForm();
         form.setOrderItemId(UUID.randomUUID());
-        form.setClientId(clientId);
+        form.setAccountId(clientId);
         form.setProductName(product.getProductName());
         form.setQuantity(3);
 

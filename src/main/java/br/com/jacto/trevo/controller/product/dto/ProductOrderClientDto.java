@@ -8,33 +8,32 @@ public class ProductOrderClientDto {
 
     public ProductOrderClientDto(OrderItem order) {
         this.orderItemId = order.getOrderItemId();
-        this.clientId = order.getClient().getId();
-        this.email = order.getClient().getEmail();
-        this.clientName = order.getClient().getClientName();
+        this.accountId = order.getAccount().getAccountId();
+        this.email = order.getAccount().getEmail();
+        this.accountName = order.getAccount().getAccountName();
         this.quantity = order.getQuantity();
-
     }
 
     private final UUID orderItemId;
-    private final UUID clientId;
+    private final UUID accountId;
     private final String email;
-    private final String clientName;
+    private final String accountName;
     private final Integer quantity;
 
     public UUID getOrderItemId() {
         return orderItemId;
     }
 
-    public UUID getClientId() {
-        return clientId;
+    public UUID getAccountId() {
+        return accountId;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public String getClientName() {
-        return clientName;
+    public String getAccountName() {
+        return accountName;
     }
 
     public Integer getQuantity() {

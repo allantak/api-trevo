@@ -1,24 +1,22 @@
-package br.com.jacto.trevo.controller.client.dto;
-
+package br.com.jacto.trevo.controller.auth.dto;
 
 import br.com.jacto.trevo.model.order.OrderItem;
 
 import java.util.UUID;
 
-public class ClientOrderProductDto {
-    public ClientOrderProductDto(OrderItem order) {
+public class AccountListOrderDto {
+
+    public AccountListOrderDto(OrderItem order){
         this.orderItemId = order.getOrderItemId();
         this.productId = order.getProduct().getProductId();
-        this.productName = order.getProduct().getProductName();
         this.quantity = order.getQuantity();
     }
 
     private final UUID orderItemId;
     private final UUID productId;
 
-    private final String productName;
-
     private final Integer quantity;
+
 
     public UUID getOrderItemId() {
         return orderItemId;
@@ -28,12 +26,7 @@ public class ClientOrderProductDto {
         return productId;
     }
 
-    public String getProductName() {
-        return productName;
-    }
-
-    public Number getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
-
 }

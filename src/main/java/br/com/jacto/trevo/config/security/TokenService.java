@@ -20,15 +20,16 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    public TokenDto token(Account manager) {
+    public TokenDto token(Account account) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String tokenJWT = JWT.create()
                     .withIssuer("API trevo")
-                    .withSubject(manager.getUsername())
+                    .withSubject(account.getUsername())
+                    .withJWTId(account.getAccountId().toString())
                     .withExpiresAt(dateExpiration())
                     .sign(algorithm);
-            return new TokenDto(manager.getAccountId(), tokenJWT);
+            return new TokenDto(account.getAccountId(), tokenJWT);
         } catch (JWTCreationException exception) {
             throw new RuntimeException("Error ao gerar token", exception);
         }

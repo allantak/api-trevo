@@ -6,8 +6,8 @@ import java.util.UUID;
 
 public class OrderItemForm {
 
-    @NotNull(message = "Obrigatório o ID do cliente")
-    private UUID clientId;
+    @NotNull(message = "Obrigatório o ID da conta")
+    private UUID accountId;
 
     @NotBlank(message = "Obrigatório o nome do produto")
     private String productName;
@@ -15,8 +15,12 @@ public class OrderItemForm {
     @NotNull(message = "Obrigatório o quantidade do produto")
     private Integer quantity;
 
-    public UUID getClientId() {
-        return clientId;
+    public UUID getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(UUID accountId) {
+        this.accountId = accountId;
     }
 
     public String getProductName() {
@@ -27,9 +31,6 @@ public class OrderItemForm {
         return quantity;
     }
 
-    public void setClientId(UUID clientId) {
-        this.clientId = clientId;
-    }
 
     public void setProductName(String productName) {
         this.productName = productName;

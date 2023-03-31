@@ -3,22 +3,27 @@ package br.com.jacto.trevo.service.account;
 import br.com.jacto.trevo.controller.auth.dto.AccountCreateDto;
 import br.com.jacto.trevo.controller.auth.dto.AccountDetailDto;
 import br.com.jacto.trevo.controller.auth.dto.AccountDto;
+import br.com.jacto.trevo.controller.auth.dto.AccountOrderDto;
 import br.com.jacto.trevo.controller.auth.form.AccountLoginForm;
 import br.com.jacto.trevo.controller.auth.form.AccountRegisterForm;
+import br.com.jacto.trevo.controller.auth.form.AccountRegisterManagerForm;
 import br.com.jacto.trevo.controller.auth.form.AccountUpdateForm;
 import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,12 +45,25 @@ public class AccountService implements UserDetailsService {
         return accountRepository.findById(userId).map(AccountDetailDto::new);
     }
 
+    public Optional<AccountOrderDto> findAccountOrder(UUID userId) {
+        return accountRepository.findById(userId).map(AccountOrderDto::new);
+    }
+
     public Authentication auth(AccountLoginForm user) {
         return new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
     }
 
-    public AccountDto createAccount(AccountRegisterForm user) {
+    public AccountDto createAccount(AccountRegisterForm user) throws AccessDeniedException {
         String encoder = new BCryptPasswordEncoder().encode(user.getPassword());
+        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+
+        if(Objects.equals(user.getAccountRole().toString(), "ADMINISTRADOR") && !Objects.equals(role, "[ROLE_ADMINISTRADOR]")){
+            throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR pode cadastrar ADMINISTRADOR");
+        }
+
+        if(Objects.equals(user.getAccountRole().toString(), "COLABORADOR") && (Objects.equals(role, "[ROLE_CLIENTE]") | Objects.equals(role, "[ROLE_ANONYMOUS]"))){
+            throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR ou COLABORADOR pode cadastrar COLABORADOR");
+        }
         Account save = new Account(user.getEmail(), encoder, user.getAccountName(), user.getAccountRole());
         save.setCreateAt(LocalDateTime.now());
         Account convert = accountRepository.save(save);

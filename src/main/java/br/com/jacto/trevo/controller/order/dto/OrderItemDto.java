@@ -9,7 +9,7 @@ public class OrderItemDto {
     public OrderItemDto(OrderItem order) {
 
         this.orderItemId = order.getOrderItemId();
-        this.email = order.getClient().getEmail();
+        this.email = order.getAccount().getEmail();
         this.productName = order.getProduct().getProductName();
         this.quantity = order.getQuantity();
     }

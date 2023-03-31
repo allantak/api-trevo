@@ -9,14 +9,14 @@ public class OrderItemUpdateForm {
     private UUID orderItemId;
 
     @NotNull(message = "Obrigatório o ID do cliente")
-    private UUID clientId;
+    private UUID accountId;
 
     private String productName;
 
     private Integer quantity;
 
-    public UUID getClientId() {
-        return clientId;
+    public UUID getAccountId() {
+        return accountId;
     }
 
     public String getProductName() {
@@ -35,8 +35,8 @@ public class OrderItemUpdateForm {
         this.orderItemId = orderItemId;
     }
 
-    public void setClientId(UUID clientId) {
-        this.clientId = clientId;
+    public void setAccountId(UUID clientId) {
+        this.accountId = clientId;
     }
 
     public void setProductName(String productName) {

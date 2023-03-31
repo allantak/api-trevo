@@ -5,7 +5,6 @@ import br.com.jacto.trevo.controller.product.dto.ProductDto;
 import br.com.jacto.trevo.controller.product.dto.ProductOrderDto;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
 import br.com.jacto.trevo.controller.product.form.ProductUpdateForm;
-import br.com.jacto.trevo.model.client.Client;
 import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Culture;
@@ -47,11 +46,10 @@ public class ProductServiceTest {
     AccountRepository managerRepository;
 
 
-    public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
     public Account account = new Account("test", "12345", "test", Account.Role.COLABORADOR);
     public Product product = new Product("Trator Jacto", Product.Status.DISPONIVEL, Product.Category.ELETRICO, "Trator jacto para agricultura", 120.0, 2.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
 
-    public OrderItem order = new OrderItem(3, client, product);
+    public OrderItem order = new OrderItem(3, account, product);
     public Culture culture = new Culture("Cerejeiras", product);
 
     @Test

@@ -4,11 +4,10 @@ import br.com.jacto.trevo.controller.order.dto.OrderItemCreateDto;
 import br.com.jacto.trevo.controller.order.dto.OrderItemDto;
 import br.com.jacto.trevo.controller.order.form.OrderItemForm;
 import br.com.jacto.trevo.controller.order.form.OrderItemUpdateForm;
-import br.com.jacto.trevo.model.client.Client;
 import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
-import br.com.jacto.trevo.repository.ClientRepository;
+import br.com.jacto.trevo.repository.AccountRepository;
 import br.com.jacto.trevo.repository.OrderItemRepository;
 import br.com.jacto.trevo.repository.ProductRepository;
 import org.junit.Test;
@@ -41,21 +40,20 @@ public class OrderItemServiceTest {
     OrderItemRepository orderItemRepository;
 
     @MockBean
-    ClientRepository clientRepository;
+    AccountRepository accountRepository;
 
     @MockBean
     ProductRepository productRepository;
 
-    public Client client = new Client("testando", "testando@gmail.com", "(14) 99832-20566");
     public Account account = new Account("test", "12345", "test", Account.Role.COLABORADOR);
     public Product product = new Product("Trator Jacto", Product.Status.DISPONIVEL, Product.Category.ELETRICO, "Trator jacto para agricultura", 120.0, 2.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
 
-    public OrderItem order = new OrderItem(3, client, product);
+    public OrderItem order = new OrderItem(3, account, product);
 
     public OrderItemUpdateForm formUpdate() {
         OrderItemUpdateForm form = new OrderItemUpdateForm();
         form.setOrderItemId(order.getOrderItemId());
-        form.setClientId(client.getId());
+        form.setAccountId(account.getAccountId());
         form.setProductName(product.getProductName());
         form.setQuantity(order.getQuantity());
 
@@ -104,7 +102,7 @@ public class OrderItemServiceTest {
         OrderItemUpdateForm form = formUpdate();
 
         when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
-        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
         when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
         when(orderItemRepository.save(any())).thenReturn(order);
 
@@ -114,7 +112,6 @@ public class OrderItemServiceTest {
         assertEquals(form.getProductName(), update.get().getProductName());
         assertEquals(form.getOrderItemId(), update.get().getOrderItemId());
         assertEquals(form.getQuantity(), update.get().getQuantity());
-        assertEquals(client.getEmail(), update.get().getEmail());
     }
 
 
@@ -124,7 +121,7 @@ public class OrderItemServiceTest {
         OrderItemUpdateForm form = formUpdate();
 
         when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
-        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
         when(orderItemRepository.findById(any())).thenReturn(Optional.empty());
         when(orderItemRepository.save(any())).thenReturn(order);
 
@@ -140,7 +137,7 @@ public class OrderItemServiceTest {
         OrderItemUpdateForm form = formUpdate();
 
         when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
-        when(clientRepository.findById(any())).thenReturn(Optional.empty());
+        when(accountRepository.findById(any())).thenReturn(Optional.empty());
         when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
         when(orderItemRepository.save(any())).thenReturn(order);
 
@@ -155,7 +152,7 @@ public class OrderItemServiceTest {
         OrderItemUpdateForm form = formUpdate();
 
         when(productRepository.findByProductName(any())).thenReturn(Optional.empty());
-        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
         when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
         when(orderItemRepository.save(any())).thenReturn(order);
 
@@ -170,7 +167,7 @@ public class OrderItemServiceTest {
         OrderItemUpdateForm form = formUpdate();
 
         when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
-        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
         when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
         when(orderItemRepository.save(any())).thenReturn(order);
 
@@ -181,7 +178,7 @@ public class OrderItemServiceTest {
         assertEquals(product.getProductName(), update.get().getProductName());
         assertEquals(form.getOrderItemId(), update.get().getOrderItemId());
         assertEquals(order.getQuantity(), update.get().getQuantity());
-        assertEquals(client.getEmail(), update.get().getEmail());
+        assertEquals(account.getEmail(), update.get().getEmail());
     }
 
 
@@ -193,7 +190,7 @@ public class OrderItemServiceTest {
         form.setProductName("");
 
         when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
-        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
         when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
         when(orderItemRepository.save(any())).thenReturn(order);
 
@@ -204,7 +201,7 @@ public class OrderItemServiceTest {
         assertEquals(product.getProductName(), update.get().getProductName());
         assertEquals(form.getOrderItemId(), update.get().getOrderItemId());
         assertEquals(order.getQuantity(), update.get().getQuantity());
-        assertEquals(client.getEmail(), update.get().getEmail());
+        assertEquals(account.getEmail(), update.get().getEmail());
     }
 
     @Test
@@ -214,7 +211,7 @@ public class OrderItemServiceTest {
         form.setQuantity(0);
 
         when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
-        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
         when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
         when(orderItemRepository.save(any())).thenReturn(order);
 
@@ -229,12 +226,12 @@ public class OrderItemServiceTest {
     public void createOrder() {
 
         OrderItemForm form = new OrderItemForm();
-        form.setClientId(client.getId());
+        form.setAccountId(account.getAccountId());
         form.setProductName(product.getProductName());
         form.setQuantity(order.getQuantity());
 
         when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
-        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
         when(orderItemRepository.save(any())).thenReturn(order);
 
 
@@ -248,12 +245,12 @@ public class OrderItemServiceTest {
     @DisplayName("caso O Cliente Nao E Cadastrado Nao Pode Fazer Um Pedido")
     public void createOrderCase2() {
         OrderItemForm form = new OrderItemForm();
-        form.setClientId(client.getId());
+        form.setAccountId(account.getAccountId());
         form.setProductName(product.getProductName());
         form.setQuantity(order.getQuantity());
 
         when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
-        when(clientRepository.findById(any())).thenReturn(Optional.empty());
+        when(accountRepository.findById(any())).thenReturn(Optional.empty());
         when(orderItemRepository.save(any())).thenReturn(order);
 
 
@@ -266,12 +263,12 @@ public class OrderItemServiceTest {
     @DisplayName("caso O Produto Name Nao Achado Nao Pode Fazer Um Pedido")
     public void createOrderCase3() {
         OrderItemForm form = new OrderItemForm();
-        form.setClientId(client.getId());
+        form.setAccountId(account.getAccountId());
         form.setProductName(product.getProductName());
         form.setQuantity(order.getQuantity());
 
         when(productRepository.findByProductName(any())).thenReturn(Optional.empty());
-        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
         when(orderItemRepository.save(any())).thenReturn(order);
 
 
@@ -285,12 +282,12 @@ public class OrderItemServiceTest {
     public void createOrderCase4() {
 
         OrderItemForm form = new OrderItemForm();
-        form.setClientId(client.getId());
+        form.setAccountId(account.getAccountId());
         form.setProductName(product.getProductName());
         form.setQuantity(0);
 
         when(productRepository.findByProductName(any())).thenReturn(Optional.ofNullable(product));
-        when(clientRepository.findById(any())).thenReturn(Optional.ofNullable(client));
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
         when(orderItemRepository.save(any())).thenReturn(order);
 
         assertThrows(RuntimeException.class, () -> orderItemService.create(form));

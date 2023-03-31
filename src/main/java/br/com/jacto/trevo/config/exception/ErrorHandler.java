@@ -1,14 +1,17 @@
 package br.com.jacto.trevo.config.exception;
 
 import br.com.jacto.trevo.config.exception.dto.Error400Dto;
+import br.com.jacto.trevo.config.exception.dto.Error403;
 import br.com.jacto.trevo.config.exception.dto.Error409;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.EntityNotFoundException;
+import java.nio.file.AccessDeniedException;
 
 @RestControllerAdvice
 public class ErrorHandler {

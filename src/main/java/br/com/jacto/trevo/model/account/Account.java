@@ -1,5 +1,6 @@
 package br.com.jacto.trevo.model.account;
 
+import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,7 +26,8 @@ public class Account implements UserDetails {
 
     public enum Role {
         ADMINISTRADOR,
-        COLABORADOR
+        COLABORADOR,
+        CLIENTE
     }
 
 
@@ -51,6 +53,9 @@ public class Account implements UserDetails {
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orders;
 
     public UUID getAccountId() {
         return accountId;
@@ -106,6 +111,14 @@ public class Account implements UserDetails {
 
     public void setAccountRole(Role accountRole) {
         this.accountRole = accountRole;
+    }
+
+    public List<OrderItem> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderItem> orders) {
+        this.orders = orders;
     }
 
     @Override

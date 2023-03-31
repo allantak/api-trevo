@@ -1,14 +1,12 @@
 package br.com.jacto.trevo.controller.auth;
 
+import br.com.jacto.trevo.config.exception.dto.Error403;
 import br.com.jacto.trevo.config.security.TokenService;
-import br.com.jacto.trevo.controller.auth.dto.AccountCreateDto;
-import br.com.jacto.trevo.controller.auth.dto.AccountDetailDto;
-import br.com.jacto.trevo.controller.auth.dto.AccountDto;
-import br.com.jacto.trevo.controller.auth.dto.TokenDto;
+import br.com.jacto.trevo.controller.auth.dto.*;
 import br.com.jacto.trevo.controller.auth.form.AccountLoginForm;
+import br.com.jacto.trevo.controller.auth.form.AccountRegisterManagerForm;
 import br.com.jacto.trevo.controller.auth.form.AccountRegisterForm;
 import br.com.jacto.trevo.controller.auth.form.AccountUpdateForm;
-import br.com.jacto.trevo.controller.client.dto.ClientDto;
 import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.service.account.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,11 +23,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,7 +50,7 @@ public class AuthenticationController {
     @SecurityRequirement(name = "bearer-key")
     @Operation(summary = "Lista de usuário")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClientDto.class)))),
+            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = AccountDto.class)))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
     public List<AccountDto> getAccount() {
@@ -74,6 +73,21 @@ public class AuthenticationController {
     }
 
 
+    @GetMapping("/accounts/orders/{id}")
+    @SecurityRequirement(name = "bearer-key")
+    @Operation(summary = "Mostrar pedidos feito pelo usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AccountDetailDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
+    public ResponseEntity<AccountOrderDto> getIdAccountOrder(@PathVariable UUID id) {
+        Optional<AccountOrderDto> findAccount = accountService.findAccountOrder(id);
+        return findAccount.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
     @PostMapping("/login")
     @Operation(summary = "Autenticar o usuário", description = "login da conta do usuário")
     @ApiResponses(value = {
@@ -90,18 +104,21 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @SecurityRequirement(name = "bearer-key")
-    @Operation(summary = "Registrar usuário")
+    @Operation(summary = "Registrar usuario")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AccountDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "409", description = "Conflict", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
-    public ResponseEntity<AccountDto> createAccount(@RequestBody @Valid AccountRegisterForm user) {
-        AccountDto accountDto = accountService.createAccount(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(accountDto);
+    public ResponseEntity<?> createAccount(@RequestBody @Valid AccountRegisterForm user) throws AccessDeniedException {
+        try {
+            AccountDto accountDto = accountService.createAccount(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(accountDto);
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Error403(e));
+        }
     }
 
     @PutMapping("/accounts")

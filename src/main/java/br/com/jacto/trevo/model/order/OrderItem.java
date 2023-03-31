@@ -1,6 +1,6 @@
 package br.com.jacto.trevo.model.order;
 
-import br.com.jacto.trevo.model.client.Client;
+import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.model.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,9 +13,9 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(Integer quantity, Client client, Product product) {
+    public OrderItem(Integer quantity, Account account, Product product) {
         this.quantity = quantity;
-        this.client = client;
+        this.account = account;
         this.product = product;
     }
 
@@ -33,8 +33,8 @@ public class OrderItem {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "clientId", referencedColumnName = "clientId")
-    private Client client;
+    @JoinColumn(name = "accountId", referencedColumnName = "accountId")
+    private Account account;
 
     public Integer getQuantity() {
         return quantity;
@@ -42,10 +42,6 @@ public class OrderItem {
 
     public Product getProduct() {
         return product;
-    }
-
-    public Client getClient() {
-        return client;
     }
 
     public UUID getOrderItemId() {
@@ -60,11 +56,15 @@ public class OrderItem {
         this.product = product;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
     public void setOrderItemId(UUID orderItemId) {
         this.orderItemId = orderItemId;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }
