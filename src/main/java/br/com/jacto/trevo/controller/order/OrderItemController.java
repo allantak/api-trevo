@@ -29,6 +29,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/orders")
 @Tag(name = "Pedido", description = "Gerenciamento de pedidos")
+@SecurityRequirement(name = "bearer-key")
 public class OrderItemController {
 
     @Autowired
@@ -38,7 +39,6 @@ public class OrderItemController {
     @GetMapping
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Operation(summary = "Lista todos os pedidos registrado")
-    @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = OrderItemDto.class)))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),

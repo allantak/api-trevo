@@ -323,7 +323,7 @@ public class AccountServiceTest {
 
     @Test
     @DisplayName("Atualizacao manager")
-    public void updateManager() {
+    public void updateManager() throws AccessDeniedException {
         UUID managerId = UUID.randomUUID();
         account.setAccountId(managerId);
         String encode = new BCryptPasswordEncoder().encode(account.getPassword());
@@ -349,7 +349,7 @@ public class AccountServiceTest {
 
     @Test
     @DisplayName("Exception quando atualizar e senha nao ser compativel com ja existente")
-    public void updateManagerCase2() {
+    public void updateManagerCase2() throws AccessDeniedException {
         UUID accountId = UUID.randomUUID();
         account.setAccountId(accountId);
         String encode = new BCryptPasswordEncoder().encode(account.getPassword());
@@ -372,7 +372,7 @@ public class AccountServiceTest {
 
     @Test
     @DisplayName("Atualizacao manager caso nao ache o id")
-    public void updateManagerCase3() {
+    public void updateManagerCase3() throws AccessDeniedException {
         UUID accountId = UUID.randomUUID();
         account.setAccountId(accountId);
         String encode = new BCryptPasswordEncoder().encode(account.getPassword());
@@ -395,7 +395,7 @@ public class AccountServiceTest {
 
     @Test
     @DisplayName("Atualizacao sem o campo ou vazio do username deve retornar o antigo")
-    public void updateManagerCase4() {
+    public void updateManagerCase4() throws AccessDeniedException {
         UUID accountId = UUID.randomUUID();
         account.setAccountId(accountId);
         String encode = new BCryptPasswordEncoder().encode(account.getPassword());
@@ -421,8 +421,12 @@ public class AccountServiceTest {
 
     @Test
     @DisplayName("Deletar o gerente pelo id")
-    public void deleteOrder() {
+    public void deleteOrder() throws AccessDeniedException {
         UUID managerId = UUID.randomUUID();
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"))));
+        SecurityContextHolder.setContext(securityContext);
 
         when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
 
@@ -434,7 +438,7 @@ public class AccountServiceTest {
 
     @Test
     @DisplayName("Caso ao delete nao encontre o gerente")
-    public void deleteOrderCase2() {
+    public void deleteOrderCase2() throws AccessDeniedException {
         UUID managerId = UUID.randomUUID();
 
         when(accountRepository.findById(any())).thenReturn(Optional.empty());

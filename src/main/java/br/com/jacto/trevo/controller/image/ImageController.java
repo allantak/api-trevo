@@ -31,6 +31,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping
 @Tag(name = "Imagem", description = "Gerenciamento de imagens")
+@SecurityRequirement(name = "bearer-key")
 public class ImageController {
 
     @Autowired
@@ -65,7 +66,6 @@ public class ImageController {
     @PostMapping(value = "/products/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Transactional
     @Operation(summary = "Registra uma imagem no produto")
-    @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductImageCreateDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
@@ -84,7 +84,6 @@ public class ImageController {
     @PutMapping(value = "/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Transactional
     @Operation(summary = "Atualiza a imagem do produto")
-    @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductImageCreateDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
@@ -99,7 +98,6 @@ public class ImageController {
     @DeleteMapping("/images")
     @Transactional
     @Operation(summary = "Delete a imagem")
-    @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Success no-content", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),

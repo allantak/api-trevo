@@ -4,7 +4,6 @@ import br.com.jacto.trevo.config.exception.dto.Error403;
 import br.com.jacto.trevo.config.security.TokenService;
 import br.com.jacto.trevo.controller.auth.dto.*;
 import br.com.jacto.trevo.controller.auth.form.AccountLoginForm;
-import br.com.jacto.trevo.controller.auth.form.AccountRegisterManagerForm;
 import br.com.jacto.trevo.controller.auth.form.AccountRegisterForm;
 import br.com.jacto.trevo.controller.auth.form.AccountUpdateForm;
 import br.com.jacto.trevo.model.account.Account;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -58,7 +56,6 @@ public class AuthenticationController {
     }
 
     @GetMapping("/accounts/{id}")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @SecurityRequirement(name = "bearer-key")
     @Operation(summary = "Mostrar detalhes do usuário")
     @ApiResponses(value = {
@@ -77,7 +74,7 @@ public class AuthenticationController {
     @SecurityRequirement(name = "bearer-key")
     @Operation(summary = "Mostrar pedidos feito pelo usuario")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AccountDetailDto.class))),
+            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AccountOrderDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
@@ -131,23 +128,30 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
             @ApiResponse(responseCode = "409", description = "Conflict", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
-    public ResponseEntity<AccountCreateDto> updateAccount(@RequestBody @Valid AccountUpdateForm user) {
-        Optional<AccountCreateDto> account = accountService.updateAccount(user);
-        return account.map(value -> ResponseEntity.status(HttpStatus.OK).body(value)).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> updateAccount(@RequestBody @Valid AccountUpdateForm user) throws AccessDeniedException {
+        try {
+            Optional<AccountCreateDto> account = accountService.updateAccount(user);
+            return account.map(value -> ResponseEntity.status(HttpStatus.OK).body(value)).orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Error403(e));
+        }
     }
 
     @DeleteMapping("/accounts/{id}")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @SecurityRequirement(name = "bearer-key")
     @Operation(summary = "Delete usuário")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Success no-content", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AccountDto.class))),
+            @ApiResponse(responseCode = "204", description = "Success no-content", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
-    public ResponseEntity<Void> deleteAccount(@PathVariable UUID id) {
-        boolean accountDelete = accountService.delete(id);
-        return accountDelete ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    public ResponseEntity<?> deleteAccount(@PathVariable UUID id) throws AccessDeniedException {
+        try {
+            boolean accountDelete = accountService.delete(id);
+            return accountDelete ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Error403(e));
+        }
     }
 }

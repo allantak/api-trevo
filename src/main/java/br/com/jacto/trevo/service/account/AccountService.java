@@ -58,11 +58,11 @@ public class AccountService implements UserDetailsService {
         String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
         if(Objects.equals(user.getAccountRole().toString(), "ADMINISTRADOR") && !Objects.equals(role, "[ROLE_ADMINISTRADOR]")){
-            throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR pode cadastrar ADMINISTRADOR");
+            throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR pode atualizar ADMINISTRADOR");
         }
 
         if(Objects.equals(user.getAccountRole().toString(), "COLABORADOR") && (Objects.equals(role, "[ROLE_CLIENTE]") | Objects.equals(role, "[ROLE_ANONYMOUS]"))){
-            throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR ou COLABORADOR pode cadastrar COLABORADOR");
+            throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR ou COLABORADOR pode atualizar COLABORADOR");
         }
         Account save = new Account(user.getEmail(), encoder, user.getAccountName(), user.getAccountRole());
         save.setCreateAt(LocalDateTime.now());
@@ -70,7 +70,7 @@ public class AccountService implements UserDetailsService {
         return new AccountDto(convert);
     }
 
-    public Optional<AccountCreateDto> updateAccount(AccountUpdateForm user) {
+    public Optional<AccountCreateDto> updateAccount(AccountUpdateForm user) throws AccessDeniedException {
         Optional<Account> findAccount = accountRepository.findById(user.getAccountId());
 
         if (findAccount.isEmpty()) {
@@ -90,6 +90,15 @@ public class AccountService implements UserDetailsService {
         }
 
         if (user.getAccountRole() != null && !user.getAccountRole().toString().trim().isEmpty()) {
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+
+            if(Objects.equals(user.getAccountRole().toString(), "ADMINISTRADOR") && !Objects.equals(role, "[ROLE_ADMINISTRADOR]")){
+                throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR pode cadastrar ADMINISTRADOR");
+            }
+
+            if(Objects.equals(user.getAccountRole().toString(), "COLABORADOR") && (Objects.equals(role, "[ROLE_CLIENTE]") | Objects.equals(role, "[ROLE_ANONYMOUS]"))){
+                throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR ou COLABORADOR pode cadastrar COLABORADOR");
+            }
             findAccount.get().setAccountRole(user.getAccountRole());
         }
 
@@ -102,11 +111,22 @@ public class AccountService implements UserDetailsService {
         return Optional.of(new AccountCreateDto(save));
     }
 
-    public Boolean delete(UUID id) {
+    public Boolean delete(UUID id) throws AccessDeniedException {
         Optional<Account> findAccount = accountRepository.findById(id);
         if (findAccount.isEmpty()) {
             return false;
         }
+
+        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+
+        if(Objects.equals(findAccount.get().getAccountRole().toString(), "ADMINISTRADOR") && !Objects.equals(role, "[ROLE_ADMINISTRADOR]")){
+            throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR pode deletar ADMINISTRADOR");
+        }
+
+        if(Objects.equals(findAccount.get().getAccountRole().toString(), "COLABORADOR") && (Objects.equals(role, "[ROLE_CLIENTE]") | Objects.equals(role, "[ROLE_ANONYMOUS]"))){
+            throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR ou COLABORADOR pode deletar COLABORADOR");
+        }
+
         accountRepository.deleteById(id);
         return true;
     }

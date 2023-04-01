@@ -34,6 +34,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/products")
+@SecurityRequirement(name = "bearer-key")
 @Tag(name = "Produto", description = "Gerenciamento de produtos")
 public class ProductController {
 
@@ -79,7 +80,6 @@ public class ProductController {
     @PostMapping
     @Transactional
     @Operation(summary = "Registro de produto", description = "Não colocar o creatAt pegará a data atual por padrão; Nome do produto é unico")
-    @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductCreateDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
@@ -98,7 +98,6 @@ public class ProductController {
     @PutMapping
     @Transactional
     @Operation(summary = "Atualização do produto")
-    @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductCreateDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
@@ -113,7 +112,6 @@ public class ProductController {
     @PutMapping("/cultures")
     @Transactional
     @Operation(summary = "Atualização da cultura do produto")
-    @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductCultureDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
@@ -128,7 +126,6 @@ public class ProductController {
     @DeleteMapping("/{id}")
     @Transactional
     @Operation(summary = "Excluir produto", description = "Culturas e pedidos vinculada ao produto serão excluído")
-    @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Success no-content", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
@@ -143,7 +140,6 @@ public class ProductController {
     @DeleteMapping("/cultures")
     @Transactional
     @Operation(summary = "Delete cultura do produto")
-    @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Success no-content", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
