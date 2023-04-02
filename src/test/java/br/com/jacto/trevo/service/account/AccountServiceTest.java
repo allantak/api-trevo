@@ -420,8 +420,301 @@ public class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("Deletar o gerente pelo id")
-    public void deleteOrder() throws AccessDeniedException {
+    @DisplayName("Atualizacao para admin sendo admin")
+    public void updateManagerCase5() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+
+        account.setAccountId(managerId);
+        String encode = new BCryptPasswordEncoder().encode(account.getPassword());
+        account.setAccountPassword(encode);
+
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(managerId);
+        updateForm.setEmail("newTest");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
+        updateForm.setAccountRole(Account.Role.ADMINISTRADOR);
+
+        when(accountRepository.findById(managerId)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any())).thenReturn(account);
+
+        Optional<AccountCreateDto> result = accountService.updateAccount(updateForm);
+
+
+        assertTrue(result.isPresent());
+        assertEquals(updateForm.getEmail(), result.get().getEmail());
+
+        assertTrue(new BCryptPasswordEncoder().matches(updateForm.getNewPassword(), account.getPassword()));
+    }
+
+    @Test
+    @DisplayName("Atualizacao para admin sendo colaborador")
+    public void updateManagerCase6() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_COLABORADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+
+        account.setAccountId(managerId);
+        String encode = new BCryptPasswordEncoder().encode(account.getPassword());
+        account.setAccountPassword(encode);
+
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(managerId);
+        updateForm.setEmail("newTest");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
+        updateForm.setAccountRole(Account.Role.ADMINISTRADOR);
+
+        when(accountRepository.findById(managerId)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any())).thenReturn(account);
+
+
+        assertThrows(AccessDeniedException.class, () -> accountService.updateAccount(updateForm));
+
+    }
+
+    @Test
+    @DisplayName("Atualizacao para admin sendo cliente")
+    public void updateManagerCase7() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"))));
+        SecurityContextHolder.setContext(securityContext);
+
+
+        account.setAccountId(managerId);
+        String encode = new BCryptPasswordEncoder().encode(account.getPassword());
+        account.setAccountPassword(encode);
+
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(managerId);
+        updateForm.setEmail("newTest");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
+        updateForm.setAccountRole(Account.Role.ADMINISTRADOR);
+
+        when(accountRepository.findById(managerId)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any())).thenReturn(account);
+
+
+        assertThrows(AccessDeniedException.class, () -> accountService.updateAccount(updateForm));
+
+    }
+
+    @Test
+    @DisplayName("Atualizacao para colaborador sendo admin")
+    public void updateManagerCase8() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+
+        account.setAccountId(managerId);
+        String encode = new BCryptPasswordEncoder().encode(account.getPassword());
+        account.setAccountPassword(encode);
+
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(managerId);
+        updateForm.setEmail("newTest");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
+        updateForm.setAccountRole(Account.Role.COLABORADOR);
+
+        when(accountRepository.findById(managerId)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any())).thenReturn(account);
+
+        Optional<AccountCreateDto> result = accountService.updateAccount(updateForm);
+
+
+        assertTrue(result.isPresent());
+        assertEquals(updateForm.getEmail(), result.get().getEmail());
+
+        assertTrue(new BCryptPasswordEncoder().matches(updateForm.getNewPassword(), account.getPassword()));
+    }
+
+    @Test
+    @DisplayName("Atualizacao para colaborador sendo colaborador")
+    public void updateManagerCase9() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_COLABORADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+
+        account.setAccountId(managerId);
+        String encode = new BCryptPasswordEncoder().encode(account.getPassword());
+        account.setAccountPassword(encode);
+
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(managerId);
+        updateForm.setEmail("newTest");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
+        updateForm.setAccountRole(Account.Role.COLABORADOR);
+
+        when(accountRepository.findById(managerId)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any())).thenReturn(account);
+
+        Optional<AccountCreateDto> result = accountService.updateAccount(updateForm);
+
+
+        assertTrue(result.isPresent());
+        assertEquals(updateForm.getEmail(), result.get().getEmail());
+
+        assertTrue(new BCryptPasswordEncoder().matches(updateForm.getNewPassword(), account.getPassword()));
+    }
+
+    @Test
+    @DisplayName("Atualizacao para colaborador sendo cliente")
+    public void updateManagerCase10() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"))));
+        SecurityContextHolder.setContext(securityContext);
+
+
+        account.setAccountId(managerId);
+        String encode = new BCryptPasswordEncoder().encode(account.getPassword());
+        account.setAccountPassword(encode);
+
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(managerId);
+        updateForm.setEmail("newTest");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
+        updateForm.setAccountRole(Account.Role.COLABORADOR);
+
+        when(accountRepository.findById(managerId)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any())).thenReturn(account);
+
+
+        assertThrows(AccessDeniedException.class, () -> accountService.updateAccount(updateForm));
+    }
+
+    @Test
+    @DisplayName("Atualizacao para cliente sendo admin")
+    public void updateManagerCase11() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+
+        account.setAccountId(managerId);
+        String encode = new BCryptPasswordEncoder().encode(account.getPassword());
+        account.setAccountPassword(encode);
+
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(managerId);
+        updateForm.setEmail("newTest");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
+        updateForm.setAccountRole(Account.Role.CLIENTE);
+
+        when(accountRepository.findById(managerId)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any())).thenReturn(account);
+
+        Optional<AccountCreateDto> result = accountService.updateAccount(updateForm);
+
+
+        assertTrue(result.isPresent());
+        assertEquals(updateForm.getEmail(), result.get().getEmail());
+
+        assertTrue(new BCryptPasswordEncoder().matches(updateForm.getNewPassword(), account.getPassword()));
+    }
+
+    @Test
+    @DisplayName("Atualizacao para cliente sendo colaborador")
+    public void updateManagerCase12() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_COLABORADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+
+        account.setAccountId(managerId);
+        String encode = new BCryptPasswordEncoder().encode(account.getPassword());
+        account.setAccountPassword(encode);
+
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(managerId);
+        updateForm.setEmail("newTest");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
+        updateForm.setAccountRole(Account.Role.CLIENTE);
+
+        when(accountRepository.findById(managerId)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any())).thenReturn(account);
+
+        Optional<AccountCreateDto> result = accountService.updateAccount(updateForm);
+
+
+        assertTrue(result.isPresent());
+        assertEquals(updateForm.getEmail(), result.get().getEmail());
+
+        assertTrue(new BCryptPasswordEncoder().matches(updateForm.getNewPassword(), account.getPassword()));
+    }
+
+    @Test
+    @DisplayName("Atualizacao para cliente sendo cliente")
+    public void updateManagerCase13() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"))));
+        SecurityContextHolder.setContext(securityContext);
+
+
+        account.setAccountId(managerId);
+        String encode = new BCryptPasswordEncoder().encode(account.getPassword());
+        account.setAccountPassword(encode);
+
+        AccountUpdateForm updateForm = new AccountUpdateForm();
+        updateForm.setAccountId(managerId);
+        updateForm.setEmail("newTest");
+        updateForm.setPassword("12345");
+        updateForm.setNewPassword("newPassword");
+        updateForm.setAccountRole(Account.Role.CLIENTE);
+
+        when(accountRepository.findById(managerId)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any())).thenReturn(account);
+
+        Optional<AccountCreateDto> result = accountService.updateAccount(updateForm);
+
+
+        assertTrue(result.isPresent());
+        assertEquals(updateForm.getEmail(), result.get().getEmail());
+
+        assertTrue(new BCryptPasswordEncoder().matches(updateForm.getNewPassword(), account.getPassword()));
+    }
+
+    @Test
+    @DisplayName("Deletar admin sendo admin")
+    public void delete() throws AccessDeniedException {
         UUID managerId = UUID.randomUUID();
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
@@ -435,10 +728,139 @@ public class AccountServiceTest {
         assertTrue(update);
     }
 
+    @Test
+    @DisplayName("Deletar admin sendo colaborador")
+    public void deleteCase2() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+        account.setAccountRole(Account.Role.ADMINISTRADOR);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_COLABORADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
+
+        assertThrows(AccessDeniedException.class, () -> accountService.delete(managerId));
+    }
+
+    @Test
+    @DisplayName("Deletar admin sendo cliente")
+    public void deleteCase3() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+        account.setAccountRole(Account.Role.ADMINISTRADOR);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
+
+        assertThrows(AccessDeniedException.class, () -> accountService.delete(managerId));
+    }
+
+    @Test
+    @DisplayName("Deletar Colaborador sendo Admin")
+    public void deleteCase4() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+        account.setAccountRole(Account.Role.COLABORADOR);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
+
+        Boolean update = accountService.delete(managerId);
+
+        assertTrue(update);
+    }
+
+    @Test
+    @DisplayName("Deletar colaborador sendo colaborador")
+    public void deleteCase5() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+        account.setAccountRole(Account.Role.COLABORADOR);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_COLABORADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
+
+        Boolean update = accountService.delete(managerId);
+
+        assertTrue(update);
+    }
+
+    @Test
+    @DisplayName("Deletar colaborador sendo cliente")
+    public void deleteCase6() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+        account.setAccountRole(Account.Role.COLABORADOR);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
+
+        assertThrows(AccessDeniedException.class, () -> accountService.delete(managerId));
+    }
+
+    @Test
+    @DisplayName("Deletar Cliente sendo Admin")
+    public void deleteCase7() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+        account.setAccountRole(Account.Role.CLIENTE);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
+
+        Boolean update = accountService.delete(managerId);
+
+        assertTrue(update);
+    }
+
+    @Test
+    @DisplayName("Deletar Cliente sendo colaborador")
+    public void deleteCase8() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+        account.setAccountRole(Account.Role.CLIENTE);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_COLABORADOR"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
+
+        Boolean update = accountService.delete(managerId);
+
+        assertTrue(update);
+    }
+
+    @Test
+    @DisplayName("Deletar Cliente sendo cliente")
+    public void deleteCase9() throws AccessDeniedException {
+        UUID managerId = UUID.randomUUID();
+        account.setAccountRole(Account.Role.CLIENTE);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("admin", "password",
+                List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"))));
+        SecurityContextHolder.setContext(securityContext);
+
+        when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
+
+        Boolean update = accountService.delete(managerId);
+
+        assertTrue(update);
+    }
 
     @Test
     @DisplayName("Caso ao delete nao encontre o gerente")
-    public void deleteOrderCase2() throws AccessDeniedException {
+    public void deleteCase10() throws AccessDeniedException {
         UUID managerId = UUID.randomUUID();
 
         when(accountRepository.findById(any())).thenReturn(Optional.empty());
