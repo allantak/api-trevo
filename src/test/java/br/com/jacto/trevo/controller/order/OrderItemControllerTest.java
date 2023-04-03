@@ -266,7 +266,7 @@ public class OrderItemControllerTest {
         form.setProductName(product.getProductName());
         form.setQuantity(3);
 
-        OrderItemDto orderItemCreateDto = new OrderItemDto(order);
+        OrderItemCreateDto orderItemCreateDto = new OrderItemCreateDto(order);
 
         when(orderItemService.update(any())).thenReturn(Optional.of(orderItemCreateDto));
 
@@ -280,7 +280,7 @@ public class OrderItemControllerTest {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
 
-        var jsonExpect = orderItemDtoJson.write(orderItemCreateDto).getJson();
+        var jsonExpect = orderItemCreateDtoJson.write(orderItemCreateDto).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
     }
@@ -338,7 +338,7 @@ public class OrderItemControllerTest {
         form.setOrderItemId(UUID.randomUUID());
         form.setAccountId(clientId);
 
-        OrderItemDto orderItemCreateDto = new OrderItemDto(order);
+        OrderItemCreateDto orderItemCreateDto = new OrderItemCreateDto(order);
 
         when(orderItemService.update(any())).thenReturn(Optional.of(orderItemCreateDto));
 
@@ -352,7 +352,7 @@ public class OrderItemControllerTest {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
 
-        var jsonExpect = orderItemDtoJson.write(orderItemCreateDto).getJson();
+        var jsonExpect = orderItemCreateDtoJson.write(orderItemCreateDto).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
     }
@@ -369,7 +369,7 @@ public class OrderItemControllerTest {
         form.setQuantity(3);
 
 
-        OrderItemDto orderItemCreateDto = new OrderItemDto(order);
+        OrderItemCreateDto orderItemCreateDto = new OrderItemCreateDto(order);
 
         when(orderItemService.update(any())).thenReturn(Optional.of(orderItemCreateDto));
 
@@ -383,7 +383,7 @@ public class OrderItemControllerTest {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
 
-        var jsonExpect = orderItemDtoJson.write(orderItemCreateDto).getJson();
+        var jsonExpect = orderItemCreateDtoJson.write(orderItemCreateDto).getJson();
 
         assertEquals(jsonExpect, response.getContentAsString());
     }

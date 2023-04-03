@@ -106,12 +106,10 @@ public class OrderItemServiceTest {
         when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
         when(orderItemRepository.save(any())).thenReturn(order);
 
-        Optional<OrderItemDto> update = orderItemService.update(form);
+        Optional<OrderItemCreateDto> update = orderItemService.update(form);
 
         assertNotNull(update);
-        assertEquals(form.getProductName(), update.get().getProductName());
         assertEquals(form.getOrderItemId(), update.get().getOrderItemId());
-        assertEquals(form.getQuantity(), update.get().getQuantity());
     }
 
 
@@ -126,7 +124,7 @@ public class OrderItemServiceTest {
         when(orderItemRepository.save(any())).thenReturn(order);
 
 
-        Optional<OrderItemDto> update = orderItemService.update(form);
+        Optional<OrderItemCreateDto> update = orderItemService.update(form);
 
         assertEquals(Optional.empty(), update);
     }
@@ -141,7 +139,7 @@ public class OrderItemServiceTest {
         when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
         when(orderItemRepository.save(any())).thenReturn(order);
 
-        Optional<OrderItemDto> update = orderItemService.update(form);
+        Optional<OrderItemCreateDto> update = orderItemService.update(form);
 
         assertEquals(Optional.empty(), update);
     }
@@ -156,7 +154,7 @@ public class OrderItemServiceTest {
         when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(order));
         when(orderItemRepository.save(any())).thenReturn(order);
 
-        Optional<OrderItemDto> update = orderItemService.update(form);
+        Optional<OrderItemCreateDto> update = orderItemService.update(form);
 
         assertEquals(Optional.empty(), update);
     }
@@ -172,13 +170,11 @@ public class OrderItemServiceTest {
         when(orderItemRepository.save(any())).thenReturn(order);
 
 
-        Optional<OrderItemDto> update = orderItemService.update(form);
+        Optional<OrderItemCreateDto> update = orderItemService.update(form);
 
         assertNotNull(update);
-        assertEquals(product.getProductName(), update.get().getProductName());
         assertEquals(form.getOrderItemId(), update.get().getOrderItemId());
-        assertEquals(order.getQuantity(), update.get().getQuantity());
-        assertEquals(account.getEmail(), update.get().getEmail());
+
     }
 
 
@@ -195,13 +191,11 @@ public class OrderItemServiceTest {
         when(orderItemRepository.save(any())).thenReturn(order);
 
 
-        Optional<OrderItemDto> update = orderItemService.update(form);
+        Optional<OrderItemCreateDto> update = orderItemService.update(form);
 
         assertNotNull(update);
-        assertEquals(product.getProductName(), update.get().getProductName());
         assertEquals(form.getOrderItemId(), update.get().getOrderItemId());
-        assertEquals(order.getQuantity(), update.get().getQuantity());
-        assertEquals(account.getEmail(), update.get().getEmail());
+
     }
 
     @Test
