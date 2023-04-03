@@ -62,7 +62,7 @@ public class OrderItemService {
         return true;
     }
 
-    public Optional<OrderItemDto> update(OrderItemUpdateForm orderItem) {
+    public Optional<OrderItemCreateDto> update(OrderItemUpdateForm orderItem) {
 
         Optional<OrderItem> findOrder = orderItemRepository.findById(orderItem.getOrderItemId());
         Optional<Account> findClient = accountRepository.findById(orderItem.getAccountId());
@@ -85,7 +85,7 @@ public class OrderItemService {
             findOrder.get().setQuantity(orderItem.getQuantity());
         }
 
-        return Optional.of(orderItemRepository.save(findOrder.get())).map(OrderItemDto::new);
+        return Optional.of(orderItemRepository.save(findOrder.get())).map(OrderItemCreateDto::new);
     }
 
 

@@ -81,12 +81,12 @@ public class OrderItemController {
     @Transactional
     @Operation(summary = "Atualização do pedido", description = "Caso quantidade for 0 vai retornar Exception")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemDto.class))),
+            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemCreateDto.class))),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
-    public ResponseEntity<OrderItemDto> updateOrderItem(@RequestBody @Valid OrderItemUpdateForm orderItem) {
-        Optional<OrderItemDto> update = orderItemService.update(orderItem);
+    public ResponseEntity<OrderItemCreateDto> updateOrderItem(@RequestBody @Valid OrderItemUpdateForm orderItem) {
+        Optional<OrderItemCreateDto> update = orderItemService.update(orderItem);
         return update.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
