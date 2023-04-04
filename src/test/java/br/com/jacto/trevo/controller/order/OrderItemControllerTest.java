@@ -1,6 +1,7 @@
 package br.com.jacto.trevo.controller.order;
 
 import br.com.jacto.trevo.config.security.TokenService;
+import br.com.jacto.trevo.controller.order.OrderItemController;
 import br.com.jacto.trevo.controller.order.dto.OrderItemCreateDto;
 import br.com.jacto.trevo.controller.order.dto.OrderItemDto;
 import br.com.jacto.trevo.controller.order.form.OrderItemForm;
@@ -10,7 +11,7 @@ import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.AccountRepository;
 import br.com.jacto.trevo.service.order.OrderItemService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
