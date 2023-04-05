@@ -10,8 +10,15 @@ import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.repository.AccountRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -37,24 +44,23 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
-@Transactional
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AccountServiceTest {
 
-    @Autowired
+    @InjectMocks
     private AccountService accountService;
 
-    @MockBean
+    @Mock
     private AccountRepository accountRepository;
 
-    @MockBean
+    @Mock
     private SecurityContext securityContext;
 
 
     public Account account = new Account("test", "12345", "test", Account.Role.COLABORADOR);
 
-    @Test
+    @Test()
     @DisplayName("Procurar pelo gerente existente")
     public void findByUsername() {
         UserDetails userDetails = mock(UserDetails.class);

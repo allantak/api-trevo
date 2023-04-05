@@ -12,7 +12,13 @@ import br.com.jacto.trevo.repository.OrderItemRepository;
 import br.com.jacto.trevo.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -29,20 +35,19 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
-@Transactional
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class OrderItemServiceTest {
-    @Autowired
+    @InjectMocks
     OrderItemService orderItemService;
 
-    @MockBean
+    @Mock
     OrderItemRepository orderItemRepository;
 
-    @MockBean
+    @Mock
     AccountRepository accountRepository;
 
-    @MockBean
+    @Mock
     ProductRepository productRepository;
 
     public Account account = new Account("test", "12345", "test", Account.Role.COLABORADOR);
