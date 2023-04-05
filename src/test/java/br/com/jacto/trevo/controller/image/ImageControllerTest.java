@@ -1,5 +1,7 @@
 package br.com.jacto.trevo.controller.image;
 
+import br.com.jacto.trevo.config.exception.ErrorHandler;
+import br.com.jacto.trevo.config.security.SecurityFilter;
 import br.com.jacto.trevo.config.security.TokenService;
 import br.com.jacto.trevo.controller.image.dto.ImageDto;
 import br.com.jacto.trevo.controller.image.dto.ProductImageCreateDto;
@@ -11,23 +13,24 @@ import br.com.jacto.trevo.model.product.Image;
 import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.AccountRepository;
 import br.com.jacto.trevo.service.product.ImageService;
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.Files;
@@ -45,34 +48,33 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(ImageController.class)
-@AutoConfigureMockMvc
-@AutoConfigureJsonTesters
-@TestPropertySource(properties = "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration")
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ImageControllerTest {
 
-    @MockBean
+    @Mock
     ImageService imageService;
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @InjectMocks
+    private ImageController imageController;
+
+    @Mock
     private TokenService tokenService;
 
-    @MockBean
+    @Mock
     private AccountRepository managerRepository;
 
-    @Autowired
+
     private JacksonTester<ImageDto> imageDtoJson;
-    @Autowired
+
     private JacksonTester<ProductImageDto> productImageDtoJson;
-    @Autowired
+
     private JacksonTester<ProductImageCreateDto> productImageCreateDtoJson;
-    @Autowired
+
     private JacksonTester<ProductImageForm> productImageFormJson;
-    @Autowired
+
     private JacksonTester<ImageDeleteForm> imageDeleteFormJson;
 
 
@@ -81,6 +83,15 @@ public class ImageControllerTest {
 
     byte[] testBytes = new byte[]{0x01, 0x02, 0x03, 0x04, 0x05};
     public Image image = new Image(testBytes, product);
+
+    @BeforeEach
+    public void setup() {
+        JacksonTester.initFields(this, new ObjectMapper());
+        mockMvc = MockMvcBuilders.standaloneSetup(imageController)
+                .setControllerAdvice(new ErrorHandler())
+                .addFilters(new SecurityFilter())
+                .build();
+    }
 
     @Test
     @DisplayName("Mostre a imagem conforme o id dado")

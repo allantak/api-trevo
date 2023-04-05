@@ -1,35 +1,35 @@
 package br.com.jacto.trevo.controller.auth;
 
+import br.com.jacto.trevo.config.exception.ErrorHandler;
+import br.com.jacto.trevo.config.security.SecurityFilter;
 import br.com.jacto.trevo.config.security.TokenService;
-import br.com.jacto.trevo.controller.auth.AuthenticationController;
 import br.com.jacto.trevo.controller.auth.dto.AccountCreateDto;
 import br.com.jacto.trevo.controller.auth.dto.AccountDetailDto;
 import br.com.jacto.trevo.controller.auth.dto.AccountDto;
 import br.com.jacto.trevo.controller.auth.dto.TokenDto;
 import br.com.jacto.trevo.controller.auth.form.AccountRegisterForm;
 import br.com.jacto.trevo.controller.auth.form.AccountUpdateForm;
-import br.com.jacto.trevo.controller.product.dto.ProductCreateDto;
 import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.repository.AccountRepository;
 import br.com.jacto.trevo.service.account.AccountService;
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -43,50 +43,56 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(AuthenticationController.class)
-@AutoConfigureMockMvc
-@AutoConfigureJsonTesters
-@TestPropertySource(properties = "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration")
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AuthenticationControllerTest {
 
-    @MockBean
+    @Mock
     private TestRestTemplate restTemplate;
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @InjectMocks
+    private AuthenticationController authenticationController;
+
+    @Mock
     private AccountService accountService;
 
-    @MockBean
+    @Mock
     private TokenService tokenService;
 
-    @MockBean
+    @Mock
     private AccountRepository accountRepository;
 
-    @MockBean
+    @Mock
     private AuthenticationManager authenticationManager;
 
 
-    @Autowired
     private JacksonTester<AccountRegisterForm> managerFormJson;
-    @Autowired
+
     private JacksonTester<TokenDto> tokenDtoJson;
-    @Autowired
+
     private JacksonTester<AccountDto> managerDtoJson;
-    @Autowired
+
     private JacksonTester<AccountUpdateForm> managerUpdateFormJson;
-    @Autowired
+
     private JacksonTester<AccountCreateDto> managerCreateDtoJson;
-    @Autowired
+
     private JacksonTester<List<AccountDto>> listJson;
-    @Autowired
+
     private JacksonTester<AccountDetailDto> accountDetailDtoJson;
 
 
     public Account account = new Account("test@gmail.com", "12345", "test", Account.Role.COLABORADOR);
 
+    @BeforeEach
+    public void setup() {
+        JacksonTester.initFields(this, new ObjectMapper());
+        mockMvc = MockMvcBuilders.standaloneSetup(authenticationController)
+                .setControllerAdvice(new ErrorHandler())
+                .addFilters(new SecurityFilter())
+                .build();
+    }
 
     @Test
     @DisplayName("Listagem de usuario")
@@ -133,11 +139,10 @@ public class AuthenticationControllerTest {
     }
 
 
-
     @Test
     @DisplayName("detalhes do usuario pelo Id")
     public void getId() throws Exception {
-        UUID id =UUID.randomUUID();
+        UUID id = UUID.randomUUID();
         AccountDetailDto mockAccount = new AccountDetailDto(account);
         when(accountService.findAccount(any())).thenReturn(Optional.of(mockAccount));
 
@@ -158,7 +163,7 @@ public class AuthenticationControllerTest {
     @Test
     @DisplayName("Nao achar usuario pelo ID")
     public void getIdCase2() throws Exception {
-        UUID id =UUID.randomUUID();
+        UUID id = UUID.randomUUID();
         when(accountService.findAccount(any())).thenReturn(Optional.empty());
 
         var response = mockMvc.perform(
@@ -176,7 +181,7 @@ public class AuthenticationControllerTest {
     @Test
     @DisplayName("Nao autenticado para procurar pelo ID")
     public void getIdCase3() throws Exception {
-        UUID id =UUID.randomUUID();
+        UUID id = UUID.randomUUID();
         when(accountService.findAccount(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
 
         var response = mockMvc.perform(

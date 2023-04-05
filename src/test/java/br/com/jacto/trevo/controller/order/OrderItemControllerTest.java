@@ -1,7 +1,8 @@
 package br.com.jacto.trevo.controller.order;
 
+import br.com.jacto.trevo.config.exception.ErrorHandler;
+import br.com.jacto.trevo.config.security.SecurityFilter;
 import br.com.jacto.trevo.config.security.TokenService;
-import br.com.jacto.trevo.controller.order.OrderItemController;
 import br.com.jacto.trevo.controller.order.dto.OrderItemCreateDto;
 import br.com.jacto.trevo.controller.order.dto.OrderItemDto;
 import br.com.jacto.trevo.controller.order.form.OrderItemForm;
@@ -11,20 +12,21 @@ import br.com.jacto.trevo.model.order.OrderItem;
 import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.AccountRepository;
 import br.com.jacto.trevo.service.order.OrderItemService;
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -39,34 +41,33 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(OrderItemController.class)
-@AutoConfigureMockMvc
-@AutoConfigureJsonTesters
-@TestPropertySource(properties = "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration")
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class OrderItemControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @InjectMocks
+    private OrderItemController orderItemController;
+
+    @Mock
     OrderItemService orderItemService;
 
-    @MockBean
+    @Mock
     private TokenService tokenService;
 
-    @MockBean
+    @Mock
     private AccountRepository managerRepository;
 
-    @Autowired
+
     private JacksonTester<List<OrderItemDto>> listOrderDtoJson;
-    @Autowired
+
     private JacksonTester<OrderItemDto> orderItemDtoJson;
-    @Autowired
+
     private JacksonTester<OrderItemForm> orderItemFormJson;
-    @Autowired
+
     private JacksonTester<OrderItemCreateDto> orderItemCreateDtoJson;
-    @Autowired
+
     private JacksonTester<OrderItemUpdateForm> OrderItemUpdateForm;
 
 
@@ -74,6 +75,15 @@ public class OrderItemControllerTest {
     public Product product = new Product("Trator Jacto", Product.Status.DISPONIVEL, Product.Category.ELETRICO, "Trator jacto para agricultura", 120.0, 2.0, LocalDateTime.of(2023, 3, 28, 10, 30, 15, 500000000), account);
 
     public OrderItem order = new OrderItem(3, account, product);
+
+    @BeforeEach
+    public void setup() {
+        JacksonTester.initFields(this, new ObjectMapper());
+        mockMvc = MockMvcBuilders.standaloneSetup(orderItemController)
+                .setControllerAdvice(new ErrorHandler())
+                .addFilters(new SecurityFilter())
+                .build();
+    }
 
     @Test
     @DisplayName("Listando pedidos existente em formato correto")

@@ -8,21 +8,14 @@ import br.com.jacto.trevo.controller.auth.form.AccountRegisterForm;
 import br.com.jacto.trevo.controller.auth.form.AccountUpdateForm;
 import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.repository.AccountRepository;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,10 +23,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.server.ResponseStatusException;
 
-import javax.transaction.Transactional;
 import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +32,8 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -75,7 +66,7 @@ public class AccountServiceTest {
 
     @Test
     @DisplayName("Listagem de usuarios registrados")
-    public void getAll(){
+    public void getAll() {
         account.setAccountId(UUID.randomUUID());
         List<Account> listAccount = new ArrayList<Account>();
         listAccount.add(account);
@@ -91,7 +82,7 @@ public class AccountServiceTest {
 
     @Test
     @DisplayName("Achar pelo ID do usuario")
-    public void getId(){
+    public void getId() {
         UUID id = UUID.randomUUID();
         when(accountRepository.findById(any())).thenReturn(Optional.ofNullable(account));
         Optional<AccountDetailDto> result = accountService.findAccount(id);
@@ -105,14 +96,13 @@ public class AccountServiceTest {
 
     @Test
     @DisplayName("Achar pelo ID do usuario")
-    public void getIdCase2(){
+    public void getIdCase2() {
         UUID id = UUID.randomUUID();
         when(accountRepository.findById(any())).thenReturn(Optional.empty());
         Optional<AccountDetailDto> result = accountService.findAccount(id);
 
         assertEquals(Optional.empty(), result);
     }
-
 
 
     @Test

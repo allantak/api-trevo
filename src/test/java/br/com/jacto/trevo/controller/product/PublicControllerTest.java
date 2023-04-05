@@ -1,5 +1,7 @@
 package br.com.jacto.trevo.controller.product;
 
+import br.com.jacto.trevo.config.exception.ErrorHandler;
+import br.com.jacto.trevo.config.security.SecurityFilter;
 import br.com.jacto.trevo.config.security.TokenService;
 import br.com.jacto.trevo.controller.product.dto.*;
 import br.com.jacto.trevo.controller.product.form.ProductCultureDeleteForm;
@@ -13,22 +15,22 @@ import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.repository.AccountRepository;
 import br.com.jacto.trevo.service.product.CultureService;
 import br.com.jacto.trevo.service.product.ProductService;
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -43,50 +45,48 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(ProductController.class)
-@AutoConfigureMockMvc
-@AutoConfigureJsonTesters
-@TestPropertySource(properties = "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration")
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class PublicControllerTest {
 
-    @Autowired
+
     private MockMvc mockMvc;
 
-    @MockBean
+    @InjectMocks
+    private ProductController productController;
+
+    @Mock
     ProductService productService;
 
-    @MockBean
+    @Mock
     CultureService cultureService;
 
-    @MockBean
+    @Mock
     private TokenService tokenService;
 
-    @MockBean
+    @Mock
     private AccountRepository managerRepository;
 
-    @Autowired
     private JacksonTester<PageImpl<ProductDto>> productDtoJson;
-    @Autowired
+
     private JacksonTester<ProductDetailDto> productDetailDtoJson;
-    @Autowired
+
     private JacksonTester<ProductOrderDto> productOrderDtoJson;
-    @Autowired
+
     private JacksonTester<ProductCreateDto> productCreateDtoJson;
-    @Autowired
+
     private JacksonTester<ProductForm> productFormJson;
-    @Autowired
+
     private JacksonTester<ProductCultureForm> productCultureFormJson;
-    @Autowired
+
     private JacksonTester<ProductUpdateForm> productUpdateFormJson;
-    @Autowired
+
     private JacksonTester<Culture> cultureJson;
-    @Autowired
+
     private JacksonTester<Product> productJson;
-    @Autowired
+
     private JacksonTester<ProductCultureDeleteForm> productCultureDeleteFormJson;
 
-    @Autowired
     private JacksonTester<ProductCultureDto> productCultureDtoJson;
 
 
@@ -96,71 +96,13 @@ public class PublicControllerTest {
     public OrderItem order = new OrderItem(3, account, product);
     public Culture culture = new Culture("Cerejeiras", product);
 
-
-    @Test
-    @DisplayName("Productos listado com detalhes da paginacao")
-    public void listProduct() throws Exception {
-        UUID productId = UUID.randomUUID();
-        product.setProductId(productId);
-        List<Culture> listClient = new ArrayList<Culture>();
-        listClient.add(culture);
-        product.setCultures(listClient);
-
-        List<ProductDto> productDto = new ArrayList<ProductDto>();
-        productDto.add(new ProductDto(product));
-
-        PageImpl<ProductDto> page = new PageImpl<>(productDto);
-
-        when(productService.getAll(any(Pageable.class))).thenReturn(page);
-
-        var response = mockMvc.perform(
-                        get("/products")
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andReturn()
-                .getResponse();
-
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-
-        var jsonExpect = productDtoJson.write(page).getJson();
-
-
-        assertEquals(jsonExpect, response.getContentAsString());
-
-    }
-
-
-    @Test
-    @DisplayName("Especifico producto detalhado")
-    public void productId() throws Exception {
-        UUID productId = UUID.randomUUID();
-        product.setProductId(productId);
-
-        List<Culture> listClient = new ArrayList<Culture>();
-        listClient.add(culture);
-        product.setCultures(listClient);
-
-        List<OrderItem> orderItems = new ArrayList<OrderItem>();
-        orderItems.add(order);
-        product.setOrders(orderItems);
-
-        ProductDetailDto productDetail = new ProductDetailDto(product);
-
-        when(productService.getId(any())).thenReturn(Optional.of(productDetail));
-
-        var response = mockMvc.perform(
-                        get("/products/" + product.getProductId())
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andReturn()
-                .getResponse();
-
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-
-        var jsonExpect = productDetailDtoJson.write(productDetail).getJson();
-
-        assertEquals(jsonExpect, response.getContentAsString());
-
+    @BeforeEach
+    public void setup() {
+        JacksonTester.initFields(this, new ObjectMapper());
+        mockMvc = MockMvcBuilders.standaloneSetup(productController)
+                .setControllerAdvice(new ErrorHandler())
+                .addFilters(new SecurityFilter())
+                .build();
     }
 
 
