@@ -4,6 +4,7 @@ import br.com.jacto.trevo.model.product.Product;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ProductDto {
 
@@ -12,7 +13,7 @@ public class ProductDto {
         this.productName = product.getProductName();
         this.status = product.isStatus();
         this.category = product.getCategory();
-        this.cultures = product.getCultures().stream().map(ProductCultureDto::new).toList();
+        this.cultures = product.getCultures().stream().map(ProductCultureDto::new).collect(Collectors.toList());
     }
 
     private final UUID productId;

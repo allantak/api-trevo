@@ -3,6 +3,7 @@ package br.com.jacto.trevo.controller.product.dto;
 import br.com.jacto.trevo.model.product.Product;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProductOrderDto {
 
@@ -11,7 +12,7 @@ public class ProductOrderDto {
         this.description = product.getDescription();
         this.status = product.isStatus();
         this.category = product.getCategory();
-        this.orders = product.getOrders().stream().map(ProductOrderClientDto::new).toList();
+        this.orders = product.getOrders().stream().map(ProductOrderClientDto::new).collect(Collectors.toList());
 
     }
 

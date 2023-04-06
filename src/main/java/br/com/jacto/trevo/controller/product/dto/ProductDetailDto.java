@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ProductDetailDto {
 
@@ -18,7 +19,7 @@ public class ProductDetailDto {
         this.createAt = product.getCreateAt();
         this.status = product.isStatus();
         this.category = product.getCategory();
-        this.cultures = product.getCultures().stream().map(ProductCultureDto::new).toList();
+        this.cultures = product.getCultures().stream().map(ProductCultureDto::new).collect(Collectors.toList());
     }
 
     private final UUID productId;

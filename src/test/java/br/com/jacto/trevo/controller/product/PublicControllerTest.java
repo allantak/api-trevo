@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -222,7 +223,7 @@ public class PublicControllerTest {
             form.setPrice(product.getPrice());
             form.setStatus(product.isStatus());
             form.setCategory(product.getCategory());
-            form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
+            form.setCultures(product.getCultures().stream().map(Culture::getCultureName).collect(Collectors.toList()));
 
             when(productService.create(any())).thenReturn(Optional.of(productCreate));
 
@@ -262,7 +263,7 @@ public class PublicControllerTest {
             form.setPrice(product.getPrice());
             form.setStatus(product.isStatus());
             form.setCategory(product.getCategory());
-            form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
+            form.setCultures(product.getCultures().stream().map(Culture::getCultureName).collect(Collectors.toList()));
 
             when(productService.create(any())).thenReturn(Optional.empty());
 
@@ -313,7 +314,7 @@ public class PublicControllerTest {
             form.setPrice(product.getPrice());
             form.setStatus(product.isStatus());
             form.setCategory(product.getCategory());
-            form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
+            form.setCultures(product.getCultures().stream().map(Culture::getCultureName).collect(Collectors.toList()));
 
             when(productService.create(any())).thenThrow(new ResponseStatusException(HttpStatus.CONFLICT));
 
@@ -346,7 +347,7 @@ public class PublicControllerTest {
             form.setPrice(product.getPrice());
             form.setStatus(product.isStatus());
             form.setCategory(product.getCategory());
-            form.setCultures(product.getCultures().stream().map(Culture::getCultureName).toList());
+            form.setCultures(product.getCultures().stream().map(Culture::getCultureName).collect(Collectors.toList()));
 
             when(productService.create(any())).thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
 

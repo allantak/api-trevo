@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderItemService {
@@ -28,7 +29,7 @@ public class OrderItemService {
 
 
     public List<OrderItemDto> getAll() {
-        return orderItemRepository.findAll().stream().map(OrderItemDto::new).toList();
+        return orderItemRepository.findAll().stream().map(OrderItemDto::new).collect(Collectors.toList());
     }
 
     public Optional<OrderItemDto> getId(UUID id) {

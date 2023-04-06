@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountService implements UserDetailsService {
@@ -38,7 +39,7 @@ public class AccountService implements UserDetailsService {
     }
 
     public List<AccountDto> getAll() {
-        return accountRepository.findAll().stream().map(AccountDto::new).toList();
+        return accountRepository.findAll().stream().map(AccountDto::new).collect(Collectors.toList());
     }
 
     public Optional<AccountDetailDto> findAccount(UUID userId) {
