@@ -12,7 +12,7 @@
 ### Diagrama de E/R
 
 <p align="center">
-  <img height="400" src="https://user-images.githubusercontent.com/61324956/223740250-fb424404-f81d-4328-a018-8da5ee89b3d9.png" />
+  <img height="400" src="https://user-images.githubusercontent.com/61324956/230724211-c3635149-5d8e-404e-9365-0c0917a80cc5.png" />
 </p>
 
 
