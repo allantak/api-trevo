@@ -16,20 +16,22 @@
 </p>
 
 
-
 ### Swagger
 
 
 URL da documentação 
 
 ```bash
-  http://localhost:8080/swagger-ui/index.html#/
+  http://18.212.22.68:8081/swagger-ui.html
 ```
 
 
 
 ## Stack utilizada
-
-
-**Back-end:** Java e Spring boot
+  - <img src="https://img.icons8.com/color/48/000000/java-coffee-cup-logo--v1.png"/> 11.0.17 
+  - <img src="https://img.icons8.com/color/48/000000/spring-logo.png"/> 2.6.3
+  - <img src="https://img.icons8.com/color/48/000000/jenkins.png"/> 2.303.2
+ 
+ 
+ 
 
