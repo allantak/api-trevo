@@ -46,7 +46,7 @@ public class AuthenticationController {
     @GetMapping("/accounts")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @SecurityRequirement(name = "bearer-key")
-    @Operation(summary = "Lista de usuário")
+    @Operation(summary = "Lista de usuário - ADMINISTRADOR", description = "Apenas ADMINISTRADOR")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = AccountDto.class)))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
@@ -86,7 +86,7 @@ public class AuthenticationController {
 
 
     @PostMapping("/login")
-    @Operation(summary = "Autenticar o usuário", description = "login da conta do usuário")
+    @Operation(summary = "Autenticar o usuário")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TokenDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
@@ -102,7 +102,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     @SecurityRequirement(name = "bearer-key")
-    @Operation(summary = "Registrar usuario")
+    @Operation(summary = "Registrar usuario", description = "Registro de ADMINISTRADOR apenas ADMINISTRADOR tem acesso. Registro de COLABORADOR apenas ADMINISTRADOR ou COLABORADOR tem acesso. Cliente tem acesso para todos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AccountDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
@@ -120,7 +120,7 @@ public class AuthenticationController {
 
     @PutMapping("/accounts")
     @SecurityRequirement(name = "bearer-key")
-    @Operation(summary = "Atualizar usuário")
+    @Operation(summary = "Atualizar usuário", description = "Atualizar ADMINISTRADOR apenas ADMINISTRADOR tem acesso. Atualizar COLABORADOR apenas ADMINISTRADOR ou COLABORADOR tem acesso. Cliente tem acesso para todos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AccountDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
@@ -139,7 +139,7 @@ public class AuthenticationController {
 
     @DeleteMapping("/accounts/{id}")
     @SecurityRequirement(name = "bearer-key")
-    @Operation(summary = "Delete usuário")
+    @Operation(summary = "Delete usuário", description = "Deletar ADMINISTRADOR apenas ADMINISTRADOR tem acesso. Deletar COLABORADOR apenas ADMINISTRADOR ou COLABORADOR tem acesso. Cliente tem acesso para todos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Success no-content", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),

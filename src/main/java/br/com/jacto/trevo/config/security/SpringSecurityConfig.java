@@ -30,7 +30,7 @@ public class SpringSecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
-                .antMatchers(HttpMethod.POST,  "/login", "/register").permitAll()
+                .antMatchers(HttpMethod.POST, "/login", "/register").permitAll()
                 .antMatchers(HttpMethod.PUT, "/accounts").permitAll()
 
 

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class AccountListOrderDto {
 
-    public AccountListOrderDto(OrderItem order){
+    public AccountListOrderDto(OrderItem order) {
         this.orderItemId = order.getOrderItemId();
         this.productId = order.getProduct().getProductId();
         this.quantity = order.getQuantity();

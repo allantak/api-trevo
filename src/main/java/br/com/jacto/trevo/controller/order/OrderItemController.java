@@ -38,7 +38,7 @@ public class OrderItemController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @Operation(summary = "Lista todos os pedidos registrado")
+    @Operation(summary = "Lista todos os pedidos registrado - ADMINISTRADOR")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = OrderItemDto.class)))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
@@ -48,7 +48,7 @@ public class OrderItemController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Mostra o id do pedido")
+    @Operation(summary = "Mostra o id do pedido - ADMINISTRADOR/CLIENTE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemDto.class))),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
@@ -61,7 +61,7 @@ public class OrderItemController {
 
     @PostMapping
     @Transactional
-    @Operation(summary = "Registro de pedidos", description = "Para registrar um pedido é obrigatorio os id de produto e cliente. Caso quantidade for 0 vai retornar Exception")
+    @Operation(summary = "Registro de pedidos - ADMINISTRADOR/CLIENTE", description = "Para registrar um pedido é obrigatorio os id de produto e cliente. Caso quantidade for 0 vai retornar Exception")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemCreateDto.class))),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
@@ -79,7 +79,7 @@ public class OrderItemController {
 
     @PutMapping
     @Transactional
-    @Operation(summary = "Atualização do pedido", description = "Caso quantidade for 0 vai retornar Exception")
+    @Operation(summary = "Atualização do pedido - ADMINISTRADOR/CLIENTE", description = "Caso quantidade for 0 vai retornar Exception")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemCreateDto.class))),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
@@ -92,7 +92,7 @@ public class OrderItemController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    @Operation(summary = "Delete de pedido")
+    @Operation(summary = "Delete de pedido - ADMINISTRADOR/CLIENTE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Success no-content", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),

@@ -4,7 +4,7 @@ import java.nio.file.AccessDeniedException;
 
 public class Error403 {
 
-    public Error403(AccessDeniedException exception){
+    public Error403(AccessDeniedException exception) {
         this.mensagem = exception.getMessage();
     }
 

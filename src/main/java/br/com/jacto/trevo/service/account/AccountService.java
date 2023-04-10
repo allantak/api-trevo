@@ -6,7 +6,6 @@ import br.com.jacto.trevo.controller.auth.dto.AccountDto;
 import br.com.jacto.trevo.controller.auth.dto.AccountOrderDto;
 import br.com.jacto.trevo.controller.auth.form.AccountLoginForm;
 import br.com.jacto.trevo.controller.auth.form.AccountRegisterForm;
-import br.com.jacto.trevo.controller.auth.form.AccountRegisterManagerForm;
 import br.com.jacto.trevo.controller.auth.form.AccountUpdateForm;
 import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.repository.AccountRepository;
@@ -58,11 +57,11 @@ public class AccountService implements UserDetailsService {
         String encoder = new BCryptPasswordEncoder().encode(user.getPassword());
         String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
-        if(Objects.equals(user.getAccountRole().toString(), "ADMINISTRADOR") && !Objects.equals(role, "[ROLE_ADMINISTRADOR]")){
+        if (Objects.equals(user.getAccountRole().toString(), "ADMINISTRADOR") && !Objects.equals(role, "[ROLE_ADMINISTRADOR]")) {
             throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR pode atualizar ADMINISTRADOR");
         }
 
-        if(Objects.equals(user.getAccountRole().toString(), "COLABORADOR") && (Objects.equals(role, "[ROLE_CLIENTE]") | Objects.equals(role, "[ROLE_ANONYMOUS]"))){
+        if (Objects.equals(user.getAccountRole().toString(), "COLABORADOR") && (Objects.equals(role, "[ROLE_CLIENTE]") | Objects.equals(role, "[ROLE_ANONYMOUS]"))) {
             throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR ou COLABORADOR pode atualizar COLABORADOR");
         }
         Account save = new Account(user.getEmail(), encoder, user.getAccountName(), user.getAccountRole());
@@ -93,17 +92,17 @@ public class AccountService implements UserDetailsService {
         if (user.getAccountRole() != null && !user.getAccountRole().toString().trim().isEmpty()) {
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
-            if(Objects.equals(user.getAccountRole().toString(), "ADMINISTRADOR") && !Objects.equals(role, "[ROLE_ADMINISTRADOR]")){
+            if (Objects.equals(user.getAccountRole().toString(), "ADMINISTRADOR") && !Objects.equals(role, "[ROLE_ADMINISTRADOR]")) {
                 throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR pode cadastrar ADMINISTRADOR");
             }
 
-            if(Objects.equals(user.getAccountRole().toString(), "COLABORADOR") && (Objects.equals(role, "[ROLE_CLIENTE]") | Objects.equals(role, "[ROLE_ANONYMOUS]"))){
+            if (Objects.equals(user.getAccountRole().toString(), "COLABORADOR") && (Objects.equals(role, "[ROLE_CLIENTE]") | Objects.equals(role, "[ROLE_ANONYMOUS]"))) {
                 throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR ou COLABORADOR pode cadastrar COLABORADOR");
             }
             findAccount.get().setAccountRole(user.getAccountRole());
         }
 
-        if(user.getNewPassword() != null && !user.getNewPassword().trim().isEmpty()){
+        if (user.getNewPassword() != null && !user.getNewPassword().trim().isEmpty()) {
             String encoder = new BCryptPasswordEncoder().encode(user.getNewPassword());
             findAccount.get().setAccountPassword(encoder);
         }
@@ -120,11 +119,11 @@ public class AccountService implements UserDetailsService {
 
         String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
-        if(Objects.equals(findAccount.get().getAccountRole().toString(), "ADMINISTRADOR") && !Objects.equals(role, "[ROLE_ADMINISTRADOR]")){
+        if (Objects.equals(findAccount.get().getAccountRole().toString(), "ADMINISTRADOR") && !Objects.equals(role, "[ROLE_ADMINISTRADOR]")) {
             throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR pode deletar ADMINISTRADOR");
         }
 
-        if(Objects.equals(findAccount.get().getAccountRole().toString(), "COLABORADOR") && (Objects.equals(role, "[ROLE_CLIENTE]") | Objects.equals(role, "[ROLE_ANONYMOUS]"))){
+        if (Objects.equals(findAccount.get().getAccountRole().toString(), "COLABORADOR") && (Objects.equals(role, "[ROLE_CLIENTE]") | Objects.equals(role, "[ROLE_ANONYMOUS]"))) {
             throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR ou COLABORADOR pode deletar COLABORADOR");
         }
 

@@ -2,7 +2,6 @@ package br.com.jacto.trevo.controller.product.dto;
 
 import br.com.jacto.trevo.model.product.Product;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;

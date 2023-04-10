@@ -1,8 +1,6 @@
 package br.com.jacto.trevo.service.product.culture;
 
-import br.com.jacto.trevo.controller.product.dto.ProductCultureDto;
 import br.com.jacto.trevo.controller.product.form.ProductCultureDeleteForm;
-import br.com.jacto.trevo.controller.product.form.ProductCultureForm;
 import br.com.jacto.trevo.model.account.Account;
 import br.com.jacto.trevo.model.product.Culture;
 import br.com.jacto.trevo.model.product.Product;
@@ -17,12 +15,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 

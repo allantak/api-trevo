@@ -5,7 +5,7 @@ import br.com.jacto.trevo.model.account.Account;
 import java.time.LocalDateTime;
 
 public class AccountDetailDto {
-    public AccountDetailDto(Account account){
+    public AccountDetailDto(Account account) {
         this.email = account.getEmail();
         this.name = account.getAccountName();
         this.create_at = account.getCreateAt();

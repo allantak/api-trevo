@@ -3,8 +3,6 @@ package br.com.jacto.trevo.controller.product.form;
 import br.com.jacto.trevo.model.product.Product;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class ProductUpdateForm {

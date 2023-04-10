@@ -6,7 +6,6 @@ import br.com.jacto.trevo.controller.product.form.ProductCultureForm;
 import br.com.jacto.trevo.controller.product.form.ProductForm;
 import br.com.jacto.trevo.controller.product.form.ProductUpdateForm;
 import br.com.jacto.trevo.model.product.Culture;
-import br.com.jacto.trevo.model.product.Product;
 import br.com.jacto.trevo.service.product.CultureService;
 import br.com.jacto.trevo.service.product.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,7 +70,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
-    @Operation(summary = "Mostra o produto com seus detalhas e suas culturas")
+    @Operation(summary = "Mostra o produto com seus detalhas e seus pedidos - ADMINISTRADOR/COLABORADOR")
     public ResponseEntity<ProductOrderDto> getProductOrder(@PathVariable UUID id) {
         Optional<ProductOrderDto> productOrder = productService.productOrder(id);
         return productOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -79,7 +78,7 @@ public class ProductController {
 
     @PostMapping
     @Transactional
-    @Operation(summary = "Registro de produto", description = "Não colocar o creatAt pegará a data atual por padrão; Nome do produto é unico")
+    @Operation(summary = "Registro de produto - ADMINISTRADOR/COLABORADOR", description = "Não colocar o creatAt pegará a data atual por padrão; Nome do produto é unico")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductCreateDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
@@ -97,7 +96,7 @@ public class ProductController {
 
     @PutMapping
     @Transactional
-    @Operation(summary = "Atualização do produto")
+    @Operation(summary = "Atualização do produto - ADMINISTRADOR/COLABORADOR")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductCreateDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
@@ -111,7 +110,7 @@ public class ProductController {
 
     @PutMapping("/cultures")
     @Transactional
-    @Operation(summary = "Atualização da cultura do produto")
+    @Operation(summary = "Atualização da cultura do produto - ADMINISTRADOR/COLABORADOR")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductCultureDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
@@ -125,7 +124,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    @Operation(summary = "Excluir produto", description = "Culturas e pedidos vinculada ao produto serão excluído")
+    @Operation(summary = "Excluir produto - ADMINISTRADOR/COLABORADOR", description = "Culturas e pedidos vinculada ao produto serão excluído")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Success no-content", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
@@ -139,7 +138,7 @@ public class ProductController {
 
     @DeleteMapping("/cultures")
     @Transactional
-    @Operation(summary = "Delete cultura do produto")
+    @Operation(summary = "Delete cultura do produto - ADMINISTRADOR/COLABORADOR")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Success no-content", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),

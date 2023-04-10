@@ -32,7 +32,8 @@ public class Product {
         FORA_DE_LINHA
 
     }
-    public enum Category{
+
+    public enum Category {
         MANUAL,
         ELETRICO,
         COMBUSTIVEL
