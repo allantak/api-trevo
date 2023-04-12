@@ -102,7 +102,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     @SecurityRequirement(name = "bearer-key")
-    @Operation(summary = "Registrar usuario", description = "Registro de ADMINISTRADOR apenas ADMINISTRADOR tem acesso. Registro de COLABORADOR apenas ADMINISTRADOR ou COLABORADOR tem acesso. Cliente tem acesso para todos")
+    @Operation(summary = "Registrar usuario", description = "Registro de ADMINISTRADOR apenas ADMINISTRADOR tem acesso. Registro de COLABORADOR apenas ADMINISTRADOR ou COLABORADOR tem acesso. Cliente tem acesso para todos. accountRole = ADMINISTRADOR, COLABORADOR ou CLIENTE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AccountDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
@@ -120,7 +120,7 @@ public class AuthenticationController {
 
     @PutMapping("/accounts")
     @SecurityRequirement(name = "bearer-key")
-    @Operation(summary = "Atualizar usuário", description = "Atualizar ADMINISTRADOR apenas ADMINISTRADOR tem acesso. Atualizar COLABORADOR apenas ADMINISTRADOR ou COLABORADOR tem acesso. Cliente tem acesso para todos")
+    @Operation(summary = "Atualizar usuário", description = "Atualizar ADMINISTRADOR apenas ADMINISTRADOR tem acesso. Atualizar COLABORADOR apenas ADMINISTRADOR ou COLABORADOR tem acesso. Cliente tem acesso para todos. accountRole = ADMINISTRADOR, COLABORADOR ou CLIENTE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AccountDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),

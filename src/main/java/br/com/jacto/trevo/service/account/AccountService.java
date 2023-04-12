@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
@@ -79,7 +80,7 @@ public class AccountService implements UserDetailsService {
 
         boolean verify = new BCryptPasswordEncoder().matches(user.getPassword(), findAccount.get().getPassword());
         if (!verify) {
-            return Optional.empty();
+            throw new NotFoundException("Senha incorreta! Tente novamente");
         }
         if (user.getEmail() != null && !user.getEmail().trim().isEmpty()) {
             findAccount.get().setEmail(user.getEmail());
@@ -93,11 +94,11 @@ public class AccountService implements UserDetailsService {
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
             if (Objects.equals(user.getAccountRole().toString(), "ADMINISTRADOR") && !Objects.equals(role, "[ROLE_ADMINISTRADOR]")) {
-                throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR pode cadastrar ADMINISTRADOR");
+                throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR pode atualizar ADMINISTRADOR");
             }
 
             if (Objects.equals(user.getAccountRole().toString(), "COLABORADOR") && (Objects.equals(role, "[ROLE_CLIENTE]") | Objects.equals(role, "[ROLE_ANONYMOUS]"))) {
-                throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR ou COLABORADOR pode cadastrar COLABORADOR");
+                throw new AccessDeniedException("Acesso negado. Somente ADMINISTRADOR ou COLABORADOR pode atualizar COLABORADOR");
             }
             findAccount.get().setAccountRole(user.getAccountRole());
         }

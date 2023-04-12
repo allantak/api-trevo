@@ -51,6 +51,7 @@ public class OrderItemController {
     @Operation(summary = "Mostra o id do pedido - ADMINISTRADOR/CLIENTE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemDto.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
@@ -64,6 +65,7 @@ public class OrderItemController {
     @Operation(summary = "Registro de pedidos - ADMINISTRADOR/CLIENTE", description = "Para registrar um pedido é obrigatorio os id de produto e cliente. Caso quantidade for 0 vai retornar Exception")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemCreateDto.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
@@ -82,6 +84,7 @@ public class OrderItemController {
     @Operation(summary = "Atualização do pedido - ADMINISTRADOR/CLIENTE", description = "Caso quantidade for 0 vai retornar Exception")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemCreateDto.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})
@@ -95,6 +98,7 @@ public class OrderItemController {
     @Operation(summary = "Delete de pedido - ADMINISTRADOR/CLIENTE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Success no-content", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)})

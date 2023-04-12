@@ -53,7 +53,7 @@ CREATE TABLE CULTURE (
 CREATE TABLE IMAGE (
 	image_id uuid DEFAULT uuid_generate_v4 (),
 	product_id uuid NOT NULL,
-	img varchar NOT NULL,
+	img bytea NOT NULL,
 	PRIMARY KEY (image_id),
 	FOREIGN KEY (product_id) REFERENCES PRODUCT (product_id)
 );

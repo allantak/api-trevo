@@ -78,7 +78,7 @@ public class ProductController {
 
     @PostMapping
     @Transactional
-    @Operation(summary = "Registro de produto - ADMINISTRADOR/COLABORADOR", description = "Não colocar o creatAt pegará a data atual por padrão; Nome do produto é unico")
+    @Operation(summary = "Registro de produto - ADMINISTRADOR/COLABORADOR", description = "Não colocar o creatAt pegará a data atual por padrão; Nome do produto é unico. status = DISPONIVEL, INDISPONIVEL ou FORA_DE_LINHA; category = MANUAL, ELETRICO ou COMBUSTIVEL")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductCreateDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
