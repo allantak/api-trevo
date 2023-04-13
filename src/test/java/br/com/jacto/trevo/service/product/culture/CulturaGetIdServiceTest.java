@@ -19,8 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -48,7 +47,7 @@ public class CulturaGetIdServiceTest {
 
         Optional<Culture> response = cultureService.getId(culture.getCultureId());
 
-        assertNotNull(response);
+        assertNull(response);
         assertNotNull(response.get().getCultureId());
         assertEquals(culture.getCultureName(), response.get().getCultureName());
     }
