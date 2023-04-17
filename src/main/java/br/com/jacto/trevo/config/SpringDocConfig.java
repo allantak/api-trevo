@@ -18,7 +18,7 @@ public class SpringDocConfig {
                                 " Algumas funcionalidade presente nessa API, gerenciamento de cliente, produtos, pedidos e gerente." +
                                 " Objetivo é divulgar um novo portfólio de produtos para os clientes da Indústria Trevo, bem\n" +
                                 "como captar as propostas de interesse nesses produtos.")
-                        .version("1.0.0"))
+                        .version("2.0.0"))
                 .components(new Components()
                         .addSecuritySchemes("bearer-key",
                                 new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
