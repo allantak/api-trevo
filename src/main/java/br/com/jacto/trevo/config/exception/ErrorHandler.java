@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.webjars.NotFoundException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.stream.Collectors;
@@ -23,7 +22,6 @@ public class ErrorHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity errorHandler400(MethodArgumentNotValidException exception) {
         var erros = exception.getFieldErrors();
-
         return ResponseEntity.badRequest().body(erros.stream().map(Error400Dto::new).collect(Collectors.toList()));
     }
 

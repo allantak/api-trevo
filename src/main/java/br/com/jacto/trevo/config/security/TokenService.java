@@ -26,7 +26,7 @@ public class TokenService {
             String tokenJWT = JWT.create()
                     .withIssuer("API trevo")
                     .withSubject(account.getUsername())
-                    .withJWTId(account.getAccountId().toString())
+                    .withClaim("id", account.getAccountId().toString())
                     .withExpiresAt(dateExpiration())
                     .sign(algorithm);
             return new TokenDto(account.getAccountId(), tokenJWT);
