@@ -15,6 +15,27 @@
   <img height="400" src="https://user-images.githubusercontent.com/61324956/230724211-c3635149-5d8e-404e-9365-0c0917a80cc5.png" />
 </p>
 
+### Docker
+
+
+Build da imagem
+
+```bash
+  docker build -t <NOME_IMAGEM>:<VERSAO> /path/to/dockerfile/directory
+```
+
+Run docker
+
+```bash
+  docker run -d -p <PORTA>:8081 -e DATASOURCE_URL=<VARIAVEL_AMBIENTE> -e DATASOURCE_PASSWORD=<VARIAVEL_AMBIENTE> -e JWT_SECRET=<VARIAVEL_AMBIENTE> -e DATASOURCE_USERNAME=<VARIAVEL_AMBIENTE> <IMAGEM>
+```
+
+Execultar docker
+
+```bash
+  docker exec -it <IMAGEM> bash
+```
+
 
 ### Swagger
 
